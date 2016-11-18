@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- HEADER -->
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@mipmap/banner_kalbe" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/green_old"
+                android:orientation="vertical">
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <!-- BODY -->
+        <LinearLayout
+            android:id="@+id/llContent"
+            android:layout_width="fill_parent"
+            android:layout_height="0dip"
+            android:layout_weight="1"
+            android:layout_margin="20dp"
+            android:orientation="vertical"
+            android:gravity="center_vertical">
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/txtLoginEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@mipmap/ic_username"
+                android:ems="10"
+                android:hint="Username"
+                android:inputType="textPersonName"
+                android:maxLines="1"
+                android:singleLine="true" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/press_go"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <!--<View-->
+                <!--android:id="@+id/viewFlipper1"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="1dp"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:background="@color/gray" />-->
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/tv_role"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textStyle="normal" />
+
+            <Spinner
+                android:id="@+id/spnRole"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <Spinner
+                android:id="@+id/spnOutlet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:visibility="gone" />
+
+            <View
+                android:id="@+id/viewFlipper2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray" />
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_pass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/editTextPass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:drawableRight="@mipmap/ic_eye"
+                android:ems="10"
+                android:hint="Password"
+                android:imeActionLabel="Sign In"
+                android:imeOptions="actionUnspecified"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:singleLine="true" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/buttonLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="10dp"
+                android:text="Login"
+                android:textStyle="bold"
+                android:background="@drawable/action_btn_white"/>
+
+        </LinearLayout>
+
+        <!-- FOOTER -->
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primary_color_theme"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/buttonExit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="15dp"
+                android:text="Exit"
+                android:textStyle="bold"
+                android:background="@drawable/action_btn_white"/>
+
+            <Button
+                android:id="@+id/buttonPing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:text="Ping"
+                android:textStyle="bold"
+                android:background="@drawable/action_btn_white"/>
+
+            <TextView
+                android:id="@+id/txtVersionLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="10dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
+
+
+    <!--<?xml version="1.0" encoding="utf-8"?>--><!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"--><!--xmlns:tools="http://schemas.android.com/tools"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--android:gravity="center_vertical|center_horizontal"--><!--android:orientation="vertical"--><!--android:paddingBottom="@dimen/activity_vertical_marginLogin"--><!--android:paddingLeft="@dimen/activity_horizontal_marginLogin"--><!--android:paddingRight="@dimen/activity_horizontal_marginLogin"--><!--android:paddingTop="@dimen/activity_vertical_marginLogin"--><!--android:background="#ffffff"--><!--android:descendantFocusability="beforeDescendants"--><!--android:focusableInTouchMode="true"--><!--tools:context="com.kalbenutritionals.app.kalbespgmobile.Login">--><!--<ScrollView--><!--android:id="@+id/scrollableContents"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent" >--><!--<LinearLayout--><!--android:id="@+id/ll1"--><!--android:gravity="center_vertical|center_horizontal"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--android:orientation="vertical">--><!--<LinearLayout--><!--android:id="@+id/ll2"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--android:layout_weight="1"--><!--android:gravity="center_vertical|center_horizontal">--><!--<ImageView--><!--android:id="@+id/ivBannerLogin"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--android:src="@mipmap/banner_kalbe" />--><!--</LinearLayout>--><!--<LinearLayout--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content"--><!--android:orientation="vertical">--><!--<ProgressBar--><!--android:id="@+id/login_progress"--><!--style="?android:attr/progressBarStyleLarge"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:visibility="gone" />-->
+
+    <!--<LinearLayout--><!--android:orientation="vertical"--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content"--><!--android:layout_below="@+id/linearLayout1"--><!--android:layout_marginTop="20dp"--><!--android:layout_alignParentLeft="true"--><!--android:layout_alignParentStart="true"--><!--android:paddingBottom="@dimen/activity_vertical_margin"--><!--android:paddingLeft="@dimen/activity_horizontal_margin"--><!--android:paddingRight="@dimen/activity_horizontal_margin"--><!--android:paddingTop="@dimen/activity_vertical_margin"--><!--android:id="@+id/ll3">--><!--<EditText--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content"--><!--android:inputType="textPersonName"--><!--android:hint="Username"--><!--android:ems="10"--><!--android:maxLines="1"--><!--android:singleLine="true"--><!--android:id="@+id/txtLoginEmail"--><!--android:background="@drawable/bg_edtext"--><!--android:drawableRight="@mipmap/ic_username"--><!--/>--><!--<TextView--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:textAppearance="?android:attr/textAppearanceSmall"--><!--android:text="@string/press_go"--><!--android:id="@+id/textView4" />--><!--<View--><!--android:layout_width="match_parent"--><!--android:layout_height="1dp"--><!--android:id="@+id/viewFlipper1"--><!--android:layout_marginTop="10dp"--><!--android:background="@color/gray"/>--><!--<TextView--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:textAppearance="?android:attr/textAppearanceMedium"--><!--android:text="@string/tv_role"--><!--android:layout_marginTop="10dp"--><!--android:id="@+id/textView6"--><!--android:textStyle="normal"/>--><!--<Spinner--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content"--><!--android:layout_marginTop="2dp"--><!--android:id="@+id/spnType"--><!--android:background="@drawable/bg_edtext"/>--><!--<Spinner--><!--android:id="@+id/spnOutlet"--><!--android:visibility="gone"--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content"--><!--android:layout_marginTop="2dp"--><!--android:background="@drawable/bg_edtext" />--><!--<View--><!--android:layout_width="match_parent"--><!--android:layout_height="1dp"--><!--android:id="@+id/viewFlipper2"--><!--android:layout_marginTop="10dp"--><!--android:background="@color/gray"/>--><!--<EditText--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content"--><!--android:hint="Password"--><!--android:layout_marginTop="10dp"--><!--android:imeActionLabel="Sign In"--><!--android:imeOptions="actionUnspecified"--><!--android:inputType="textPassword"--><!--android:maxLines="1"--><!--android:singleLine="true"--><!--android:ems="10"--><!--android:id="@+id/editTextPass"--><!--android:background="@drawable/bg_edtext"--><!--android:drawableRight="@mipmap/ic_eye"/>--><!--<Button--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content"--><!--android:text="Login"--><!--android:textStyle="bold"--><!--android:id="@+id/buttonLogin"--><!--android:layout_marginTop="10dp"--><!--android:background="@drawable/bg_edtext"--><!--android:layout_marginBottom="20dp"/>--><!--</LinearLayout>--><!--</LinearLayout>--><!--<LinearLayout--><!--android:orientation="vertical"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--android:layout_below="@+id/linearLayout2"--><!--android:id="@+id/linearLayout3"--><!--android:background="@color/primary_color_theme">--><!--<Button--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content"--><!--android:text="Exit"--><!--android:layout_marginLeft="10dp"--><!--android:layout_marginRight="10dp"--><!--android:textStyle="bold"--><!--android:id="@+id/buttonExit"--><!--android:layout_marginTop="15dp"--><!--android:background="@drawable/btn_on_click"/>--><!--<Button--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content"--><!--android:text="Ping"--><!--android:layout_marginLeft="10dp"--><!--android:layout_marginRight="10dp"--><!--android:textStyle="bold"--><!--android:id="@+id/buttonPing"--><!--android:layout_marginTop="5dp"--><!--android:background="@drawable/btn_on_click"/>--><!--<TextView--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:textAppearance="?android:attr/textAppearanceSmall"--><!--android:text="@string/tv_version"--><!--android:id="@+id/txtVersionLogin"--><!--android:layout_gravity="center_horizontal"--><!--android:textStyle="bold"--><!--android:layout_marginTop="10dp"--><!--android:layout_marginBottom="20dp"--><!--android:textColor="@color/white"/>--><!--</LinearLayout>--><!--</LinearLayout>--><!--</ScrollView>--><!--</RelativeLayout>-->
