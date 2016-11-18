@@ -15,6 +15,7 @@ import java.util.List;
 
 import fragment.TaskOnProgressFragment;
 import fragment.TaskSuccessFragment;
+import library.common.mSPMHeaderData;
 
 /**
  * Created by ASUS ZE on 16/11/2016.
@@ -24,6 +25,8 @@ public class TabsTaskHeader extends AppCompatActivity{
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+
+    mSPMHeaderData _mSPMHeaderData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

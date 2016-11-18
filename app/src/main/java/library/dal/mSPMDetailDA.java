@@ -164,64 +164,52 @@ public class mSPMDetailDA {
                 + "select  '2','839382','A-002','QWERT','DIABETASOL','25','0','0';";
         db.execSQL(txtQuery);
         txtQuery = "insert into mSPMDetail(intSPMDetailId,txtNoSPM,txtLocator,txtItemCode,txtItemName,intQty,bitStatus,bitSync )"
-                + "select  '3','839383','A-001','NBBAS','NUTRIVE BENECOL NO ADDED SUGAR BLACKCURRANT 100 ML','50','0','0';";
+                + "select  '3','839382','A-001','NBBAS','NUTRIVE BENECOL NO ADDED SUGAR BLACKCURRANT 100 ML','50','0','0';";
         db.execSQL(txtQuery);
         txtQuery = "insert into mSPMDetail(intSPMDetailId,txtNoSPM,txtLocator,txtItemCode,txtItemName,intQty,bitStatus,bitSync )"
-                + "select  '4','839383','A-002','QWERT','DIABETASOL','60','0','0';";
+                + "select  '4','839382','A-002','QWERT','DIABETASOL','60','0','0';";
         db.execSQL(txtQuery);
         txtQuery = "insert into mSPMDetail(intSPMDetailId,txtNoSPM,txtLocator,txtItemCode,txtItemName,intQty,bitStatus,bitSync )"
-                + "select  '5','839384','A-001','NBBAS','NUTRIVE BENECOL NO ADDED SUGAR BLACKCURRANT 100 ML','50','0','0';";
+                + "select  '5','839382','A-001','NBBAS','NUTRIVE BENECOL NO ADDED SUGAR BLACKCURRANT 100 ML','50','0','0';";
         db.execSQL(txtQuery);
         txtQuery = "insert into mSPMDetail(intSPMDetailId,txtNoSPM,txtLocator,txtItemCode,txtItemName,intQty,bitStatus,bitSync )"
-                + "select  '6','839384','A-002','QWERT','DIABETASOL','60','0','0';";
+                + "select  '6','839382','A-002','QWERT','DIABETASOL','60','0','0';";
         db.execSQL(txtQuery);
         txtQuery = "insert into mSPMDetail(intSPMDetailId,txtNoSPM,txtLocator,txtItemCode,txtItemName,intQty,bitStatus,bitSync )"
-                + "select  '7','839385','A-001','NBBAS','NUTRIVE BENECOL NO ADDED SUGAR BLACKCURRANT 100 ML','50','0','0';";
+                + "select  '7','839382','A-001','NBBAS','NUTRIVE BENECOL NO ADDED SUGAR BLACKCURRANT 100 ML','50','0','0';";
         db.execSQL(txtQuery);
         txtQuery = "insert into mSPMDetail(intSPMDetailId,txtNoSPM,txtLocator,txtItemCode,txtItemName,intQty,bitStatus,bitSync )"
-                + "select  '8','839385','A-002','QWERT','DIABETASOL','60','0','0';";
+                + "select  '8','839382','A-002','QWERT','DIABETASOL','60','0','0';";
         db.execSQL(txtQuery);
         txtQuery = "insert into mSPMDetail(intSPMDetailId,txtNoSPM,txtLocator,txtItemCode,txtItemName,intQty,bitStatus,bitSync )"
-                + "select  '9','839386','A-001','NBBAS','NUTRIVE BENECOL NO ADDED SUGAR BLACKCURRANT 100 ML','50','0','0';";
+                + "select  '9','839382','A-001','NBBAS','NUTRIVE BENECOL NO ADDED SUGAR BLACKCURRANT 100 ML','50','0','0';";
         db.execSQL(txtQuery);
         txtQuery = "insert into mSPMDetail(intSPMDetailId,txtNoSPM,txtLocator,txtItemCode,txtItemName,intQty,bitStatus,bitSync )"
-                + "select  '10','839386','A-002','QWERT','DIABETASOL','60','0','0';";
+                + "select  '10','839382','A-002','QWERT','DIABETASOL','60','0','0';";
         db.execSQL(txtQuery);
         txtQuery = "insert into mSPMDetail(intSPMDetailId,txtNoSPM,txtLocator,txtItemCode,txtItemName,intQty,bitStatus,bitSync )"
-                + "select  '11','839387','A-001','NBBAS','NUTRIVE BENECOL NO ADDED SUGAR BLACKCURRANT 100 ML','50','0','0';";
+                + "select  '11','839382','A-001','NBBAS','NUTRIVE BENECOL NO ADDED SUGAR BLACKCURRANT 100 ML','50','0','0';";
         db.execSQL(txtQuery);
         txtQuery = "insert into mSPMDetail(intSPMDetailId,txtNoSPM,txtLocator,txtItemCode,txtItemName,intQty,bitStatus,bitSync )"
-                + "select  '12','839387','A-002','QWERT','DIABETASOL','60','0','0';";
+                + "select  '12','839382','A-002','QWERT','DIABETASOL','60','0','0';";
         db.execSQL(txtQuery);
         txtQuery = "insert into mSPMDetail(intSPMDetailId,txtNoSPM,txtLocator,txtItemCode,txtItemName,intQty,bitStatus,bitSync )"
-                + "select  '13','839388','A-001','NBBAS','NUTRIVE BENECOL NO ADDED SUGAR BLACKCURRANT 100 ML','50','0','0';";
+                + "select  '13','839382','A-001','NBBAS','NUTRIVE BENECOL NO ADDED SUGAR BLACKCURRANT 100 ML','50','0','0';";
         db.execSQL(txtQuery);
         txtQuery = "insert into mSPMDetail(intSPMDetailId,txtNoSPM,txtLocator,txtItemCode,txtItemName,intQty,bitStatus,bitSync )"
-                + "select  '14','839388','A-002','QWERT','DIABETASOL','60','0','0';";
+                + "select  '14','839382','A-002','QWERT','DIABETASOL','60','0','0';";
         db.execSQL(txtQuery);
         txtQuery = "insert into mSPMDetail(intSPMDetailId,txtNoSPM,txtLocator,txtItemCode,txtItemName,intQty,bitStatus,bitSync )"
-                + "select  '15','839389','A-001','NBBAS','NUTRIVE BENECOL NO ADDED SUGAR BLACKCURRANT 100 ML','50','0','0';";
+                + "select  '15','839382','A-001','NBBAS','NUTRIVE BENECOL NO ADDED SUGAR BLACKCURRANT 100 ML','50','0','0';";
         db.execSQL(txtQuery);
         txtQuery = "insert into mSPMDetail(intSPMDetailId,txtNoSPM,txtLocator,txtItemCode,txtItemName,intQty,bitStatus,bitSync )"
-                + "select  '16','839389','A-002','QWERT','DIABETASOL','60','0','0';";
+                + "select  '16','839382','A-002','QWERT','DIABETASOL','60','0','0';";
         db.execSQL(txtQuery);
         txtQuery = "insert into mSPMDetail(intSPMDetailId,txtNoSPM,txtLocator,txtItemCode,txtItemName,intQty,bitStatus,bitSync )"
-                + "select  '17','839390','A-001','NBBAS','NUTRIVE BENECOL NO ADDED SUGAR BLACKCURRANT 100 ML','50','0','0';";
+                + "select  '17','839382','A-001','NBBAS','NUTRIVE BENECOL NO ADDED SUGAR BLACKCURRANT 100 ML','50','0','0';";
         db.execSQL(txtQuery);
         txtQuery = "insert into mSPMDetail(intSPMDetailId,txtNoSPM,txtLocator,txtItemCode,txtItemName,intQty,bitStatus,bitSync )"
-                + "select  '18','839390','A-002','QWERT','DIABETASOL','60','0','0';";
-        db.execSQL(txtQuery);
-        txtQuery = "insert into mSPMDetail(intSPMDetailId,txtNoSPM,txtLocator,txtItemCode,txtItemName,intQty,bitStatus,bitSync )"
-                + "select  '19','839391','A-001','NBBAS','NUTRIVE BENECOL NO ADDED SUGAR BLACKCURRANT 100 ML','50','0','0';";
-        db.execSQL(txtQuery);
-        txtQuery = "insert into mSPMDetail(intSPMDetailId,txtNoSPM,txtLocator,txtItemCode,txtItemName,intQty,bitStatus,bitSync )"
-                + "select  '20','839391','A-002','QWERT','DIABETASOL','60','0','0';";
-        db.execSQL(txtQuery);
-        txtQuery = "insert into mSPMDetail(intSPMDetailId,txtNoSPM,txtLocator,txtItemCode,txtItemName,intQty,bitStatus,bitSync )"
-                + "select  '21','839392','A-001','NBBAS','NUTRIVE BENECOL NO ADDED SUGAR BLACKCURRANT 100 ML','50','0','0';";
-        db.execSQL(txtQuery);
-        txtQuery = "insert into mSPMDetail(intSPMDetailId,txtNoSPM,txtLocator,txtItemCode,txtItemName,intQty,bitStatus,bitSync )"
-                + "select  '22','839392','A-002','QWERT','DIABETASOL','60','0','0';";
+                + "select  '18','839382','A-002','QWERT','DIABETASOL','60','0','0';";
         db.execSQL(txtQuery);
     }
 }

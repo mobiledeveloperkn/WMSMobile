@@ -16,6 +16,7 @@ import jim.h.common.android.lib.zxing.config.ZXingLibConfig;
 import jim.h.common.android.lib.zxing.integrator.IntentIntegrator;
 import jim.h.common.android.lib.zxing.integrator.IntentResult;
 import library.common.mSPMHeaderData;
+import library.dal.mSPMDetailDA;
 import library.dal.mSPMHeaderDA;
 
 public class Home extends AppCompatActivity implements View.OnClickListener {
@@ -84,9 +85,11 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
             final String result = scanResult.getContents();
             new clsMainActivity().showCustomToast(getApplicationContext(), result, true);
             mSPMHeaderDA _mSPMHeaderDA = new mSPMHeaderDA(db);
+            mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(db);
             int sumdata_mSPMHeaderDA = _mSPMHeaderDA.getContactsCount(db);
 		    if (sumdata_mSPMHeaderDA == 0) {
 			    _mSPMHeaderDA.InsertDefaultSPMHeader(db);
+                _mSPMDetailDA.InsertDefaultmSPMDetail(db);
                 startActivity(new Intent(Home.this, OutstandingTask.class));
 		}
         }
