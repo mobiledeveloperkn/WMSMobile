@@ -6,7 +6,9 @@ import java.text.ParseException;
 import java.util.UUID;
 
 import library.common.clsHelper;
+import library.common.clsStatusMenuStart;
 import library.dal.clsHardCode;
+import library.dal.enumStatusMenuStart;
 import library.dal.mconfigDA;
 import library.dal.tUserLoginDA;
 
@@ -51,14 +53,44 @@ public class clsMainBL {
 		return valueBackGroundServiceOnline;
 	}
 
-	public boolean checkUserActive() throws ParseException {
+	public clsStatusMenuStart checkUserActive() throws ParseException {
 		this.db = getDb();
 		boolean result = false;
 		tUserLoginDA _tUserLoginDA=new tUserLoginDA(db);
+		clsStatusMenuStart _clsStatusMenuStart =new clsStatusMenuStart();
 		if(_tUserLoginDA.CheckLoginNow(db)){
-			result = true;
+			_clsStatusMenuStart.set_intStatus(enumStatusMenuStart.UserActiveLogin);
+		} else{
+			Boolean dvalid=false;
+//			List<tSalesProductHeaderData> listDataPush= _tSalesProductHeaderDA.getAllDataToPushData(db);
+//			List<tActivityData> listtActivityDataPush= _tActivityDA.getAllDataToPushData(db);
+//			List<tAbsenUserData> listtAbsenUserDataPush= _tAbsenUserDA.getAllDataToPushData(db);
+//			List<tLeaveMobileData> listTLeave= _tLeaveMobileDA.getAllDataPushData(db);
+//			if(listDataPush != null && dvalid==false){
+//				dvalid=true;
+//			}
+//			if(listtActivityDataPush != null && dvalid==false){
+//				dvalid=true;
+//			}
+//			if(listtAbsenUserDataPush != null && dvalid==false){
+//				dvalid=true;
+//			}
+//			if(listTLeave != null && dvalid==false){
+//				dvalid=true;
+//			}
+//			if(listDataPush != null && dvalid==false){
+//				dvalid=true;
+//			}
+			if(dvalid){
+//				mMenuData listMenuData= _mMenuDA.getDataByName(db, "mnUploadDataMobile");
+//				_clsStatusMenuStart.set_intStatus(enumStatusMenuStart.PushDataSPGMobile);
+//				_clsStatusMenuStart.set_mMenuData(listMenuData);
+			}else{
+				new clsHelper().DeleteAllDB(db);
+				_clsStatusMenuStart.set_intStatus(enumStatusMenuStart.FormLogin);
+			}
 		}
-		return result;
+		return _clsStatusMenuStart;
 	}
 //	public tUserLoginData getUserActive() {
 //		this.db = getDb();

@@ -47,8 +47,12 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
         _mSPMHeaderData = new mSPMHeaderData();
         _mSPMHeaderData = new mSPMHeaderBL().GetAllData();
 
-        if (_mSPMHeaderData!=null){
+        if (_mSPMHeaderData.getIntSPMId()==null){
             btnOutstandingTask.setEnabled(false);
+            btnScan.setEnabled(true);
+        } else if (_mSPMHeaderData.getIntSPMId()!=null){
+            btnOutstandingTask.setEnabled(true);
+            btnScan.setEnabled(false);
         }
 
     }
@@ -85,6 +89,21 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
 			    _mSPMHeaderDA.InsertDefaultSPMHeader(db);
                 startActivity(new Intent(Home.this, OutstandingTask.class));
 		}
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        _mSPMHeaderData = new mSPMHeaderData();
+        _mSPMHeaderData = new mSPMHeaderBL().GetAllData();
+
+        if (_mSPMHeaderData.getIntSPMId()==null){
+            btnOutstandingTask.setEnabled(false);
+            btnScan.setEnabled(true);
+        } else if (_mSPMHeaderData.getIntSPMId()!=null){
+            btnOutstandingTask.setEnabled(true);
+            btnScan.setEnabled(false);
         }
     }
 }

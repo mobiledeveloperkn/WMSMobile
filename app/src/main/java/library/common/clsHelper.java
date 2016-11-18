@@ -21,7 +21,6 @@ import java.text.ParseException;
 import java.util.Scanner;
 import java.util.UUID;
 
-import bl.clsMainBL;
 import library.dal.clsHardCode;
 import library.dal.mRoleDA;
 import library.dal.mSPMDetailDA;
@@ -495,8 +494,5 @@ public class clsHelper {
 		SQLiteDatabase db;
 		clsHardCode clsdthc= new clsHardCode();
 		db=SQLiteDatabase.openOrCreateDatabase(clsdthc.txtDatabaseName, null);
-		if(new clsMainBL().checkUserActive()){
-			new clsHelper().DeleteAllDB(db);
-		}
 	}
 }

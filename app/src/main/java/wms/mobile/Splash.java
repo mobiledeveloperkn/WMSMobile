@@ -23,6 +23,8 @@ import java.util.TimerTask;
 
 import bl.clsMainBL;
 import library.common.clsHelper;
+import library.common.clsStatusMenuStart;
+import library.dal.enumStatusMenuStart;
 
 public class Splash extends AppCompatActivity {
 
@@ -159,10 +161,11 @@ public class Splash extends AppCompatActivity {
                 _clsHelper.createFolderApp();
                 try {
                     _clsHelper.createDb();
-                    if (new clsMainBL().checkUserActive()) {
-                        myIntent = new Intent(Splash.this, Home.class);
-                    }  else {
+                    clsStatusMenuStart _clsStatusMenuStart = new clsMainBL().checkUserActive();
+                    if (_clsStatusMenuStart.get_intStatus() == enumStatusMenuStart.FormLogin) {
                         myIntent = new Intent(Splash.this, Login.class);
+                    }  else if (_clsStatusMenuStart.get_intStatus() == enumStatusMenuStart.UserActiveLogin){
+                        myIntent = new Intent(Splash.this, Home.class);
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
