@@ -150,7 +150,7 @@ public class tUserLoginDA {
 
     public void InsertDefaultMUser(SQLiteDatabase db) {
         String txtQuery = "insert into tUserLogin(IntUserId,txtUserName,txtPassword,IntUserRole,txtRoleName,dtLastLogin )"
-                + "select  '114','rheza.tesar','sanghiang','100','Picker','2016-11-18';";
+                + "select  '114','rheza.tesar','sanghiang','100','Picker','2016-11-21';";
         db.execSQL(txtQuery);
     }
 
@@ -167,6 +167,7 @@ public class tUserLoginDA {
         if (cursor.moveToFirst()) {
             do {
                 String datetime = cursor.getString(0);
+                String a = dateFormat.format(cal.getTime());
                 if(datetime!=null){
                     if(dateFormat.format(cal.getTime()).compareTo(datetime)==0){
                         result=true;

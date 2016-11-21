@@ -2,10 +2,10 @@ package bl;
 
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.List;
+
 import library.common.mSPMDetailData;
-import library.common.mSPMHeaderData;
 import library.dal.mSPMDetailDA;
-import library.dal.mSPMHeaderDA;
 
 /**
  * Created by arick.anjasmara on 18/11/2016.
@@ -26,5 +26,13 @@ public class mSPMDetailBL extends clsMainBL {
         mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(db);
         _mSPMDetailDA.SaveDataMConfig(db, data);
         db.close();
+    }
+
+    public List<mSPMDetailData> getAllData() {
+        SQLiteDatabase db = getDb();
+        mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(db);
+        List<mSPMDetailData> data = _mSPMDetailDA.getAllData(db);
+        db.close();
+        return data;
     }
 }

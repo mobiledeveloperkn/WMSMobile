@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import java.util.ArrayList;
 import java.util.List;
 
+import bl.mSPMHeaderBL;
 import fragment.TaskOnProgressFragment;
 import fragment.TaskSuccessFragment;
 import library.common.mSPMHeaderData;
@@ -36,7 +37,11 @@ public class TabsTaskHeader extends AppCompatActivity{
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        _mSPMHeaderData = new mSPMHeaderBL().GetAllData();
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("SPM : " + _mSPMHeaderData.getTxtNoSPM());
+
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
