@@ -25,4 +25,7 @@
         <item>#24c6d5</item>
     </string-array>
 
+    <color name="green_selected">#53760e</color>
+    <color name="green_unselected">#4CAF50</color>
+
 </resources>

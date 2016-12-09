@@ -43,6 +43,13 @@
             android:label="Outstanding Task"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
         </activity>
+        <activity
+            android:name=".PartThreeActivity"/>
+        <service
+            android:name="service.SignalRService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
 
 </manifest>

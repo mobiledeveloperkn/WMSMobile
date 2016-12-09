@@ -241,7 +241,8 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="5dp"
                     android:text="Scan"
-                    android:background="@drawable/action_btn_white"/>
+                    android:textColor="@color/white"
+                    android:background="@drawable/green_button_selector"/>
                 <Button
                     android:id="@+id/btn_outstanding"
                     android:layout_width="match_parent"
@@ -250,7 +251,8 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginLeft="5dp"
                     android:text="Outstanding Task"
-                    android:background="@drawable/action_btn_white"/>
+                    android:textColor="@color/white"
+                    android:background="@drawable/green_button_selector"/>
 
 
             </LinearLayout>
@@ -262,7 +264,8 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:text="Logout"
-                android:background="@drawable/action_btn_white"/>
+                android:textColor="@color/white"
+                android:background="@drawable/green_button_selector"/>
 
             <!--&lt;!&ndash; FOOTER &ndash;&gt;-->
             <!--<LinearLayout-->

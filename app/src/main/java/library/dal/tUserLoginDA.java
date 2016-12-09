@@ -150,7 +150,7 @@ public class tUserLoginDA {
 
     public void InsertDefaultMUser(SQLiteDatabase db) {
         String txtQuery = "insert into tUserLogin(IntUserId,txtUserName,txtPassword,IntUserRole,txtRoleName,dtLastLogin )"
-                + "select  '114','rheza.tesar','sanghiang','100','Picker','2016-11-21';";
+                + "select  '114','rheza.tesar','sanghiang','100','Picker','2016-11-23';";
         db.execSQL(txtQuery);
     }
 

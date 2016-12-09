@@ -139,6 +139,63 @@ public class mSPMDetailDA {
         return contactList;
     }
 
+    public List<mSPMDetailData> getAllDataTaskPending(SQLiteDatabase db) {
+        List<mSPMDetailData> contactList = new ArrayList<mSPMDetailData>();
+        // Select All Query
+        mSPMDetailData dt = new mSPMDetailData();
+        String selectQuery = "SELECT  " + dt.Property_All + " FROM "
+                + TABLE_CONTACTS +" WHERE "+dt.Property_bitSync+"=0 And "+dt.Property_bitStatus+"=0";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // looping through all rows and adding to list
+
+        if (cursor.moveToFirst()) {
+            do {
+                mSPMDetailData contact = new mSPMDetailData();
+                contact.setIntSPMDetailId(cursor.getString(0));
+                contact.setTxtNoSPM(cursor.getString(1));
+                contact.setTxtLocator(cursor.getString(2));
+                contact.setTxtItemCode(cursor.getString(3));
+                contact.setTxtItemName(cursor.getString(4));
+                contact.setIntQty(cursor.getString(5));
+                contact.setBitStatus(cursor.getString(6));
+                contact.setBitSync(cursor.getString(7));
+                // Adding contact to list
+                contactList.add(contact);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        // return contact list
+        return contactList;
+    }
+    public List<mSPMDetailData> getAllDataTaskSuccess(SQLiteDatabase db) {
+        List<mSPMDetailData> contactList = new ArrayList<mSPMDetailData>();
+        // Select All Query
+        mSPMDetailData dt = new mSPMDetailData();
+        String selectQuery = "SELECT  " + dt.Property_All + " FROM "
+                + TABLE_CONTACTS +" WHERE "+dt.Property_bitSync+"=1 And "+dt.Property_bitStatus+"=1";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // looping through all rows and adding to list
+
+        if (cursor.moveToFirst()) {
+            do {
+                mSPMDetailData contact = new mSPMDetailData();
+                contact.setIntSPMDetailId(cursor.getString(0));
+                contact.setTxtNoSPM(cursor.getString(1));
+                contact.setTxtLocator(cursor.getString(2));
+                contact.setTxtItemCode(cursor.getString(3));
+                contact.setTxtItemName(cursor.getString(4));
+                contact.setIntQty(cursor.getString(5));
+                contact.setBitStatus(cursor.getString(6));
+                contact.setBitSync(cursor.getString(7));
+                // Adding contact to list
+                contactList.add(contact);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        // return contact list
+        return contactList;
+    }
+
     // Deleting single contact
     public void deleteContact(SQLiteDatabase db, int id) {
         mSPMDetailData dt = new mSPMDetailData();

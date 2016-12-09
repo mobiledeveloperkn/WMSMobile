@@ -23,7 +23,7 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    Button btnTaskView;
+    Button btnTaskView, btnCancel;
     TextView tvNoSPM, tvShopTo, tvSO;
     mSPMHeaderData _mSPMHeaderData;
 
@@ -32,6 +32,7 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_outstanding_task);
         btnTaskView = (Button) findViewById(R.id.btn_taskview);
+        btnCancel = (Button) findViewById(R.id.btn_cancel);
         tvNoSPM = (TextView) findViewById(R.id.tv_noSPM);
         tvShopTo = (TextView) findViewById(R.id.tv_shipTo);
         tvSO = (TextView) findViewById(R.id.tv_SO);
@@ -44,6 +45,7 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
         tvSO.setText(_mSPMHeaderData.getTxtSalesOrder());
 
         btnTaskView.setOnClickListener(this);
+        btnCancel.setOnClickListener(this);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -64,6 +66,9 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
         switch (view.getId()){
             case R.id.btn_taskview :
                 startActivity(new Intent(OutstandingTask.this, TabsTaskHeader.class));
+                break;
+            case  R.id.btn_cancel :
+                startActivity(new Intent(OutstandingTask.this, Home.class));
                 break;
         }
     }

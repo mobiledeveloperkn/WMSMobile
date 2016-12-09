@@ -35,4 +35,20 @@ public class mSPMDetailBL extends clsMainBL {
         db.close();
         return data;
     }
+
+    public List<mSPMDetailData> getAllDataTaskPending() {
+        SQLiteDatabase db = getDb();
+        mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(db);
+        List<mSPMDetailData> data = _mSPMDetailDA.getAllDataTaskPending(db);
+        db.close();
+        return data;
+    }
+
+    public List<mSPMDetailData> getAllDataTaskSuccess() {
+        SQLiteDatabase db = getDb();
+        mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(db);
+        List<mSPMDetailData> data = _mSPMDetailDA.getAllDataTaskSuccess(db);
+        db.close();
+        return data;
+    }
 }
