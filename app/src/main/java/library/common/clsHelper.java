@@ -8,6 +8,10 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.util.Log;
 
+import com.google.gson.JsonParser;
+
+import org.json.JSONArray;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -303,12 +307,12 @@ public class clsHelper {
 	public String ResultJsonData(String dt){
 		return dt.substring(16,dt.length()-2);
 	}
-//	public JSONArray ResultJsonArray(String dt) throws ParseException{
-//		JSONParser jsonParser = new JSONParser();
-//		Object obj = jsonParser.parse(dt);
-//		JSONArray lang= (JSONArray) obj;
-//		return lang;
-//	}
+	public JSONArray ResultJsonArray(String dt) throws ParseException{
+		JsonParser jsonParser = new JsonParser();
+		Object obj = jsonParser.parse(dt);
+		JSONArray lang= (JSONArray) obj;
+		return lang;
+	}
 //	public String linkAPI(SQLiteDatabase db){
 //		//ambil linkapi Database sqllite
 //		mconfigDA _mconfigDA=new mconfigDA(db);

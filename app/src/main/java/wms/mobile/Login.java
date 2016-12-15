@@ -1,18 +1,20 @@
 package wms.mobile;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,9 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,15 +42,6 @@ import bl.mRoleBL;
 import bl.tUserLoginBL;
 import library.common.mRoleData;
 import library.dal.clsHardCode;
-import microsoft.aspnet.signalr.client.LogLevel;
-import microsoft.aspnet.signalr.client.Logger;
-import microsoft.aspnet.signalr.client.MessageReceivedHandler;
-import microsoft.aspnet.signalr.client.Platform;
-import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent;
-import microsoft.aspnet.signalr.client.hubs.HubConnection;
-import microsoft.aspnet.signalr.client.hubs.HubProxy;
-import microsoft.aspnet.signalr.client.transport.ClientTransport;
-import microsoft.aspnet.signalr.client.transport.LongPollingTransport;
 import service.SignalRService;
 
 import static wms.mobile.R.id.txtLoginEmail;
@@ -59,116 +50,26 @@ import static wms.mobile.R.id.txtLoginEmail;
  * Created by ASUS ZE on 15/11/2016.
  */
 
-public class Login extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener{
+public class Login extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener {
 
     Button btn_login;
     Intent intent;
-
     EditText etTxtEmail, etTxtPass;
     Spinner spnRole;
-
     String txtEmail, txtPass, selectedRole;
-
     private List<String> arrrole, arrNodata;
     private HashMap<String, String> HMRole = new HashMap<String, String>();
-
     private final Context mContext = this;
     private SignalRService mService;
     private boolean mBound = false;
-
-    // private fields
-    HubConnection connection;
-    HubProxy hub;
-    ClientTransport transport;
+    MyReceiver myReceiver;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_login);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
-        Logger logger = new Logger() {
-            @Override
-            public void log(String message, LogLevel logLevel) {
-                Log.e("SignalR", message);
-            }
-        };
-
-        Platform.loadPlatformComponent(new AndroidPlatformComponent());
-        connection = new HubConnection("http://10.171.11.47/wms%20online");
-        hub = connection.createHubProxy("hubAPI"); // case insensitivity
-
-        /* ****new codes here**** */
-        hub.subscribe(this);
-
-        transport = new LongPollingTransport(connection.getLogger());
-
-        /* ****new codes here**** */
-        connection.start(transport);
-
-        /* ****new codes here**** */
-        /* ****seems useless but should be here!**** */
-        hub.subscribe(new Object() {
-            @SuppressWarnings("unused")
-            public void newMessage(final String message, final String messageId, final String chatId,
-                                   final String senderUserId, final String fileUrl, final String replyToMessageId) {
-
-
-            }
-        });
-
-
-        /* ********************** */
-        /* ****new codes here**** */
-        /* **** the main method that I fetch data from server**** */
-        connection.received(new MessageReceivedHandler() {
-            @Override
-            public void onMessageReceived(final JsonElement json) {
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        JsonObject jsonObject = json.getAsJsonObject();
-                        if (jsonObject!=null){
-                            try {
-                                JSONObject jsonObj = new JSONObject(String.valueOf(jsonObject));
-
-                                // Getting JSON Array node
-                                JSONArray contacts = jsonObj.getJSONArray("A");
-
-                                String validation = (String) contacts.get(0);
-                                String message = (String) contacts.get(1);
-
-                                if(validation.equals("0")){
-                                    new clsMainActivity().showCustomToast(getApplicationContext(), message, false);
-
-                                } else if (validation.equals("1")){
-                                    intent = new Intent(getApplicationContext(), Home.class);
-                                    startActivity(intent);
-                                    finish();
-                                } else {
-                                    new clsMainActivity().showCustomToast(getApplicationContext(), new clsHardCode().txtMessNoData, false);
-                                }
-//
-//                                listItems = new ArrayList<String>();
-//
-//                                listItems.add(name + " : " + message);
-//                                itemsAdapter.notifyDataSetChanged();
-//                                mListView.invalidateViews();
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-//                        String message
-                        Log.e("<Debug>", "response = " + jsonObject.toString());
-//                        Toast.makeText(getApplicationContext(), jsonObject.toString(), Toast.LENGTH_LONG).show();
-
-                    }
-                });
-            }
-        });
 
         btn_login = (Button) findViewById(R.id.buttonLogin);
         etTxtEmail = (EditText) findViewById(txtLoginEmail);
@@ -179,7 +80,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         arrNodata.add("-");
 
         btn_login.setOnClickListener(this);
-        ImageView imgBanner = (ImageView) findViewById(R.id.header) ;
+        ImageView imgBanner = (ImageView) findViewById(R.id.header);
         imgBanner.setAdjustViewBounds(true);
         imgBanner.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
@@ -196,20 +97,14 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
 
             }
         });
-
-        Intent intent = new Intent();
-        intent.setClass(mContext, SignalRService.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.buttonLogin :
+        switch (view.getId()) {
+            case R.id.buttonLogin:
                 txtPass = etTxtPass.getText().toString();
                 sendMessage(view);
-//                AsyncCallLogin task = new AsyncCallLogin();
-//                task.execute();
                 break;
 
         }
@@ -217,15 +112,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
 
     @Override
     public boolean onKey(View view, int i, KeyEvent keyEvent) {
-        switch (view.getId()){
-            case  R.id.txtLoginEmail :
+        switch (view.getId()) {
+            case R.id.txtLoginEmail:
                 // If the event is a key-down event on the "enter" button
                 if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) &&
                         (i == KeyEvent.KEYCODE_ENTER)) {
-//                    intProcesscancel = 0;
                     txtEmail = etTxtEmail.getText().toString();
-                    AsyncCallRole task = new AsyncCallRole();
-                    task.execute();
+                    sendMessage(view);
                     return true;
                 }
         }
@@ -260,11 +153,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         protected void onPostExecute(List<mRoleData> mRoleDatas) {
             arrrole = new ArrayList<>();
             arrrole = arrNodata;
-            if (mRoleDatas!=null) {
-                if(mRoleDatas.size()>0){
-                    if(mRoleDatas.get(0).getIntRoleId().equals("0")&&mRoleDatas.get(0).getIntRoleId().equals("0")&&mRoleDatas.get(0).getIntRoleId().equals("0")){
+            if (mRoleDatas != null) {
+                if (mRoleDatas.size() > 0) {
+                    if (mRoleDatas.get(0).getIntRoleId().equals("0") && mRoleDatas.get(0).getIntRoleId().equals("0") && mRoleDatas.get(0).getIntRoleId().equals("0")) {
                         new clsMainActivity().showCustomToast(Login.this, mRoleDatas.get(0).getTxtRoleName(), false);
-                        arrrole=arrNodata;
+                        arrrole = arrNodata;
                         spnRole.setAdapter(new MyAdapter(Login.this, R.layout.custom_spinner, arrrole));
                         spnRole.setEnabled(false);
                         etTxtEmail.requestFocus();
@@ -283,14 +176,14 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                     etTxtEmail.requestFocus();
                 }
 
-            } else if (mRoleDatas==null){
+            } else if (mRoleDatas == null) {
                 new clsMainActivity().showCustomToast(Login.this, new clsHardCode().txtMessNoData, false);
                 spnRole.setAdapter(new MyAdapter(Login.this, R.layout.custom_spinner, arrrole));
                 etTxtEmail.requestFocus();
             } else {
-                    new clsMainActivity().showCustomToast(Login.this, new clsHardCode().txtMessNetworkOffline, false);
-                    spnRole.setAdapter(new MyAdapter(Login.this, R.layout.custom_spinner, arrrole));
-                    etTxtEmail.requestFocus();
+                new clsMainActivity().showCustomToast(Login.this, new clsHardCode().txtMessNetworkOffline, false);
+                spnRole.setAdapter(new MyAdapter(Login.this, R.layout.custom_spinner, arrrole));
+                etTxtEmail.requestFocus();
             }
             Dialog.dismiss();
         }
@@ -325,6 +218,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
             arrObject = objects;
             this.context = context;
         }
+
         @Override
         public View getDropDownView(int position, View convertView, ViewGroup parent) {
             return getCustomView(position, convertView, parent);
@@ -348,11 +242,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         }
     }
 
-    private class AsyncCallLogin extends AsyncTask<JSONArray, Void, JSONArray>{
+    private class AsyncCallLogin extends AsyncTask<JSONArray, Void, JSONArray> {
         String dummy;
+
         @Override
         protected JSONArray doInBackground(JSONArray... jsonArrays) {
-            JSONArray Json=null;
+            JSONArray Json = null;
             String nameRole = selectedRole;
             String intUserID = "114";
             try {
@@ -360,8 +255,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            return  Json;
+            return Json;
         }
+
         private ProgressDialog Dialog = new ProgressDialog(Login.this);
 
         @Override
@@ -372,7 +268,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
 
         @Override
         protected void onPostExecute(JSONArray jsonArray) {
-            if(dummy.equals("1")){
+            if (dummy.equals("1")) {
                 intent = new Intent(getApplicationContext(), Home.class);
                 startActivity(intent);
                 finish();
@@ -401,6 +297,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
             Dialog.dismiss();
         }
     }
+
     /**
      * Defines callbacks for service binding, passed to bindService()
      */
@@ -421,14 +318,122 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         }
     };
 
+    @Override
+    protected void onStart() {
+
+        //Register BroadcastReceiver
+        //to receive event from our service
+        myReceiver = new MyReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(SignalRService.BROADCAST);
+        registerReceiver(myReceiver, intentFilter);
+
+        Intent intent = new Intent();
+        intent.setClass(mContext, SignalRService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        // Unbind from the service
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+        super.onStop();
+    }
+
     public void sendMessage(View view) {
         String nameRole = selectedRole;
+        Context context = getApplicationContext(); // or activity.getApplicationContext()
+        PackageManager packageManager = context.getPackageManager();
+        String packageName = context.getPackageName();
+
+        String myVersionName = "not available"; // initialize String
+
+        try {
+            myVersionName = packageManager.getPackageInfo(packageName, 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
         if (mBound) {
             // Call a method from the SignalRService.
             // However, if this call were something that might hang, then this request should
             // occur in a separate thread to avoid slowing down the activity performance.
-            if (txtEmail.length()>0 && txtPass.length()>0) {
-                mService.login(txtEmail, txtPass);
+            if (txtEmail.length() > 0) {
+                mService.getRole(txtEmail, myVersionName);
+            }
+        } else {
+            Intent intent = new Intent();
+            intent.setClass(mContext, SignalRService.class);
+            bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        }
+    }
+
+    private class MyReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // TODO Auto-generated method stub
+            JSONObject jsonObject = null;
+            JSONArray jsonArray = null;
+            String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated;
+            arrrole = new ArrayList<>();
+            arrrole = arrNodata;
+
+            String datapassed = intent.getStringExtra("DATA_PASSED");
+            Toast.makeText(Login.this, String.valueOf(datapassed), Toast.LENGTH_SHORT).show();
+
+            try {
+                jsonObject = new JSONObject(datapassed);
+
+                jsonArray = jsonObject.getJSONArray("A");
+
+                boolValid = (String) jsonArray.get(0);
+                strMessage = (String) jsonArray.get(1);
+                strMethodName = (String) jsonArray.get(2);
+
+                String array = jsonArray.toString().replace("\\","");
+
+                jsonObject = new JSONObject(array);
+
+                JSONArray jArray= jsonObject.getJSONArray("A");
+//                Iterator iterator = jArray.iterator();
+
+//                while(iterator.hasNext()){
+//                    JSONObject innerObj = (JSONObject) iterator.next();
+//                    Long result=(Long) innerObj.get("boolValid");
+//                    strMethodName=(String) innerObj.get("strMethodName");
+//                    strMessage=(String) innerObj.get("strMessage");
+//
+//                    if(result==1){
+//                        JSONObject arrayData = innerObj.getJSONObject("listOfmUserRole");
+//                        intRoleId = arrayData.getString("intRoleId");
+//                        txtRoleName = arrayData.getString("txtRoleName");
+//                    }
+//                }
+
+                for(int i = 0 ; i<jArray.length();i++){
+                    JSONObject status = jsonArray.getJSONObject(i);
+
+                    boolValid = status.getString("boolValid");
+                    strMessage = status.getString("strMessage");
+                    strMethodName = status.getString("strMethodName");
+
+                    JSONObject arrayData = status.getJSONObject("listOfmUserRole");
+                    intRoleId = arrayData.getString("intRoleId");
+                    txtRoleName = arrayData.getString("txtRoleName");
+
+                    arrrole.add(txtRoleName);
+                    HMRole.put(txtRoleName,intRoleId);
+
+                }
+                spnRole.setAdapter(new MyAdapter(Login.this, R.layout.custom_spinner, arrrole));
+                spnRole.setEnabled(true);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
     }

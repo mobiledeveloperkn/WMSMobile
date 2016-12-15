@@ -6,26 +6,34 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.ResultReceiver;
 import android.util.Log;
-import android.widget.Toast;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
 
-import library.common.CustomMessage;
+import microsoft.aspnet.signalr.client.MessageReceivedHandler;
 import microsoft.aspnet.signalr.client.Platform;
 import microsoft.aspnet.signalr.client.SignalRFuture;
 import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent;
 import microsoft.aspnet.signalr.client.hubs.HubConnection;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
-import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
 import microsoft.aspnet.signalr.client.transport.ClientTransport;
 import microsoft.aspnet.signalr.client.transport.ServerSentEventsTransport;
 
 public class SignalRService extends Service {
+    public static final String BROADCAST = "MY_ACTION";
+    String DATA_PASSED = "DATA_PASSED";
     private HubConnection mHubConnection;
     private HubProxy mHubProxy;
     private Handler mHandler; // to display Toast message
     private final IBinder mBinder = new LocalBinder(); // Binder given to clients
+    ResultReceiver resultReceiver;
 
     public SignalRService() {
     }
@@ -38,9 +46,9 @@ public class SignalRService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        int result = super.onStartCommand(intent, flags, startId);
+        resultReceiver = intent.getParcelableExtra("receiver");
         startSignalR();
-        return result;
+        return START_STICKY;
     }
 
     @Override
@@ -67,36 +75,22 @@ public class SignalRService extends Service {
         }
     }
 
-    /**
-     * method for clients (activities)
-     */
-    public void sendMessage(String message) {
-        String SERVER_METHOD_SEND = "Send";
-        mHubProxy.invoke(SERVER_METHOD_SEND, message, "aaaaaaaa");
-    }
-
-    /**
-     * method for clients (activities)
-     */
-    public void sendMessage_To(String receiverName, String message, String mess) {
-        String SERVER_METHOD_SEND_TO = "Send";
-        mHubProxy.invoke(SERVER_METHOD_SEND_TO, receiverName, message, mess);
-    }
-
-    public void login(String receiverName, String message) {
-        String SERVER_METHOD_SEND_TO = "login";
-        mHubProxy.invoke(SERVER_METHOD_SEND_TO, receiverName, message);
-    }
-
-    public void getRole(String txtEmail) {
-        String SERVER_METHOD_SEND_TO = "getRoleByUsername";
-        mHubProxy.invoke(SERVER_METHOD_SEND_TO, txtEmail);
+    public void getRole(String txtEmail, String pInfo) {
+        String METHOD_SERVER = "getRoleByUsername";
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("txtUsername", txtEmail);
+            jsonObject.put("pInfo", pInfo);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mHubProxy.invoke(METHOD_SERVER, jsonObject.toString());
     }
 
     private void startSignalR() {
         Platform.loadPlatformComponent(new AndroidPlatformComponent());
 
-        String serverUrl = "http://10.171.11.47/wms%20online";
+        String serverUrl = "http://10.171.10.13/wmsonline";
         mHubConnection = new HubConnection(serverUrl);
         String SERVER_HUB_CHAT = "hubAPI";
         mHubProxy = mHubConnection.createHubProxy(SERVER_HUB_CHAT);
@@ -106,27 +100,24 @@ public class SignalRService extends Service {
         try {
             signalRFuture.get();
         } catch (InterruptedException | ExecutionException e) {
-            Log.e("SimpleSignalR", e.toString());
+            Log.d("SimpleSignalR", e.toString());
+            Intent intent = new Intent();
+            intent.setAction(BROADCAST);
+            intent.putExtra(DATA_PASSED, e.toString());
+            sendBroadcast(intent);
             return;
         }
 
-        sendMessage_To("Hello from Android!", "Welcome", "Success");
-
-        String CLIENT_METHOD_BROADAST_MESSAGE = "broadcastMessage";
-        mHubProxy.on(CLIENT_METHOD_BROADAST_MESSAGE,
-                new SubscriptionHandler1<CustomMessage>() {
-                    @Override
-                    public void run(final CustomMessage msg) {
-                        final String finalMsg = msg.UserName + " says " + msg.Message;
-                        // display Toast message
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplicationContext(), finalMsg, Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-                , CustomMessage.class);
+        mHubConnection.received(new MessageReceivedHandler() {
+            @Override
+            public void onMessageReceived(JsonElement jsonElement) {
+                JsonObject jsonObject = jsonElement.getAsJsonObject();
+//                jsonObject = jsonObject.getAsJsonObject("A");
+                Intent intent = new Intent();
+                intent.setAction(BROADCAST);
+                intent.putExtra(DATA_PASSED, jsonObject.toString());
+                sendBroadcast(intent);
+            }
+        });
     }
 }
