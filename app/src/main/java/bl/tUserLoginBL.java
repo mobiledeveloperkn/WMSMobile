@@ -1,5 +1,7 @@
 package bl;
 
+import android.database.sqlite.SQLiteDatabase;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -105,5 +107,11 @@ public class tUserLoginBL extends clsMainBL {
 //        }
 
         return pass;
+    }
+
+    public void saveData(tUserLoginData data){
+        SQLiteDatabase db=getDb();
+        tUserLoginDA _tUserLoginDA=new tUserLoginDA(db);
+        _tUserLoginDA.SaveDatatUserLoginData(db, data);
     }
 }

@@ -105,6 +105,27 @@ public class mSPMHeaderDA {
         return contact;
     }
 
+    // Adding new contact
+    public void SaveData(SQLiteDatabase db,mSPMHeaderData data) {
+        mSPMHeaderData dt=new mSPMHeaderData();
+        db.execSQL("INSERT OR REPLACE into "+TABLE_CONTACTS+" ("
+                +dt.Property_intSPMId+","
+                +dt.Property_txtNoSPM+","
+                +dt.Property_txtBranchCode+","
+                +dt.Property_txtBranchName+","
+                +dt.Property_txtSalesOrder+","
+                +dt.Property_intUserId+","
+                +dt.Property_bitStatus+","
+                +dt.Property_bitSync+") "+
+                "values(" +String.valueOf(data.getIntSPMId())+",'"
+                +String.valueOf(data.getTxtNoSPM())+"','"
+                +String.valueOf(data.getTxtBranchCode())+"','"
+                +String.valueOf(data.getTxtBranchCode())+"','"
+                +String.valueOf(data.getTxtSalesOrder())+"','"
+                +String.valueOf(data.getIntUserId())+"','"
+                +String.valueOf(data.getBitStatus())+"','"
+                +String.valueOf(data.getBitSync())+"')");
+    }
 
     // Getting All Contacts
     public mSPMHeaderData getAllData(SQLiteDatabase db) {

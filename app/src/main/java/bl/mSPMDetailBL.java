@@ -51,4 +51,8 @@ public class mSPMDetailBL extends clsMainBL {
         db.close();
         return data;
     }
+
+    public void saveDataList(List<mSPMDetailData> data){
+
+    }
 }

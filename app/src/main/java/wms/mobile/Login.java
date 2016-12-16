@@ -41,6 +41,7 @@ import java.util.List;
 import bl.mRoleBL;
 import bl.tUserLoginBL;
 import library.common.mRoleData;
+import library.common.tUserLoginData;
 import library.dal.clsHardCode;
 import service.SignalRService;
 
@@ -104,9 +105,36 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         switch (view.getId()) {
             case R.id.buttonLogin:
                 txtPass = etTxtPass.getText().toString();
-                sendMessage(view);
+                sendRequestLogin(view);
                 break;
 
+        }
+    }
+
+    private void sendRequestLogin(View view) {
+        String nameRole = selectedRole;
+        Context context = getApplicationContext(); // or activity.getApplicationContext()
+        PackageManager packageManager = context.getPackageManager();
+        String packageName = context.getPackageName();
+
+        String myVersionName = "not available"; // initialize String
+
+        try {
+            myVersionName = packageManager.getPackageInfo(packageName, 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (mBound) {
+            // Call a method from the SignalRService.
+            // However, if this call were something that might hang, then this request should
+            // occur in a separate thread to avoid slowing down the activity performance.
+            if (txtEmail.length() > 0) {
+                mService.login(txtEmail, txtPass, HMRole.get(nameRole));
+            }
+        } else {
+            Intent intent = new Intent();
+            intent.setClass(mContext, SignalRService.class);
+            bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         }
     }
 
@@ -118,7 +146,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                 if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) &&
                         (i == KeyEvent.KEYCODE_ENTER)) {
                     txtEmail = etTxtEmail.getText().toString();
-                    sendMessage(view);
+                    sendRequestGetRole(view);
                     return true;
                 }
         }
@@ -325,7 +353,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         //to receive event from our service
         myReceiver = new MyReceiver();
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(SignalRService.BROADCAST);
+        intentFilter.addAction(SignalRService.BROADCAST_ERROR);
+        intentFilter.addAction(SignalRService.BROADCAST_GETROLE);
+        intentFilter.addAction(SignalRService.BROADCAST_LOGIN);
         registerReceiver(myReceiver, intentFilter);
 
         Intent intent = new Intent();
@@ -345,7 +375,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         super.onStop();
     }
 
-    public void sendMessage(View view) {
+    public void sendRequestGetRole(View view) {
         String nameRole = selectedRole;
         Context context = getApplicationContext(); // or activity.getApplicationContext()
         PackageManager packageManager = context.getPackageManager();
@@ -383,58 +413,150 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
             arrrole = new ArrayList<>();
             arrrole = arrNodata;
 
-            String datapassed = intent.getStringExtra("DATA_PASSED");
-            Toast.makeText(Login.this, String.valueOf(datapassed), Toast.LENGTH_SHORT).show();
+            String broadcastName = intent.getAction().substring(0);
 
-            try {
-                jsonObject = new JSONObject(datapassed);
+            if (broadcastName.equalsIgnoreCase("BROADCAST_GETROLE")) {
+                String datapassed = intent.getStringExtra("DATA_PASSED_GETROLE");
 
-                jsonArray = jsonObject.getJSONArray("A");
-
-                boolValid = (String) jsonArray.get(0);
-                strMessage = (String) jsonArray.get(1);
-                strMethodName = (String) jsonArray.get(2);
-
-                String array = jsonArray.toString().replace("\\","");
-
-                jsonObject = new JSONObject(array);
-
-                JSONArray jArray= jsonObject.getJSONArray("A");
-//                Iterator iterator = jArray.iterator();
-
-//                while(iterator.hasNext()){
-//                    JSONObject innerObj = (JSONObject) iterator.next();
-//                    Long result=(Long) innerObj.get("boolValid");
-//                    strMethodName=(String) innerObj.get("strMethodName");
-//                    strMessage=(String) innerObj.get("strMessage");
+                try {
+//                    jsonObject = new JSONObject(datapassed);
 //
-//                    if(result==1){
-//                        JSONObject arrayData = innerObj.getJSONObject("listOfmUserRole");
-//                        intRoleId = arrayData.getString("intRoleId");
-//                        txtRoleName = arrayData.getString("txtRoleName");
-//                    }
-//                }
+//                    jsonArray = jsonObject.getJSONArray("A");
+//
+//                    String jsonString = (String) jsonArray.get(0);
 
-                for(int i = 0 ; i<jArray.length();i++){
-                    JSONObject status = jsonArray.getJSONObject(i);
+                    jsonObject = new JSONObject(datapassed);
 
-                    boolValid = status.getString("boolValid");
-                    strMessage = status.getString("strMessage");
-                    strMethodName = status.getString("strMethodName");
+                    boolValid = jsonObject.get("boolValid").toString();
+                    strMessage = jsonObject.get("strMessage").toString();
+                    strMethodName = jsonObject.get("strMethodName").toString();
 
-                    JSONObject arrayData = status.getJSONObject("listOfmUserRole");
-                    intRoleId = arrayData.getString("intRoleId");
-                    txtRoleName = arrayData.getString("txtRoleName");
+                    if (boolValid.equalsIgnoreCase("true")) {
+                        JSONArray jsonArrayInner = jsonObject.getJSONArray("listOfmUserRole");
 
-                    arrrole.add(txtRoleName);
-                    HMRole.put(txtRoleName,intRoleId);
+                        arrrole = new ArrayList<>();
 
+                        for (int i = 0; i < jsonArrayInner.length(); i++) {
+                            String jsonInner = jsonArrayInner.get(i).toString();
+                            jsonObject = new JSONObject(jsonInner);
+
+                            intRoleId = jsonObject.get("intRoleId").toString();
+                            txtRoleName = jsonObject.get("txtRoleName").toString();
+                            arrrole.add(txtRoleName);
+
+                            HMRole.put(txtRoleName, intRoleId);
+                        }
+
+                    } else {
+                        Toast.makeText(Login.this, String.valueOf(datapassed), Toast.LENGTH_SHORT).show();
+                        spnRole.setAdapter(new MyAdapter(Login.this, R.layout.custom_spinner, arrrole));
+                        etTxtEmail.requestFocus();
+                    }
+
+                    spnRole.setAdapter(new MyAdapter(Login.this, R.layout.custom_spinner, arrrole));
+                    spnRole.setEnabled(true);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(Login.this, String.valueOf(datapassed), Toast.LENGTH_SHORT).show();
                 }
-                spnRole.setAdapter(new MyAdapter(Login.this, R.layout.custom_spinner, arrrole));
-                spnRole.setEnabled(true);
-            } catch (JSONException e) {
-                e.printStackTrace();
+
+            } else if (broadcastName.equalsIgnoreCase("BROADCAST_LOGIN")) {
+                String datapassed = intent.getStringExtra("DATA_PASSED_LOGIN");
+
+                try {
+//                    jsonObject = new JSONObject(datapassed);
+//
+//                    jsonArray = jsonObject.getJSONArray("A");
+//
+//                    String jsonString = (String) jsonArray.get(0);
+
+                    jsonObject = new JSONObject(datapassed);
+
+                    boolValid = jsonObject.get("boolValid").toString();
+                    strMessage = jsonObject.get("strMessage").toString();
+                    strMethodName = jsonObject.get("strMethodName").toString();
+
+                    if (boolValid.equalsIgnoreCase("true")) {
+                        JSONObject jsonObjectInner = jsonObject.getJSONObject("listOftUserLogin");
+
+                        tUserLoginData _tUserLoginData = new tUserLoginData();
+
+                        _tUserLoginData.setIntUserId(jsonObjectInner.get("txtUserId").toString());
+                        _tUserLoginData.setTxtUserName(jsonObjectInner.get("txtUserName").toString());
+                        _tUserLoginData.setIntUserRole(jsonObjectInner.get("txtRoleId").toString());
+                        _tUserLoginData.setTxtRoleName(jsonObjectInner.get("txtRoleName").toString());
+                        _tUserLoginData.setDtLastLogin(jsonObjectInner.get("dtLogin").toString());
+
+                        new tUserLoginBL().saveData(_tUserLoginData);
+                        finish();
+                        Intent myIntent = new Intent(Login.this, Home.class);
+                        myIntent.putExtra("keyMainMenu", "main_menu");
+                        startActivity(myIntent);
+
+                    } else {
+                        Toast.makeText(Login.this, String.valueOf(datapassed), Toast.LENGTH_SHORT).show();
+                        spnRole.setAdapter(new MyAdapter(Login.this, R.layout.custom_spinner, arrrole));
+                        etTxtEmail.requestFocus();
+                    }
+
+                    spnRole.setAdapter(new MyAdapter(Login.this, R.layout.custom_spinner, arrrole));
+                    spnRole.setEnabled(true);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(Login.this, String.valueOf(datapassed), Toast.LENGTH_SHORT).show();
+                }
+
+            } else {
+                String datapassed = intent.getStringExtra("DATA_PASSED_ERROR");
+
+                try {
+//                    jsonObject = new JSONObject(datapassed);
+//
+//                    jsonArray = jsonObject.getJSONArray("A");
+//
+//                    String jsonString = (String) jsonArray.get(0);
+
+                    jsonObject = new JSONObject(datapassed);
+
+                    boolValid = jsonObject.get("boolValid").toString();
+                    strMessage = jsonObject.get("strMessage").toString();
+                    strMethodName = jsonObject.get("strMethodName").toString();
+
+                    if (boolValid.equalsIgnoreCase("true")) {
+                        JSONArray jsonArrayInner = jsonObject.getJSONArray("listOfmUserRole");
+
+                        arrrole = new ArrayList<>();
+
+                        for (int i = 0; i < jsonArrayInner.length(); i++) {
+                            String jsonInner = jsonArrayInner.get(i).toString();
+                            jsonObject = new JSONObject(jsonInner);
+
+                            intRoleId = jsonObject.get("intRoleId").toString();
+                            txtRoleName = jsonObject.get("txtRoleName").toString();
+                            arrrole.add(txtRoleName);
+
+                            HMRole.put(txtRoleName, intRoleId);
+                        }
+
+                    } else {
+                        Toast.makeText(Login.this, String.valueOf(datapassed), Toast.LENGTH_SHORT).show();
+                        spnRole.setAdapter(new MyAdapter(Login.this, R.layout.custom_spinner, arrrole));
+                        etTxtEmail.requestFocus();
+                    }
+
+                    spnRole.setAdapter(new MyAdapter(Login.this, R.layout.custom_spinner, arrrole));
+                    spnRole.setEnabled(true);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(Login.this, String.valueOf(datapassed), Toast.LENGTH_SHORT).show();
+                }
+
             }
+
+
         }
     }
 }

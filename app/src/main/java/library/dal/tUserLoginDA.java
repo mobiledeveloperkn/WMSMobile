@@ -183,6 +183,24 @@ public class tUserLoginDA {
         return result;
     }
 
+    // Adding new contact
+    public void SaveDatatUserLoginData(SQLiteDatabase db,tUserLoginData data) {
+        tUserLoginData dt=new tUserLoginData();
+        db.execSQL("INSERT OR REPLACE into "+TABLE_CONTACTS+" ("
+                +dt.Property_IntUserId+","
+                +dt.Property_txtUserName+","
+                +dt.Property_txtPassword+","
+                +dt.Property_IntUserRole+","
+                +dt.Property_txtRoleName+","
+                +dt.Property_dtLastLogin+") "+
+                "values(" +String.valueOf(data.getIntUserId())+",'"
+                +String.valueOf(data.getTxtUserName())+"','"
+                +String.valueOf(data.getTxtPassword())+"','"
+                +String.valueOf(data.getIntUserRole())+"','"
+                +String.valueOf(data.getTxtRoleName())+"','"
+                +String.valueOf(data.getDtLastLogin())+"')");
+    }
+
 //    public List<tUserLoginData> GetInUserRole(SQLiteDatabase db, String data) {
 //        List<tUserLoginData> contactList = null;
 //        // Select All Query

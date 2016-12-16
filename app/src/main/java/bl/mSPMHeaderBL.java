@@ -18,4 +18,10 @@ public class mSPMHeaderBL extends clsMainBL {
         db.close();
         return data;
     }
+
+    public void saveData (mSPMHeaderData _mSPMHeaderData){
+        SQLiteDatabase db=getDb();
+        mSPMHeaderDA _mSPMHeaderDA=new mSPMHeaderDA(db);
+        _mSPMHeaderDA.SaveData(db, _mSPMHeaderData);
+    }
 }
