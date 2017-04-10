@@ -1,13 +1,12 @@
 package fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.Adapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -19,6 +18,9 @@ import addon.SwipeListAdapter;
 import bl.mSPMDetailBL;
 import library.common.mSPMDetailData;
 import wms.mobile.R;
+import wms.mobile.TabsTaskHeader;
+
+import static fragment.TaskSuccessFragment.adapterSuccess;
 
 /**
  * Created by ASUS ZE on 16/11/2016.
@@ -26,15 +28,16 @@ import wms.mobile.R;
 
 public class TaskOnProgressFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
-    ListView mListView;
-    SwipeRefreshLayout mSwipeRefreshLayout;
+    private static ListView mListView;
+    private static SwipeRefreshLayout mSwipeRefreshLayout;
     Adapter mAdapter;
-    private SwipeListAdapter adapter;
+    public static SwipeListAdapter adapterProgress;
     private List<mSPMDetailData> mSPMDetailDataList;
     private LinearLayout mToolbarContainer;
     private int mToolbarHeight;
+    private static String txtNoSPM;
 
-    View v,v2;
+    private static View v,v2;
 
     public TaskOnProgressFragment() {
         // Required empty public constructor
@@ -54,32 +57,53 @@ public class TaskOnProgressFragment extends Fragment implements SwipeRefreshLayo
         mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.onprogress_swipe_refresh_layout);
         mListView = (ListView) v.findViewById(R.id.lv_onprogres);
 
-        mSPMDetailDataList = new ArrayList<>();
-        adapter = new SwipeListAdapter(getActivity(), mSPMDetailDataList);
-        mListView.setAdapter(adapter);
+        Bundle extra = getActivity().getIntent().getExtras();
 
-        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            int mLastFirstVisibleItem = 0;
+        txtNoSPM = extra.getString("txtNoSPM");
 
-            @Override
-            public void onScrollStateChanged(AbsListView absListView, int i) {
-
-            }
-
-            @Override
-            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
-//                if (absListView.getId() == mListView.getId()) {
-//                    final int currentFirstVisibleItem = mListView.getFirstVisiblePosition();
+//        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(AbsListView view, int scrollState) {
 //
-//                    if (currentFirstVisibleItem > mLastFirstVisibleItem) {
-//                        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
-//                    } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
-//                        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
-//                    }
-//                    mLastFirstVisibleItem = currentFirstVisibleItem;
+//            }
+//
+//            @Override
+//            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//                if (mListView.getChildAt(0) != null) {
+//                    mSwipeRefreshLayout.setEnabled(mListView.getFirstVisiblePosition() == 0 && mListView.getChildAt(0).getTop() == 0);
 //                }
-            }
-        });
+//            }
+//        });
+
+//        mSPMDetailDataList = new ArrayList<>();
+//        adapterProgress = new SwipeListAdapter(getActivity(), mSPMDetailDataList);
+//        mListView.setAdapter(adapterProgress);
+//        mListView.setEmptyView(v.findViewById(R.id.LayoutEmpty));
+
+        fetchData(getActivity());
+
+//        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+//            int mLastFirstVisibleItem = 0;
+//
+//            @Override
+//            public void onScrollStateChanged(AbsListView absListView, int i) {
+//
+//            }
+//
+//            @Override
+//            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+////                if (absListView.getId() == mListView.getId()) {
+////                    final int currentFirstVisibleItem = mListView.getFirstVisiblePosition();
+////
+////                    if (currentFirstVisibleItem > mLastFirstVisibleItem) {
+////                        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+////                    } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
+////                        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+////                    }
+////                    mLastFirstVisibleItem = currentFirstVisibleItem;
+////                }
+//            }
+//        });
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
@@ -88,7 +112,7 @@ public class TaskOnProgressFragment extends Fragment implements SwipeRefreshLayo
                                     public void run() {
                                         mSwipeRefreshLayout.setRefreshing(true);
 
-                                        fetchData();
+                                        fetchData(getActivity());
                                     }
                                 }
         );
@@ -96,42 +120,45 @@ public class TaskOnProgressFragment extends Fragment implements SwipeRefreshLayo
         return v;
     }
 
-    private void fetchData() {
+    public void fetchData(Activity activity) {
         mSwipeRefreshLayout.setRefreshing(true);
 
+        List<mSPMDetailData> mSPMDetailDataListPending=new ArrayList<>();
+        mSPMDetailDataListPending = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
+        List<mSPMDetailData> mSPMDetailDataListSuccess=new ArrayList<>();
+        mSPMDetailDataListSuccess = new mSPMDetailBL().getAllDataTaskConfirm(txtNoSPM);
+        List<mSPMDetailData> mSPMDetailDataListCancel=new ArrayList<>();
+        mSPMDetailDataListCancel = new mSPMDetailBL().getAllDataTaskCancel(txtNoSPM);
+
+        ArrayList<String> data = new ArrayList<>();
+
+        data.add(String.valueOf("OnProgress("+String.valueOf(mSPMDetailDataListPending.size())+")"));
+        data.add(String.valueOf("Confirm("+String.valueOf(mSPMDetailDataListSuccess.size())+")"));
+        data.add(String.valueOf("Cancel("+String.valueOf(mSPMDetailDataListCancel.size())+")"));
+
+        new TabsTaskHeader().updateTitleTabs(data);
+
         mSPMDetailDataList=new ArrayList<>();
-        mSPMDetailDataList = new mSPMDetailBL().getAllDataTaskPending();
+        mSPMDetailDataList = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
 //        adapter.notifyDataSetChanged();
-        adapter = new SwipeListAdapter(getActivity(), mSPMDetailDataList);
-        mListView.setAdapter(adapter);
+        adapterProgress = new SwipeListAdapter(activity, mSPMDetailDataList, mListView);
+        mListView.setAdapter(adapterProgress);
         mSwipeRefreshLayout.setRefreshing(false);
-        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            int mLastFirstVisibleItem = 0;
-
-            @Override
-            public void onScrollStateChanged(AbsListView absListView, int i) {
-
-            }
-
-            @Override
-            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
-                if (absListView.getId() == mListView.getId()) {
-                    final int currentFirstVisibleItem = mListView.getFirstVisiblePosition();
-
-                    if (currentFirstVisibleItem > mLastFirstVisibleItem) {
-                        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
-                    } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
-                        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
-                    }
-                    mLastFirstVisibleItem = currentFirstVisibleItem;
-                }
-            }
-        });
-
     }
 
     @Override
     public void onRefresh() {
-        fetchData();
+        fetchData(getActivity());
+        adapterSuccess.notifyDataSetChanged();
+        new TaskSuccessFragment().fetchData(getActivity());
+    }
+
+    @Override
+    public void onDestroy() {
+        mListView=null;
+        mSwipeRefreshLayout=null;
+        adapterProgress=null;
+        v=null;
+        super.onDestroy();
     }
 }

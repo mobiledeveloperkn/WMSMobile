@@ -10,6 +10,7 @@ import java.io.File;
 
 public class clsHardCode  {
     public String txtPathApp= Environment.getExternalStorageDirectory()+ File.separator+"Android"+File.separator+"data"+File.separator+"WMSMoblie"+File.separator+"app_database"+File.separator;
+    public String txtPathUserData = Environment.getExternalStorageDirectory() + File.separator + "Android" + File.separator + "data" + File.separator + "WMSMoblie" + File.separator + "user_data" + File.separator;
     public String txtDatabaseName=txtPathApp+"WMSMobile";
     public String txtTable_mConfig = "mconfig";
     public String txtTable_mUser = "tUserLogin";
@@ -23,6 +24,19 @@ public class clsHardCode  {
     public String txtMessGetUserRole = "Getting User Role..";
     public String txtMessWrongPass = "Password is Incorect...";
     public String txtMessLogin = "Login..";
+    public String txtServerHubName = "hubAPI";
+    public String txtMethodServerGetRole = "getRoleByUsername";
+    public String txtMethodServerGetVersionName = "getDataLastVersion";
+    public String txtMethodServerLogin = "login";
+    public String txtMethodServerLogout = "logout";
+    public String txtMethodServerGetNoSPM = "getDataSPM";
+    public String txtMethodServerConfirmSPMDetail = "confirmSPMDetail";
+    public String txtMethodServerConfirmSPMHeader = "confirmSPMHeader";
+    public String txtMethodServerCancelSPMHeader = "cancelSPMHeader";
+    public String txtMethodPushData = "pushDataOffline";
+    public String txtMethodServerCancelSPMDetail = "cancelSPMDetail";
+    public String txtTable_tDisplayPicture = "tDisplayPicture";
+    public String txtTable_tDeviceInfoUser = "tDeviceInfoUser";
 
 
 }

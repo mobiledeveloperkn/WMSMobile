@@ -68,12 +68,21 @@ public class tUserLoginData {
         this.dtLastLogin = dtLastLogin;
     }
 
+    public String getTxtDataId() {
+        return txtDataId;
+    }
+
+    public void setTxtDataId(String txtDataId) {
+        this.txtDataId = txtDataId;
+    }
+
     private String IntUserId;
     private String txtUserName;
     private String txtPassword;
     private String IntUserRole;
     private String txtRoleName;
-    private  String dtLastLogin;
+    private String dtLastLogin;
+    private String txtDataId;
 
     public String Property_IntUserId = "IntUserId";
     public String Property_txtUserName = "txtUserName";
@@ -81,6 +90,7 @@ public class tUserLoginData {
     public String Property_IntUserRole = "IntUserRole";
     public String Property_txtRoleName = "txtRoleName";
     public String Property_dtLastLogin = "dtLastLogin";
+    public String Property_txtDataId = "txtDataId";
 
-    public String Property_All=Property_IntUserId+","+Property_txtUserName+","+Property_txtPassword+","+Property_IntUserRole+","+Property_txtRoleName+","+Property_dtLastLogin;
+    public String Property_All=Property_IntUserId+","+Property_txtUserName+","+Property_txtPassword+","+Property_IntUserRole+","+Property_txtRoleName+","+Property_dtLastLogin+","+Property_txtDataId;
 }

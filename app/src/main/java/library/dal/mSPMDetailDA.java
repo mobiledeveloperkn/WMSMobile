@@ -1,5 +1,6 @@
 package library.dal;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -24,7 +25,10 @@ public class mSPMDetailDA {
                 + dt.Property_txtItemName + " TEXT NULL,"
                 + dt.Property_intQty + " TEXT NULL,"
                 + dt.Property_bitStatus + " TEXT NULL,"
-                + dt.Property_bitSync + " TEXT  NULL)";
+                + dt.Property_bitSync + " TEXT NULL,"
+                + dt.Property_txtReason + " TEXT NULL,"
+                + dt.Property_intUserId + " TEXT NULL,"
+                + dt.Property_intFlag + " TEXT  NULL)";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
@@ -56,6 +60,9 @@ public class mSPMDetailDA {
                 + "," + dt.Property_intQty
                 + "," + dt.Property_bitStatus
                 + "," + dt.Property_bitSync
+                + "," + dt.Property_txtReason
+                + "," + dt.Property_intUserId
+                + "," + dt.Property_intFlag
 
                 + ") " + "values('"
                 + String.valueOf(data.getIntSPMDetailId()) + "','"
@@ -65,7 +72,10 @@ public class mSPMDetailDA {
                 + String.valueOf(data.getTxtItemName()) + "','"
                 + String.valueOf(data.getIntQty()) + "','"
                 + String.valueOf(data.getBitStatus()) + "','"
-                + String.valueOf(data.getBitSync()) + "')");
+                + String.valueOf(data.getBitSync()) + "','"
+                + String.valueOf(data.getTxtReason()) + "','"
+                + String.valueOf(data.getIntUserId()) + "','"
+                + String.valueOf(data.getIntFlag()) + "')");
         // db.insert(TABLE_CONTACTS, null, values);
         // db.close(); // Closing database connection
     }
@@ -85,7 +95,10 @@ public class mSPMDetailDA {
                         , dt.Property_txtItemName
                         , dt.Property_intQty
                         , dt.Property_bitStatus
-                        , dt.Property_bitSync},
+                        , dt.Property_bitSync
+                        , dt.Property_txtReason
+                        , dt.Property_intUserId
+                        , dt.Property_intFlag},
                 dt.Property_intSPMDetailId + "=?", new String[] { String.valueOf(id) },
                 null, null, null, null);
         if (cursor != null)
@@ -100,6 +113,9 @@ public class mSPMDetailDA {
             contact.setIntQty(cursor.getString(5));
             contact.setBitStatus(cursor.getString(6));
             contact.setBitSync(cursor.getString(7));
+            contact.setTxtReason(cursor.getString(8));
+            contact.setIntUserId(cursor.getString(9));
+            contact.setIntFlag(cursor.getString(10));
             // return contact
         } else {
             contact = null;
@@ -130,6 +146,9 @@ public class mSPMDetailDA {
                 contact.setIntQty(cursor.getString(5));
                 contact.setBitStatus(cursor.getString(6));
                 contact.setBitSync(cursor.getString(7));
+                contact.setTxtReason(cursor.getString(8));
+                contact.setIntUserId(cursor.getString(9));
+                contact.setIntFlag(cursor.getString(10));
                 // Adding contact to list
                 contactList.add(contact);
             } while (cursor.moveToNext());
@@ -139,12 +158,12 @@ public class mSPMDetailDA {
         return contactList;
     }
 
-    public List<mSPMDetailData> getAllDataTaskPending(SQLiteDatabase db) {
+    public List<mSPMDetailData> getAllDataById(SQLiteDatabase db, String id) {
         List<mSPMDetailData> contactList = new ArrayList<mSPMDetailData>();
         // Select All Query
         mSPMDetailData dt = new mSPMDetailData();
         String selectQuery = "SELECT  " + dt.Property_All + " FROM "
-                + TABLE_CONTACTS +" WHERE "+dt.Property_bitSync+"=0 And "+dt.Property_bitStatus+"=0";
+                + TABLE_CONTACTS +" WHERE "+dt.Property_txtNoSPM+"='"+id+"'";
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
 
@@ -159,6 +178,9 @@ public class mSPMDetailDA {
                 contact.setIntQty(cursor.getString(5));
                 contact.setBitStatus(cursor.getString(6));
                 contact.setBitSync(cursor.getString(7));
+                contact.setTxtReason(cursor.getString(8));
+                contact.setIntUserId(cursor.getString(9));
+                contact.setIntFlag(cursor.getString(10));
                 // Adding contact to list
                 contactList.add(contact);
             } while (cursor.moveToNext());
@@ -167,12 +189,45 @@ public class mSPMDetailDA {
         // return contact list
         return contactList;
     }
-    public List<mSPMDetailData> getAllDataTaskSuccess(SQLiteDatabase db) {
+
+    public List<mSPMDetailData> getAllDataPushData(SQLiteDatabase db) {
+        List<mSPMDetailData> contactList = null;
+        // Select All Query
+        mSPMDetailData dt = new mSPMDetailData();
+        String selectQuery = "SELECT  " + dt.Property_All + " FROM "
+                + TABLE_CONTACTS +" WHERE " +dt.Property_bitStatus +" in (1,2) and "+dt.Property_bitSync+"=0" ;
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            contactList=new ArrayList<mSPMDetailData>();
+            do {
+                mSPMDetailData contact = new mSPMDetailData();
+                contact.setIntSPMDetailId(cursor.getString(0));
+                contact.setTxtNoSPM(cursor.getString(1));
+                contact.setTxtLocator(cursor.getString(2));
+                contact.setTxtItemCode(cursor.getString(3));
+                contact.setTxtItemName(cursor.getString(4));
+                contact.setIntQty(cursor.getString(5));
+                contact.setBitStatus(cursor.getString(6));
+                contact.setBitSync(cursor.getString(7));
+                contact.setTxtReason(cursor.getString(8));
+                contact.setIntUserId(cursor.getString(9));
+                contact.setIntFlag(cursor.getString(10));
+                // Adding contact to list
+                contactList.add(contact);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        // return contact list
+        return contactList;
+    }
+
+    public List<mSPMDetailData> getAllDataTaskPending(SQLiteDatabase db, String id) {
         List<mSPMDetailData> contactList = new ArrayList<mSPMDetailData>();
         // Select All Query
         mSPMDetailData dt = new mSPMDetailData();
         String selectQuery = "SELECT  " + dt.Property_All + " FROM "
-                + TABLE_CONTACTS +" WHERE "+dt.Property_bitSync+"=1 And "+dt.Property_bitStatus+"=1";
+                + TABLE_CONTACTS +" WHERE "+dt.Property_bitSync+"=0 And "+dt.Property_bitStatus+"=0 And "+dt.Property_txtNoSPM+"='"+id+"'";
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
 
@@ -187,6 +242,74 @@ public class mSPMDetailDA {
                 contact.setIntQty(cursor.getString(5));
                 contact.setBitStatus(cursor.getString(6));
                 contact.setBitSync(cursor.getString(7));
+                contact.setTxtReason(cursor.getString(8));
+                contact.setIntUserId(cursor.getString(9));
+                contact.setIntFlag(cursor.getString(10));
+                // Adding contact to list
+                contactList.add(contact);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        // return contact list
+        return contactList;
+    }
+    public List<mSPMDetailData> getAllDataTaskConfirm(SQLiteDatabase db, String id) {
+        List<mSPMDetailData> contactList = new ArrayList<mSPMDetailData>();
+        // Select All Query
+        mSPMDetailData dt = new mSPMDetailData();
+        String selectQuery = "SELECT  " + dt.Property_All + " FROM "
+                + TABLE_CONTACTS +" WHERE "+dt.Property_bitStatus+"=1 And "+dt.Property_txtNoSPM+"='"+id+"'";
+        //+dt.Property_bitSync+"=1 And "
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // looping through all rows and adding to list
+
+        if (cursor.moveToFirst()) {
+            do {
+                mSPMDetailData contact = new mSPMDetailData();
+                contact.setIntSPMDetailId(cursor.getString(0));
+                contact.setTxtNoSPM(cursor.getString(1));
+                contact.setTxtLocator(cursor.getString(2));
+                contact.setTxtItemCode(cursor.getString(3));
+                contact.setTxtItemName(cursor.getString(4));
+                contact.setIntQty(cursor.getString(5));
+                contact.setBitStatus(cursor.getString(6));
+                contact.setBitSync(cursor.getString(7));
+                contact.setTxtReason(cursor.getString(8));
+                contact.setIntUserId(cursor.getString(9));
+                contact.setIntFlag(cursor.getString(10));
+                // Adding contact to list
+                contactList.add(contact);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        // return contact list
+        return contactList;
+    }
+
+    public List<mSPMDetailData> getAllDataTaskCancel(SQLiteDatabase db, String id) {
+        List<mSPMDetailData> contactList = new ArrayList<mSPMDetailData>();
+        // Select All Query
+        mSPMDetailData dt = new mSPMDetailData();
+        String selectQuery = "SELECT  " + dt.Property_All + " FROM "
+                + TABLE_CONTACTS +" WHERE "+dt.Property_bitStatus+"=2 And "+dt.Property_txtNoSPM+"='"+id+"'";
+        //+dt.Property_bitSync+"=1 And "
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // looping through all rows and adding to list
+
+        if (cursor.moveToFirst()) {
+            do {
+                mSPMDetailData contact = new mSPMDetailData();
+                contact.setIntSPMDetailId(cursor.getString(0));
+                contact.setTxtNoSPM(cursor.getString(1));
+                contact.setTxtLocator(cursor.getString(2));
+                contact.setTxtItemCode(cursor.getString(3));
+                contact.setTxtItemName(cursor.getString(4));
+                contact.setIntQty(cursor.getString(5));
+                contact.setBitStatus(cursor.getString(6));
+                contact.setBitSync(cursor.getString(7));
+                contact.setTxtReason(cursor.getString(8));
+                contact.setIntUserId(cursor.getString(9));
+                contact.setIntFlag(cursor.getString(10));
                 // Adding contact to list
                 contactList.add(contact);
             } while (cursor.moveToNext());
@@ -213,6 +336,73 @@ public class mSPMDetailDA {
         // return count
         return countData;
     }
+
+    public int updateDataById(SQLiteDatabase db, String id, String intUserId) {
+        mSPMDetailData dt = new mSPMDetailData();
+
+        ContentValues values = new ContentValues();
+        values.put(dt.Property_bitStatus, "1");
+        values.put(dt.Property_bitSync, "1");
+        values.put(dt.Property_intUserId, intUserId);
+
+        // updating row
+        return db.update(TABLE_CONTACTS, values, dt.Property_intSPMDetailId + " = ? ",
+                new String[] { String.valueOf(id) });
+    }
+
+    public int saveDataPush(SQLiteDatabase db, String id, String status, String sync) {
+        mSPMDetailData dt = new mSPMDetailData();
+
+        ContentValues values = new ContentValues();
+        values.put(dt.Property_bitSync, sync);
+        values.put(dt.Property_bitStatus, status);
+
+        // updating row
+        return db.update(TABLE_CONTACTS, values, dt.Property_intSPMDetailId + " = ? ",
+                new String[] { String.valueOf(id) });
+    }
+
+    public int updateDataByIdOffline(SQLiteDatabase db, String id, String intUserId) {
+        mSPMDetailData dt = new mSPMDetailData();
+
+        ContentValues values = new ContentValues();
+        values.put(dt.Property_bitStatus, "1");
+        values.put(dt.Property_bitSync, "0");
+        values.put(dt.Property_intUserId, intUserId);
+
+        // updating row
+        return db.update(TABLE_CONTACTS, values, dt.Property_intSPMDetailId + " = ? ",
+                new String[] { String.valueOf(id) });
+    }
+
+    public int updateDataSPMCancelById(SQLiteDatabase db, String id,String _intUserId, String reason) {
+        mSPMDetailData dt = new mSPMDetailData();
+
+        ContentValues values = new ContentValues();
+        values.put(dt.Property_bitStatus, "2");
+        values.put(dt.Property_bitSync, "1");
+        values.put(dt.Property_txtReason, reason);
+        values.put(dt.Property_intUserId, _intUserId);
+
+        // updating row
+        return db.update(TABLE_CONTACTS, values, dt.Property_intSPMDetailId + " = ? ",
+                new String[] { String.valueOf(id) });
+    }
+
+    public int updateDataSPMCancelByIdOffline(SQLiteDatabase db, String id,String _intUserId, String reason) {
+        mSPMDetailData dt = new mSPMDetailData();
+
+        ContentValues values = new ContentValues();
+        values.put(dt.Property_bitStatus, "2");
+        values.put(dt.Property_bitSync, "0");
+        values.put(dt.Property_txtReason, reason);
+        values.put(dt.Property_intUserId, _intUserId);
+
+        // updating row
+        return db.update(TABLE_CONTACTS, values, dt.Property_intSPMDetailId + " = ? ",
+                new String[] { String.valueOf(id) });
+    }
+
     public void InsertDefaultmSPMDetail(SQLiteDatabase db) {
         String txtQuery = "insert into mSPMDetail(intSPMDetailId,txtNoSPM,txtLocator,txtItemCode,txtItemName,intQty,bitStatus,bitSync )"
                 + "select  '1','839382','A-001','NBBAS','NUTRIVE BENECOL NO ADDED SUGAR BLACKCURRANT 100 ML','50','0','0';";

@@ -151,26 +151,27 @@ public class mconfigDA {
 		txtQuery = "insert into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
 				//+ "select  2,'API','http://xt34m.kalbenutritionals.co.id/WebDashboard/api/api.aspx?callback=?','https://appgw01.kalbenutritionals.com/kndashboard/api/default.aspx?callback=?',1;";
 //				+ "select  2,'API','https://appgw01.kalbenutritionals.com/kndashboard/api/default.aspx?callback=?','https://appgw01.kalbenutritionals.com/kndashboard/api/default.aspx?callback=?',1;";
-				+ "select  2,'API','http://10.171.10.14/webdashboard/api/api.aspx?callback=?','https://appgw01.kalbenutritionals.com/kndashboard/api/default.aspx?callback=?',1;";
+				+ "select  2,'API','http://wms.kalbenutritionals.web.id/','http://10.171.10.13/wmsonline',1;";
+//				+ "select  2,'API','http://wms.kalbenutritionals.web.id/','http://10.171.10.13/wmsonline',1;";
 		db.execSQL(txtQuery);
-		txtQuery = "insert into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
-				+ "select  3,'Type Mobile','SPGMobile-Android','SPGMobile-Android',1;";
-		db.execSQL(txtQuery);
-		txtQuery = "insert into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
-				+ "select  4,'Domain Kalbe','KALBEFOOD.LOCAL','KALBEFOOD.LOCAL',1;";
-		db.execSQL(txtQuery);
-		txtQuery = "insert into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
-				+ "select  5,'Application Name','KNDashboard','KNDashboard',1 ;";
-		db.execSQL(txtQuery);
-		txtQuery = "insert into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
-				+ "select  6,'Text Footer','Copyright &copy; KN IT','Copyright &copy; KN IT',1;";
-		db.execSQL(txtQuery);
-		txtQuery = "insert into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
-				+ "select  7,'WidthScreen','','',1;";
-		db.execSQL(txtQuery);
-		txtQuery = "insert into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
-				+ "select  8,'Background Service Online','1000','1000',1;";
-		db.execSQL(txtQuery);
+//		txtQuery = "insert into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
+//				+ "select  3,'Type Mobile','SPGMobile-Android','SPGMobile-Android',1;";
+//		db.execSQL(txtQuery);
+//		txtQuery = "insert into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
+//				+ "select  4,'Domain Kalbe','KALBEFOOD.LOCAL','KALBEFOOD.LOCAL',1;";
+//		db.execSQL(txtQuery);
+//		txtQuery = "insert into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
+//				+ "select  5,'Application Name','KNDashboard','KNDashboard',1 ;";
+//		db.execSQL(txtQuery);
+//		txtQuery = "insert into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
+//				+ "select  6,'Text Footer','Copyright &copy; KN IT','Copyright &copy; KN IT',1;";
+//		db.execSQL(txtQuery);
+//		txtQuery = "insert into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
+//				+ "select  7,'WidthScreen','','',1;";
+//		db.execSQL(txtQuery);
+//		txtQuery = "insert into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
+//				+ "select  8,'Background Service Online','1000','1000',1;";
+//		db.execSQL(txtQuery);
 	}
 	public String getTypeMobile(SQLiteDatabase db) {
 		String txtLinkAPI="";

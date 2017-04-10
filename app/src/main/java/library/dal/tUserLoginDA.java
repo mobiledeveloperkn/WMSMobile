@@ -26,7 +26,8 @@ public class tUserLoginDA {
                 + dt.Property_txtPassword + " TEXT NULL,"
                 + dt.Property_IntUserRole + " TEXT NULL,"
                 + dt.Property_txtRoleName + " TEXT NULL,"
-                + dt.Property_dtLastLogin + " TEXT  NULL)";
+                + dt.Property_dtLastLogin + " TEXT NULL,"
+                + dt.Property_txtDataId + " TEXT  NULL)";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
@@ -56,6 +57,7 @@ public class tUserLoginDA {
                 + ","+ dt.Property_IntUserRole
                 + ","+ dt.Property_dtLastLogin
                 + ","+ dt.Property_txtRoleName
+                + ","+ dt.Property_txtDataId
                 + ") " + "values('"
                 + String.valueOf(data.getIntUserId()) + "','"
                 + String.valueOf(data.getTxtUserName()) + "','"
@@ -80,7 +82,8 @@ public class tUserLoginDA {
                         , dt.Property_txtPassword
                         , dt.Property_IntUserRole
                         , dt.Property_txtRoleName
-                        , dt.Property_dtLastLogin},
+                        , dt.Property_dtLastLogin
+                        , dt.Property_txtDataId},
                 dt.Property_IntUserId + "=?", new String[] { String.valueOf(id) },
                 null, null, null, null);
         if (cursor != null)
@@ -93,6 +96,7 @@ public class tUserLoginDA {
             contact.setIntUserRole(cursor.getString(3));
             contact.setTxtRoleName(cursor.getString(4));
             contact.setDtLastLogin(cursor.getString(5));
+            contact.setTxtDataId(cursor.getString(6));
             // return contact
         } else {
             contact = null;
@@ -121,6 +125,7 @@ public class tUserLoginDA {
                 contact.setIntUserRole(cursor.getString(3));
                 contact.setTxtRoleName(cursor.getString(4));
                 contact.setDtLastLogin(cursor.getString(5));
+                contact.setTxtDataId(cursor.getString(6));
                 // Adding contact to list
                 contactList.add(contact);
             } while (cursor.moveToNext());
@@ -183,6 +188,14 @@ public class tUserLoginDA {
         return result;
     }
 
+    public boolean CheckLogin(SQLiteDatabase db) throws ParseException {
+        boolean result=false;
+        if(getContactsCount(db)>0){
+            result = true;
+        }
+        return result;
+    }
+
     // Adding new contact
     public void SaveDatatUserLoginData(SQLiteDatabase db,tUserLoginData data) {
         tUserLoginData dt=new tUserLoginData();
@@ -192,13 +205,15 @@ public class tUserLoginDA {
                 +dt.Property_txtPassword+","
                 +dt.Property_IntUserRole+","
                 +dt.Property_txtRoleName+","
-                +dt.Property_dtLastLogin+") "+
+                +dt.Property_dtLastLogin+","
+                +dt.Property_txtDataId+") "+
                 "values(" +String.valueOf(data.getIntUserId())+",'"
                 +String.valueOf(data.getTxtUserName())+"','"
                 +String.valueOf(data.getTxtPassword())+"','"
                 +String.valueOf(data.getIntUserRole())+"','"
                 +String.valueOf(data.getTxtRoleName())+"','"
-                +String.valueOf(data.getDtLastLogin())+"')");
+                +String.valueOf(data.getDtLastLogin())+"','"
+                +String.valueOf(data.getTxtDataId())+"')");
     }
 
 //    public List<tUserLoginData> GetInUserRole(SQLiteDatabase db, String data) {

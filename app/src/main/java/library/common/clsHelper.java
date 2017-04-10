@@ -30,6 +30,8 @@ import library.dal.mRoleDA;
 import library.dal.mSPMDetailDA;
 import library.dal.mSPMHeaderDA;
 import library.dal.mconfigDA;
+import library.dal.tDeviceInfoUserDA;
+import library.dal.tDisplayPictureDA;
 import library.dal.tUserLoginDA;
 
 public class clsHelper {
@@ -175,7 +177,7 @@ public class clsHelper {
 //		tUserLoginDA _tUserLoginDA=new tUserLoginDA(db);
 //		tSalesProductHeaderDA _tSalesProductHeaderDA=new tSalesProductHeaderDA(db);
 //		tSalesProductDetailDA _tSalesProductDetailDA=new tSalesProductDetailDA(db);
-//		tDeviceInfoUserDA _tDeviceInfoUserDA=new tDeviceInfoUserDA(db);
+		tDeviceInfoUserDA _tDeviceInfoUserDA=new tDeviceInfoUserDA(db);
 //		mProductBrandHeaderDA _mProductBrandHeaderDA=new mProductBrandHeaderDA(db);
 //		mNotificationDA _mNotificationDA=new mNotificationDA(db);
 //		mEmployeeAreaDA _mEmployeeAreaDA=new mEmployeeAreaDA(db);
@@ -205,6 +207,7 @@ public class clsHelper {
 		mRoleDA _mRoleDA = new mRoleDA(db);
 		mSPMHeaderDA _mSPMHeaderDA = new mSPMHeaderDA(db);
 		mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(db);
+		tDisplayPictureDA _tDisplayPictureDA = new tDisplayPictureDA(db);
 
 
 		//_tDisplayPictureDA.DropTable(db);
@@ -225,7 +228,7 @@ public class clsHelper {
 //		_tUserLoginDA.DropTable(db);
 //		_tSalesProductHeaderDA.DropTable(db);
 //		_tSalesProductDetailDA.DropTable(db);
-//		_tDeviceInfoUserDA.DropTable(db);
+		_tDeviceInfoUserDA.DropTable(db);
 //		_mMenuDA.DropTable(db);
 //		_mCounterNumberDA.DropTable(db);
 //		_tAbsenUserDA.DropTable(db);
@@ -239,6 +242,7 @@ public class clsHelper {
 		_mRoleDA.DropTable(db);
 		_mSPMHeaderDA.DropTable(db);
 		_mSPMDetailDA.DropTable(db);
+//		_tDisplayPictureDA.DropTable(db);
 
 //		_tCustomerBasedMobileHeaderDA = new tCustomerBasedMobileHeaderDA(db);
 //		_tCustomerBasedMobileDetailDA = new tCustomerBasedMobileDetailDA(db);
@@ -257,7 +261,7 @@ public class clsHelper {
 //		_tSalesProductHeaderDA=new tSalesProductHeaderDA(db);
 //		_tSalesProductDetailDA=new tSalesProductDetailDA(db);
 //		_tActivityDA=new tActivityDA(db);
-//		_tDeviceInfoUserDA=new tDeviceInfoUserDA(db);
+		_tDeviceInfoUserDA=new tDeviceInfoUserDA(db);
 //		_mNotificationDA=new mNotificationDA(db);
 //		_mEmployeeAreaDA=new mEmployeeAreaDA(db);
 //		_mEmployeeBranchDA=new mEmployeeBranchDA(db);
@@ -271,16 +275,17 @@ public class clsHelper {
 		_mRoleDA = new mRoleDA(db);
 		_mSPMHeaderDA = new mSPMHeaderDA(db);
 		_mSPMDetailDA = new mSPMDetailDA(db);
+		_tDisplayPictureDA = new tDisplayPictureDA(db);
 
 //		int sumdata_mUserDA = _tUserLoginDA.getContactsCount(db);
 //		if (sumdata_mUserDA == 0) {
 //			_tUserLoginDA.InsertDefaultMUser(db);
 //		}
 
-		int sumdata_mRoleDA = _mRoleDA.getContactsCount(db);
-		if (sumdata_mRoleDA == 0) {
-			_mRoleDA.InsertDefaultMRole(db);
-		}
+//		int sumdata_mRoleDA = _mRoleDA.getContactsCount(db);
+//		if (sumdata_mRoleDA == 0) {
+//			_mRoleDA.InsertDefaultMRole(db);
+//		}
 
 //		int sumdata_mSPMHeaderDA = _mSPMHeaderDA.getContactsCount(db);
 //		if (sumdata_mSPMHeaderDA == 0) {

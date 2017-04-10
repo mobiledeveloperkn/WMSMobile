@@ -7,12 +7,7 @@ public class MyRebootReceiver extends BroadcastReceiver{
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Intent serviceIntentMyServiceNative = new Intent(context, SignalRService.class);
+		Intent serviceIntentMyServiceNative = new Intent(context, WMSMobileService.class);
         context.startService(serviceIntentMyServiceNative);
-        /*
-        Intent serviceIntentMyNotificationService = new Intent(context, MyNotificationService.class);
-        context.startService(serviceIntentMyNotificationService);
-        */
 	}
-
 }
