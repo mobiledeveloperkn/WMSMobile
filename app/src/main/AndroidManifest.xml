@@ -9,10 +9,12 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
 
     <application
+        android:name="addon.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -24,13 +26,20 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
+                <action android:name="service.MyRebootReceiver" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.PACKAGE_RESTARTED" />
+                <action android:name="android.intent.action.REBOOT" />
+
+                <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
 
         <activity
             android:name=".Splash"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,27 +50,46 @@
         <activity
             android:name=".Login"
             android:label="Login"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"></activity>
-        <activity android:name=".Home"></activity>
+        <activity
+            android:name=".Home"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="landscape"></activity>
         <activity
             android:name=".TabsTaskHeader"
+            android:configChanges="orientation|screenSize"
             android:parentActivityName=".OutstandingTask"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
-        </activity>
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"></activity>
         <activity
             android:name=".OutstandingTask"
-            android:parentActivityName=".Home"
+            android:configChanges="orientation|screenSize"
             android:label="Outstanding Task"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
-        </activity>
+            android:parentActivityName=".Home"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"></activity>
         <activity
-            android:name=".PartThreeActivity"/>
+            android:name="addon.CropDisplayPicture"
+            android:configChanges="orientation|keyboardHidden"
+            android:label=""
+            android:theme="@style/Theme.AppCompat" />
+
         <service
-            android:name="service.SignalRService"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:enabled="true"
-            android:exported="true" >
-        </service>
+            android:name="service.WMSMobileService"
+            android:enabled="true" />
+        <receiver
+            android:name="addon.ConnectivityReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.PACKAGE_RESTARTED" />
+                <action android:name="android.intent.action.REBOOT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

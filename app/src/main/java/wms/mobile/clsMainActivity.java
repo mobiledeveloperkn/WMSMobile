@@ -2,25 +2,36 @@ package wms.mobile;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.GradientDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.NetworkOnMainThreadException;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,16 +55,46 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.UUID;
 
+import bl.SignalRBL;
+import bl.clsHelperBL;
+import bl.clsMainBL;
+import bl.tDeviceInfoUserBL;
+import bl.tTimerLogBL;
+import library.common.clsPushData;
+import library.common.tDeviceInfoUserData;
+import library.common.tTimerLogData;
+import service.WMSMobileService;
+
 //import com.kalbe.bl.mCounterNumberBL;
 
-public class clsMainActivity extends Activity {
+public class clsMainActivity extends Activity implements WMSMobileService.updateSnackbar{
     private static final String TAG_UUID = "id";
+    private static Snackbar snackbarOffline;
     String months[] = {"", "January", "February", "March", "April",
             "May", "June", "July", "August", "September",
             "October", "November", "December"};
 
     public void onClickHome(View v) {
 //	    goHome (this);
+    }
+
+    public void setSnackBarClose(WMSMobileService.updateSnackbar snackBarClose) {
+        WMSMobileService.updateSnackbar = snackBarClose;
+    }
+
+    public void saveTimerLog(String txtTimerStatus, String txtTimerType, String txtStarNo){
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        String dtExecute = dateFormat.format(cal.getTime());
+
+        tTimerLogData dtTimer = new tTimerLogData();
+        dtTimer.setBitActive("1");
+        dtTimer.setTxtTimerLogId(new clsMainBL().GenerateGuid());
+        dtTimer.setTxtStarNo(txtStarNo);
+        dtTimer.setTxtTimerStatus(txtTimerStatus);
+        dtTimer.setTxtTimerType(txtTimerType);
+        dtTimer.setDtExecute(dtExecute);
+        new tTimerLogBL().insertData(dtTimer);
     }
 
     public String getTxtSTatus(String intSubmit, String intSync) {
@@ -73,6 +114,7 @@ public class clsMainActivity extends Activity {
         toast.setGravity(Gravity.TOP, 25, 400);
         toast.show();
     }
+
 //	public void goHome(Context context) {
 //		finish();
 //	    final Intent intent = new Intent(context, Home.class);
@@ -91,6 +133,20 @@ public class clsMainActivity extends Activity {
         String hsl = df.format(harga);
 
         return hsl;
+    }
+
+    public String splitDateTime(String dateTime) {
+        String dateTimeView = "";
+        String datetimeSplit[] = dateTime.split("T");
+        String date[] = datetimeSplit[0].split("-");
+        String year = date[0];
+        String month = date[1];
+        String day = date[2];
+        String date_view = day + "-" + month + "-" + year;
+        String timeSplit[] = datetimeSplit[1].split("\\.");
+        String time = timeSplit[0];
+        dateTimeView = date_view + " " + time;
+        return dateTimeView;
     }
 
     public String convertNumberInt(int intNilai) {
@@ -226,10 +282,10 @@ public class clsMainActivity extends Activity {
         return MenuID;
     }
 
-    public PackageInfo getPinfo() {
+    public PackageInfo getPinfo(Activity activity) {
         PackageInfo pInfo = null;
         try {
-            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            pInfo = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0);
         } catch (NameNotFoundException e2) {
             // TODO Auto-generated catch block
             e2.printStackTrace();
@@ -237,14 +293,14 @@ public class clsMainActivity extends Activity {
         return pInfo;
     }
 
-//    public tDeviceInfoUserData getDataDeviceActive() {
-//        List<tDeviceInfoUserData> dt = new tDeviceInfoUserBL().getData(1);
-//        if (dt.size() == 0) {
-//            return null;
-//        } else {
-//            return dt.get(0);
-//        }
-//    }
+    public tDeviceInfoUserData getDataDeviceActive() {
+        List<tDeviceInfoUserData> dt = new tDeviceInfoUserBL().getData(1);
+        if (dt.size() == 0) {
+            return null;
+        } else {
+            return dt.get(0);
+        }
+    }
 
     public double qtySumAmount(double price, double item) {
         double total;
@@ -565,6 +621,18 @@ public class clsMainActivity extends Activity {
         imgV.setScaleType(ImageView.ScaleType.CENTER_CROP);
     }
 
+    public PackageInfo getpInfo(){
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e2) {
+            // TODO Auto-generated catch block
+            e2.printStackTrace();
+        }
+        return pInfo;
+    }
+
+
     public void showCustomToast(Context context, String message, Boolean status) {
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -590,6 +658,228 @@ public class clsMainActivity extends Activity {
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.setView(promptView);
         toast.show();
+    }
+
+    public void showSnackbar(CoordinatorLayout coordinatorLayout, String message, Boolean status, final String action) {
+
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT);
+        View snackBarView = snackbar.getView();
+        if(status){
+            snackBarView.setBackgroundResource(R.color.color_primary_blue);
+        } else {
+            snackbar = Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT);
+            snackBarView = snackbar.getView();
+            snackBarView.setBackgroundResource(R.color.red);
+        }
+        TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(Color.WHITE);
+        snackbar.show();
+    }
+
+    public void snackbarWithActionRetry(final CoordinatorLayout coordinatorLayout, String message, Boolean status, final String action){
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_INDEFINITE)
+                .setAction(action, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(action.equalsIgnoreCase("RETRY")){
+//                            boolean status = new SignalRBL().buildingConnection();
+//                            if(status){
+//                                snackbarWithNoAction(coordinatorLayout,"Connected", status, "");
+//                            } else {
+//                                snackbarWithActionRetry(coordinatorLayout,"Connecting Failed", status, "RETRY");
+//                            }
+                            AsyncTestConnection task = new AsyncTestConnection(coordinatorLayout);
+                            task.execute();
+                        }
+                    }
+                });
+        View snackBarView = snackbar.getView();
+        snackBarView.setBackgroundResource(R.color.red);
+        snackbar.setActionTextColor(Color.WHITE);
+        TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(Color.WHITE);
+        snackbar.getView().getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                snackbar.getView().getViewTreeObserver().removeOnPreDrawListener(this);
+                ((CoordinatorLayout.LayoutParams) snackbar.getView().getLayoutParams()).setBehavior(null);
+                return true;
+            }
+        });
+        snackbar.show();
+    }
+
+    public void snackbarWithNoAction(CoordinatorLayout coordinatorLayout, String message, Boolean status, final String action){
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT);
+        View snackBarView = snackbar.getView();
+        if(status){
+            snackBarView.setBackgroundResource(R.color.color_primary_blue);
+        } else {
+            snackbar = Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_INDEFINITE);
+            snackBarView = snackbar.getView();
+            snackBarView.setBackgroundResource(R.color.red);
+            final Snackbar finalSnackbar = snackbar;
+            snackbar.getView().getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    finalSnackbar.getView().getViewTreeObserver().removeOnPreDrawListener(this);
+                    ((CoordinatorLayout.LayoutParams) finalSnackbar.getView().getLayoutParams()).setBehavior(null);
+                    return true;
+                }
+            });
+        }
+        TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(Color.WHITE);
+        snackbar.show();
+
+    }
+
+    public void snackbarProgress(CoordinatorLayout coordinatorLayout, String message, Boolean status, final String action){
+        Snackbar bar = Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_INDEFINITE);
+        Snackbar.SnackbarLayout snack_view = (Snackbar.SnackbarLayout) bar.getView();
+        snack_view.addView(new ProgressBar(getApplicationContext()));
+        bar.show();
+
+    }
+
+    public void checkConnection(CoordinatorLayout coordinatorLayout, ConnectivityManager connectivityManager){
+
+        boolean status = false;
+        //mobile
+        NetworkInfo.State mobile = connectivityManager.getNetworkInfo(0).getState();
+        //wifi
+        NetworkInfo.State wifi = connectivityManager.getNetworkInfo(1).getState();
+
+        if (mobile == NetworkInfo.State.CONNECTED || mobile == NetworkInfo.State.CONNECTING)
+        {
+//            snackbarWithNoAction(coordinatorLayout, "connecting...", status, "");
+            AsyncTestConnection task = new AsyncTestConnection(coordinatorLayout);
+            task.execute();
+//            status = new SignalRBL().buildingConnection();
+//            if(!status){
+//                snackbarWithActionRetry(coordinatorLayout,"Connecting Failed", status, "RETRY");
+//            } else {
+//                snackbarWithNoAction(coordinatorLayout,"Connected", status, "");
+//            }
+        }
+        else if (wifi == NetworkInfo.State.CONNECTED || wifi == NetworkInfo.State.CONNECTING)
+        {
+//            snackbarWithNoAction(coordinatorLayout, "connecting...", status, "");
+            AsyncTestConnection task = new AsyncTestConnection(coordinatorLayout);
+            task.execute();
+//            status = new SignalRBL().buildingConnection();
+//            if(!status){
+//                snackbarWithActionRetry(coordinatorLayout,"Connecting Failed", status, "RETRY");
+//            } else {
+//                snackbarProgress(coordinatorLayout,"Connected", status, "");
+//            }
+        }
+        else {
+            snackbarWithNoAction(coordinatorLayout,"No Connectivity", status, "");
+        }
+    }
+
+    @Override
+    public void onUpdateSnackBar(boolean info) {
+        if(info){
+            snackbarOffline.dismiss();
+        }
+    }
+
+    private class AsyncTestConnection extends AsyncTask<Boolean, Void, Boolean> {
+
+
+        public AsyncTestConnection(CoordinatorLayout coordinatorLayout) {
+            super();
+            coordinatorLayoutTask = coordinatorLayout;
+            snackbar = Snackbar.make(coordinatorLayoutTask, "Connecting...", Snackbar.LENGTH_INDEFINITE);
+            snackBarView = snackbar.getView();
+        }
+
+        private CoordinatorLayout coordinatorLayoutTask;
+        private Snackbar snackbar;
+        private View snackBarView;
+
+        @Override
+        protected void onCancelled() {
+            snackbar.dismiss();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean status) {
+            clsPushData dtJson = new clsHelperBL().pushData();
+            if(status){
+                snackbar.dismiss();
+                snackbarWithNoAction(coordinatorLayoutTask,"Connected", status, "");
+                String versionName = "";
+                if(dtJson.getDtdataJson()!=null){
+                    try {
+                        snackbarOffline = Snackbar.make(coordinatorLayoutTask, "Sync Data...", Snackbar.LENGTH_INDEFINITE);
+                        View snackBarView = snackbarOffline.getView();
+                        snackBarView.setBackgroundResource(R.color.color_primary_blue);
+                        TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.WHITE);
+                        final Snackbar finalSnackbar = snackbarOffline;
+                        snackbarOffline.getView().getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                            @Override
+                            public boolean onPreDraw() {
+                                finalSnackbar.getView().getViewTreeObserver().removeOnPreDrawListener(this);
+                                ((CoordinatorLayout.LayoutParams) finalSnackbar.getView().getLayoutParams()).setBehavior(null);
+                                return true;
+                            }
+                        });
+                        snackbarOffline.show();
+                        setSnackBarClose(clsMainActivity.this);
+                        status = new WMSMobileService().pushFromOfflineAct(dtJson.getDtdataJson().txtJSON().toString(), versionName);
+//                        if (status){
+//                            snackbar.dismiss();
+////                            new TabsTaskHeader().updateListView();
+//                        }
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
+                }
+            } else {
+                snackbar.dismiss();
+                snackbarWithActionRetry(coordinatorLayoutTask,"Connecting Failed", status, "RETRY");
+            }
+        }
+
+        @Override
+        protected Boolean doInBackground(Boolean... booleen) {
+//            android.os.Debug.waitForDebugger();
+            boolean status;
+            status = new SignalRBL().buildingConnection();
+            return status;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            snackBarView.setBackgroundResource(R.color.red);
+            TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+            textView.setTextColor(Color.WHITE);
+            snackbar.show();
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            snackbar.dismiss();
+        }
+    }
+
+    public boolean isMyServiceRunning(Context mContext) {
+        ActivityManager manager = (ActivityManager) mContext
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager
+                .getRunningServices(Integer.MAX_VALUE)) {
+            if (WMSMobileService.class.getName().equals(
+            service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Bitmap resizeImageForBlob(Bitmap photo){
@@ -722,6 +1012,15 @@ public class clsMainActivity extends Activity {
         }
 
         return indexSelectedMonth;
+    }
+
+    public void timerDelayRemoveDialog(long time, final ProgressDialog d){
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                d.dismiss();
+            }
+        }, time);
     }
 
 //    public List<String> getArraytUserLoginData(tUserLoginData dt){

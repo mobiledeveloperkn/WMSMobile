@@ -25,7 +25,7 @@ import bl.clsMainBL;
 import library.common.clsHelper;
 import library.common.clsStatusMenuStart;
 import library.dal.enumStatusMenuStart;
-import service.SignalRService;
+import service.WMSMobileService;
 
 public class Splash extends AppCompatActivity {
 
@@ -37,8 +37,6 @@ public class Splash extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_splash);
-        Intent service = new Intent(Splash.this, SignalRService.class);
-        startService(service);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -176,6 +174,8 @@ public class Splash extends AppCompatActivity {
                 }
 
                 finish();
+                Intent service = new Intent(Splash.this, WMSMobileService.class);
+                startService(service);
                 startActivity(myIntent);
             }
         };

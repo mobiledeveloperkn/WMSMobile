@@ -1,5 +1,6 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinatorLayoutHome"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -33,7 +34,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dip"
+                android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:background="#4CAF50"
                 android:gravity="center"
@@ -236,36 +237,38 @@
                 <Button
                     android:id="@+id/btn_scan"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="60dp"
                     android:layout_weight="1"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="5dp"
                     android:text="Scan"
                     android:textColor="@color/white"
-                    android:background="@drawable/green_button_selector"/>
+                    android:background="@drawable/btn_innermenu"/>
                 <Button
                     android:id="@+id/btn_outstanding"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="60dp"
                     android:layout_weight="1"
                     android:layout_marginRight="10dp"
                     android:layout_marginLeft="5dp"
                     android:text="Outstanding Task"
                     android:textColor="@color/white"
-                    android:background="@drawable/green_button_selector"/>
+                    android:background="@drawable/btn_innermenu"/>
 
 
             </LinearLayout>
 
             <Button
+                android:id="@+id/btn_logout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
                 android:text="Logout"
                 android:textColor="@color/white"
-                android:background="@drawable/green_button_selector"/>
+                android:background="@drawable/btn_innermenu"/>
 
             <!--&lt;!&ndash; FOOTER &ndash;&gt;-->
             <!--<LinearLayout-->

@@ -1,147 +1,360 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coorOutstandingTask"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/primary_color_theme"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-        <!--<android.support.design.widget.TabLayout-->
-            <!--android:id="@+id/tabs"-->
-            <!--android:background="@color/primary_color_theme"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--app:tabMode="fixed"-->
-            <!--app:tabGravity="fill"/>-->
-    </android.support.design.widget.AppBarLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:text="NO. SPM"
-            android:textSize="@dimen/text_size_large"/>
-        <TextView
-            android:id="@+id/tv_noSPM"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:text="-"
-            android:textSize="@dimen/text_size_medium"/>
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="2"
-            android:gravity="center_horizontal">
-            <TextView
-                android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:text="Ship To"
-                android:textSize="@dimen/text_size_medium"/>
-            <TextView
-                android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:text="Sales Order"
-                android:textSize="@dimen/text_size_medium"/>
-        </LinearLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="2"
-            android:gravity="center_horizontal">
-            <TextView
-                android:id="@+id/tv_shipTo"
-                android:layout_weight="1"
+            <android.support.design.widget.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:text="-"/>
-            <TextView
-                android:id="@+id/tv_SO"
-                android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:text="-"/>
-        </LinearLayout>
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <Button
-            android:id="@+id/btn_taskview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="50dp"
-            android:text="Task View"
-            android:textColor="@color/white"
-            android:background="@drawable/green_button_selector"/>
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/primary_color_theme"
+                    app:layout_scrollFlags="scroll|enterAlways"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp"
-            android:weightSum="2">
-            <Button
-                android:id="@+id/btn_complete"
+                <!--<android.support.design.widget.TabLayout-->
+                <!--android:id="@+id/tabs"-->
+                <!--android:background="@color/primary_color_theme"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--app:tabMode="fixed"-->
+                <!--app:tabGravity="fill"/>-->
+            </android.support.design.widget.AppBarLayout>
+
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_margin="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_noSPM"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:gravity="center"
+                        android:text="NO. SPM"
+                        android:textColor="@color/red"
+                        android:textSize="@dimen/text_size_large"
+                        android:textStyle="bold" />
+                    <!--<TextView-->
+                    <!--android:id="@+id/tv_noSPM"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:textStyle="bold"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="-"-->
+                    <!--android:textSize="@dimen/text_size_medium"/>-->
+
+                    <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:weightSum="2"-->
+                    <!--android:gravity="center_horizontal">-->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Ship To"
+                        android:textColor="@color/red"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tv_shipTo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="-"
+                        android:textSize="@dimen/text_size_large"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Sales Order"
+                        android:textColor="@color/red"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tv_SO"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="-"
+                        android:textSize="@dimen/text_size_large"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+                    <!--</LinearLayout>-->
+
+                    <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:weightSum="2"-->
+                    <!--android:gravity="center_horizontal"-->
+                    <!--android:layout_marginBottom="20dp">-->
+                    <!--<TextView-->
+                    <!--android:id="@+id/tv_shipTo"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:textStyle="bold"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="-"/>-->
+                    <!--<TextView-->
+                    <!--android:id="@+id/tv_SO"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:textStyle="bold"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="-"/>-->
+                    <!--</LinearLayout>-->
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="5dp"
-                android:text="Complete"
-                android:textColor="@color/white"
-                android:background="@drawable/green_button_selector"/>
-            <Button
-                android:id="@+id/btn_cancel"
+                android:layout_marginRight="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+                    <!--<TableLayout-->
+                    <!--android:id="@+id/tl_data_report"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content" >-->
+                    <!--</TableLayout>-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dip"
+                        android:layout_weight="1"
+                        android:background="@color/white"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <com.owater.library.CircleTextView
+                                android:id="@+id/tvTotalPending"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_weight="0.33"
+                                android:gravity="center"
+                                android:text="1234"
+                                android:textColor="@color/colorAccent"
+                                android:textSize="30dp"
+                                app:ct_backgroundColor="#FFFFFF"
+                                app:ct_border_alpha="0.5"
+                                app:ct_border_color="@color/color_primary_blue"
+                                app:ct_border_width="10dp"
+                                app:ct_type="shadow_alpha" />
+
+                            <TextView
+                                android:id="@+id/textView38"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="PENDING"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <com.owater.library.CircleTextView
+                                android:id="@+id/tvTotalConfirm"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_weight="0.33"
+                                android:gravity="center"
+                                android:text="1234"
+                                android:textColor="@color/colorAccent"
+                                android:textSize="30dp"
+                                app:ct_backgroundColor="#FFFFFF"
+                                app:ct_border_alpha="0.5"
+                                app:ct_border_color="@color/colorAccent"
+                                app:ct_border_width="10dp"
+                                app:ct_type="shadow_alpha" />
+
+                            <TextView
+                                android:id="@+id/textView40"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="CONFIRMED"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <com.owater.library.CircleTextView
+                                android:id="@+id/tvTotalCancel"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_weight="0.33"
+                                android:gravity="center"
+                                android:text="1234"
+                                android:textColor="@color/colorAccent"
+                                android:textSize="30dp"
+                                app:ct_backgroundColor="#FFFFFF"
+                                app:ct_border_alpha="0.5"
+                                app:ct_border_color="@color/color_primary_red"
+                                app:ct_border_width="10dp"
+                                app:ct_type="shadow_alpha" />
+
+                            <TextView
+                                android:id="@+id/textView42"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="CANCELED"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="5dp"
-                android:text="Cancel"
-                android:textColor="@color/white"
-                android:background="@drawable/green_button_selector"/>
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="5dp"
+                    android:weightSum="2">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <Button
+                            android:id="@+id/btn_complete"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_innermenu"
+                            android:padding="5dp"
+                            android:text="Complete"
+                            android:textColor="@color/white" />
+
+                        <Button
+                            android:id="@+id/btn_taskview"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_innermenu"
+                            android:padding="5dp"
+                            android:text="Task View"
+                            android:textColor="@color/white" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <Button
+                            android:id="@+id/btn_refresh"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_innermenu"
+                            android:padding="5dp"
+                            android:text="Refresh"
+                            android:textColor="@color/white" />
+
+                        <Button
+                            android:id="@+id/btn_break"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/btn_innermenu"
+                            android:padding="5dp"
+                            android:text="Break"
+                            android:textColor="@color/white" />
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
 
         </LinearLayout>
 
-    </LinearLayout>
+    </ScrollView>
 
     <!--<android.support.v4.view.ViewPager-->
-        <!--android:id="@+id/viewpager"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"/>-->
+    <!--android:id="@+id/viewpager"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"/>-->
 
 </android.support.design.widget.CoordinatorLayout>

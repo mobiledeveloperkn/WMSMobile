@@ -21,7 +21,7 @@ public class mSPMDetailBL extends clsMainBL {
         return data;
     }
 
-    public void insertOrReplace(mSPMDetailData data) {
+    public void insert(mSPMDetailData data) {
         SQLiteDatabase db = getDb();
         mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(db);
         _mSPMDetailDA.SaveDataMConfig(db, data);
@@ -36,23 +36,77 @@ public class mSPMDetailBL extends clsMainBL {
         return data;
     }
 
-    public List<mSPMDetailData> getAllDataTaskPending() {
+    public List<mSPMDetailData> getAllDataById(String id) {
         SQLiteDatabase db = getDb();
         mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(db);
-        List<mSPMDetailData> data = _mSPMDetailDA.getAllDataTaskPending(db);
+        List<mSPMDetailData> data = _mSPMDetailDA.getAllDataById(db, id);
         db.close();
         return data;
     }
 
-    public List<mSPMDetailData> getAllDataTaskSuccess() {
+    public List<mSPMDetailData> getAllDataTaskPending(String id) {
         SQLiteDatabase db = getDb();
         mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(db);
-        List<mSPMDetailData> data = _mSPMDetailDA.getAllDataTaskSuccess(db);
+        List<mSPMDetailData> data = _mSPMDetailDA.getAllDataTaskPending(db, id);
+        db.close();
+        return data;
+    }
+
+    public List<mSPMDetailData> getAllDataPushData() {
+        SQLiteDatabase db = getDb();
+        mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(db);
+        List<mSPMDetailData> data = _mSPMDetailDA.getAllDataPushData(db);
+        db.close();
+        return data;
+    }
+
+    public List<mSPMDetailData> getAllDataTaskConfirm(String id) {
+        SQLiteDatabase db = getDb();
+        mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(db);
+        List<mSPMDetailData> data = _mSPMDetailDA.getAllDataTaskConfirm(db, id);
+        db.close();
+        return data;
+    }
+
+    public List<mSPMDetailData> getAllDataTaskCancel(String id) {
+        SQLiteDatabase db = getDb();
+        mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(db);
+        List<mSPMDetailData> data = _mSPMDetailDA.getAllDataTaskCancel(db, id);
         db.close();
         return data;
     }
 
     public void saveDataList(List<mSPMDetailData> data){
 
+    }
+
+    public void updateDataValueById(String idSPMDetail, String intUserId){
+        SQLiteDatabase _db=getDb();
+        mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(_db);
+        _mSPMDetailDA.updateDataById(_db, idSPMDetail, intUserId);
+    }
+
+    public void updateDataValueByIdOffline(String idSPMDetail, String intUserId){
+        SQLiteDatabase _db=getDb();
+        mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(_db);
+        _mSPMDetailDA.updateDataByIdOffline(_db, idSPMDetail, intUserId);
+    }
+
+    public void updateDataSPMCancelById(String id, String _intUserId, String reason){
+        SQLiteDatabase _db=getDb();
+        mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(_db);
+        _mSPMDetailDA.updateDataSPMCancelById(_db, id, _intUserId, reason);
+    }
+
+    public void updateDataSPMCancelByIdOffline(String id, String _intUserId, String reason){
+        SQLiteDatabase _db=getDb();
+        mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(_db);
+        _mSPMDetailDA.updateDataSPMCancelByIdOffline(_db, id, _intUserId, reason);
+    }
+
+    public void saveFromPushData(String id, String status, String sync){
+        SQLiteDatabase _db=getDb();
+        mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(_db);
+        _mSPMDetailDA.saveDataPush(_db, id, status, sync);
     }
 }

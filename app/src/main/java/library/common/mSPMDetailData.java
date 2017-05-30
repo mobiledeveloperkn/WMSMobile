@@ -5,7 +5,7 @@ package library.common;
  */
 
 public class mSPMDetailData {
-    public mSPMDetailData(String intSPMDetailId, String txtNoSPM, String txtLocator, String txtItemCode, String txtItemName, String intQty, String bitStatus, String bitSync) {
+    public mSPMDetailData(String intSPMDetailId, String txtNoSPM, String txtLocator, String txtItemCode, String txtItemName, String intQty, String bitStatus, String bitSync, String intUserId, String intFlag) {
         this.intSPMDetailId = intSPMDetailId;
         this.txtNoSPM = txtNoSPM;
         this.txtLocator = txtLocator;
@@ -14,6 +14,8 @@ public class mSPMDetailData {
         this.intQty = intQty;
         this.bitStatus = bitStatus;
         this.bitSync = bitSync;
+        this.intUserId = intUserId;
+        this.intFlag = intFlag;
     }
 
     public mSPMDetailData() {
@@ -29,6 +31,9 @@ public class mSPMDetailData {
     private String intQty;
     private String bitStatus;
     private String bitSync;
+    private String txtReason;
+    private String intUserId;
+    private String intFlag;
 
     public String Property_intSPMDetailId = "intSPMDetailId";
     public String Property_txtNoSPM = "txtNoSPM";
@@ -38,8 +43,11 @@ public class mSPMDetailData {
     public String Property_intQty = "intQty";
     public String Property_bitStatus = "bitStatus";
     public String Property_bitSync = "bitSync";
+    public String Property_txtReason = "txtReason";
+    public String Property_intUserId = "intUserId";
+    public String Property_intFlag = "intFlag";
 
-    public String Property_All=Property_intSPMDetailId+","+Property_txtNoSPM+","+Property_txtLocator+","+Property_txtItemCode+","+Property_txtItemName+","+Property_intQty+","+Property_bitStatus+","+Property_bitSync;
+    public String Property_All=Property_intSPMDetailId+","+Property_txtNoSPM+","+Property_txtLocator+","+Property_txtItemCode+","+Property_txtItemName+","+Property_intQty+","+Property_bitStatus+","+Property_bitSync+","+Property_txtReason+","+Property_intUserId+","+Property_intFlag;
 
     public String getTxtNoSPM() {
         return txtNoSPM;
@@ -103,5 +111,28 @@ public class mSPMDetailData {
 
     public void setBitStatus(String bitStatus) {
         this.bitStatus = bitStatus;
+    }
+    public String getTxtReason() {
+        return txtReason;
+    }
+
+    public void setTxtReason(String txtReason) {
+        this.txtReason = txtReason;
+    }
+
+    public String getIntUserId() {
+        return intUserId;
+    }
+
+    public void setIntUserId(String intUserId) {
+        this.intUserId = intUserId;
+    }
+
+    public String getIntFlag() {
+        return intFlag;
+    }
+
+    public void setIntFlag(String intFlag) {
+        this.intFlag = intFlag;
     }
 }

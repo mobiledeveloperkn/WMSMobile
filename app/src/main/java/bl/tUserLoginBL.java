@@ -23,6 +23,15 @@ public class tUserLoginBL extends clsMainBL {
         db.close();
         return listData.get(0);
     }
+
+    public boolean checkLoginNow() throws ParseException {
+        SQLiteDatabase db = getDb();
+        boolean valid = false;
+        tUserLoginDA _tUserLoginDA =new tUserLoginDA(db);
+        valid = _tUserLoginDA.CheckLoginNow(db);
+        return valid;
+    }
+
     public String Login(String txtUserName, String txtPass, String intRoleId, String userID) throws ParseException {
         String pass = "sanghiang";
 //        SQLiteDatabase _db = getDb();

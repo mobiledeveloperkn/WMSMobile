@@ -6,12 +6,15 @@
 
     <color name="green_old">#035e00</color>
     <color name="gray">#bfbfbf</color>
+    <color name="gray_old">#717171</color>
     <color name="white">#FFFFFF</color>
+    <color name="gray_">#e7dfdf</color>
     <color name="primary_color_theme">#4CAF50</color>
 
     <color name="PrimaryColor">#4CAF50</color>
     <color name="title_background">#007F92</color>
     <color name="title_backgrounda">#ff7e33</color>
+    <color name="red">#be2a23</color>
 
     <color name="album_title">#4c4c4c</color>
     <color name="viewBg">#f1f5f8</color>
@@ -27,5 +30,15 @@
 
     <color name="green_selected">#53760e</color>
     <color name="green_unselected">#4CAF50</color>
+
+    <color name="color_primary_red">#f44336</color>
+    <color name="color_primary_red_dark">#d32f2f</color>
+    <color name="color_primary_green"> #4caf50</color>
+    <color name="color_primary_green_dark">#388e3c</color>
+    <color name="color_primary_blue">#2196f3</color>
+    <color name="color_primary_blue_dark">#1976d2</color>
+    <color name="color_accent_pink">#ff4081</color>
+    <color name="color_shadow">#44000000</color>
+    <color name="color_yellow">#44ffea00</color>
 
 </resources>

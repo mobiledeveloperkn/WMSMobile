@@ -2,7 +2,6 @@ package wms.mobile;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -13,10 +12,7 @@ import android.widget.TextView;
 
 import org.json.JSONArray;
 
-import java.text.ParseException;
-
 import bl.mSPMDetailBL;
-import bl.tUserLoginBL;
 import library.common.mSPMDetailData;
 import library.dal.clsHardCode;
 
@@ -70,8 +66,8 @@ public class TaskDetail extends AppCompatActivity implements View.OnClickListene
                     }
                 });
 
-                AlertDialog alert = builder.create();
-                alert.show();
+//                AlertDialog alert = builder.create();
+                builder.show();
                 break;
 
             default:
@@ -107,7 +103,7 @@ public class TaskDetail extends AppCompatActivity implements View.OnClickListene
             if(dummy.equals("1")){
                 _mSPMDetailData.setBitStatus("1");
                 _mSPMDetailData.setBitSync("1");
-                new mSPMDetailBL().insertOrReplace(_mSPMDetailData);
+                new mSPMDetailBL().insert(_mSPMDetailData);
                 new clsMainActivity().showCustomToast(getApplicationContext(), "Saved", true);
             } else {
                 new clsMainActivity().showCustomToast(getApplicationContext(), "Not saved", false);

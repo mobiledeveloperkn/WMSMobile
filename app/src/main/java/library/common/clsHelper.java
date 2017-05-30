@@ -30,6 +30,9 @@ import library.dal.mRoleDA;
 import library.dal.mSPMDetailDA;
 import library.dal.mSPMHeaderDA;
 import library.dal.mconfigDA;
+import library.dal.tDeviceInfoUserDA;
+import library.dal.tDisplayPictureDA;
+import library.dal.tTimerLogDA;
 import library.dal.tUserLoginDA;
 
 public class clsHelper {
@@ -170,132 +173,29 @@ public class clsHelper {
 	      }
 	      return result;
 	   }
-	
+
 	public void DeleteAllDB(SQLiteDatabase db){
-//		tUserLoginDA _tUserLoginDA=new tUserLoginDA(db);
-//		tSalesProductHeaderDA _tSalesProductHeaderDA=new tSalesProductHeaderDA(db);
-//		tSalesProductDetailDA _tSalesProductDetailDA=new tSalesProductDetailDA(db);
-//		tDeviceInfoUserDA _tDeviceInfoUserDA=new tDeviceInfoUserDA(db);
-//		mProductBrandHeaderDA _mProductBrandHeaderDA=new mProductBrandHeaderDA(db);
-//		mNotificationDA _mNotificationDA=new mNotificationDA(db);
-//		mEmployeeAreaDA _mEmployeeAreaDA=new mEmployeeAreaDA(db);
-//		mEmployeeBranchDA _mEmployeeBranchDA=new mEmployeeBranchDA(db);
-//		mEmployeeSalesProductDA _mEmployeeSalesProductDA=new mEmployeeSalesProductDA(db);
-//		mCounterNumberDA _mCounterNumberDA=new mCounterNumberDA(db);
-//		tNotificationDA _tNotificationDA=new tNotificationDA(db);
-//		tActivityDA _tActivityDA=new tActivityDA(db);
-//		tAbsenUserDA _tAbsenUserDA=new tAbsenUserDA(db);
-//		tLeaveMobileDA _tLeaveMobileDA=new tLeaveMobileDA(db);
-//		mMenuDA _mMenuDA=new mMenuDA(db);
-//		mTypeLeaveMobileDA _mTypeLeaveMobileDA=new mTypeLeaveMobileDA(db);
-//		mRoleDA _mUserRoleDA=new mRoleDA(db);
-//		mPriceInOutletDA _mPriceInOutletDA=new mPriceInOutletDA(db);
-//		mProductBarcodeDA _mProductBarcodeDA=new mProductBarcodeDA(db);
-//		tDisplayPictureDA _tDisplayPictureDA = new tDisplayPictureDA(db);
-//		mBranchDA _mBranchDA = new mBranchDA(db);
-//		mRegionDA _mRegionDA = new mRegionDA(db);
-//		mBannerDA _mBannerDA = new mBannerDA(db);
-//		mTypeSumberDA _mTypeSumberDA = new mTypeSumberDA(db);
-//		tCustomerBasedMobileHeaderDA _tCustomerBasedMobileHeaderDA = new tCustomerBasedMobileHeaderDA(db);
-//		tCustomerBasedMobileDetailDA _tCustomerBasedMobileDetailDA = new tCustomerBasedMobileDetailDA(db);
-//		tCustomerBasedMobileDetailProductDA _tCustomerBasedMobileDetailProductDA = new tCustomerBasedMobileDetailProductDA(db);
-//		_tDisplayPictureDA = new tDisplayPictureDA(db);
-//		tUserCheckinDA _tUserCheckinDA = new tUserCheckinDA(db);
+		tDeviceInfoUserDA _tDeviceInfoUserDA=new tDeviceInfoUserDA(db);
 		tUserLoginDA _tUserLoginDA = new tUserLoginDA(db);
 		mRoleDA _mRoleDA = new mRoleDA(db);
 		mSPMHeaderDA _mSPMHeaderDA = new mSPMHeaderDA(db);
 		mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(db);
-
-
-		//_tDisplayPictureDA.DropTable(db);
-//		_tCustomerBasedMobileHeaderDA.DropTable(db);
-//		_tCustomerBasedMobileDetailDA.DropTable(db);
-//		_tCustomerBasedMobileDetailProductDA.DropTable(db);
-//		_tNotificationDA.DropTable(db);
-//		_mPriceInOutletDA.DropTable(db);
-//		_mProductBarcodeDA.DropTable(db);
-//		_mUserRoleDA.DropTable(db);
-//		_tLeaveMobileDA.DropTable(db);
-//		_mProductBrandHeaderDA.DropTable(db);
-//		_tActivityDA.DropTable(db);
-//		_mEmployeeAreaDA.DropTable(db);
-//		_mNotificationDA.DropTable(db);
-//		_mEmployeeBranchDA.DropTable(db);
-//		_mEmployeeSalesProductDA.DropTable(db);
-//		_tUserLoginDA.DropTable(db);
-//		_tSalesProductHeaderDA.DropTable(db);
-//		_tSalesProductDetailDA.DropTable(db);
-//		_tDeviceInfoUserDA.DropTable(db);
-//		_mMenuDA.DropTable(db);
-//		_mCounterNumberDA.DropTable(db);
-//		_tAbsenUserDA.DropTable(db);
-//		_mTypeLeaveMobileDA.DropTable(db);
-//		_mBranchDA.DropTable(db);
-//		_mRegionDA.DropTable(db);
-//		_mBannerDA.DropTable(db);
-//		_mTypeSumberDA.DropTable(db);
-//		_tUserCheckinDA.DropTable(db);
+		tTimerLogDA _tTimerLogDA = new tTimerLogDA(db);
+		tDisplayPictureDA _tDisplayPictureDA = new tDisplayPictureDA(db);
+		_tDeviceInfoUserDA.DropTable(db);
 		_tUserLoginDA.DropTable(db);
 		_mRoleDA.DropTable(db);
 		_mSPMHeaderDA.DropTable(db);
 		_mSPMDetailDA.DropTable(db);
-
-//		_tCustomerBasedMobileHeaderDA = new tCustomerBasedMobileHeaderDA(db);
-//		_tCustomerBasedMobileDetailDA = new tCustomerBasedMobileDetailDA(db);
-//		_tCustomerBasedMobileDetailProductDA = new tCustomerBasedMobileDetailProductDA(db);
-//		_tDisplayPictureDA = new tDisplayPictureDA(db);
-//		_mBranchDA = new mBranchDA(db);
-//		_mRegionDA = new mRegionDA(db);
-//		_mBannerDA = new mBannerDA(db);
-//		_mTypeSumberDA = new mTypeSumberDA(db);
-//		_tUserCheckinDA = new tUserCheckinDA(db);
-//		_mPriceInOutletDA=new mPriceInOutletDA(db);
-//		_mUserRoleDA=new mRoleDA(db);
-//		_mTypeLeaveMobileDA=new mTypeLeaveMobileDA(db);
-//		_tLeaveMobileDA=new tLeaveMobileDA(db);
-//		_tUserLoginDA=new tUserLoginDA(db);
-//		_tSalesProductHeaderDA=new tSalesProductHeaderDA(db);
-//		_tSalesProductDetailDA=new tSalesProductDetailDA(db);
-//		_tActivityDA=new tActivityDA(db);
-//		_tDeviceInfoUserDA=new tDeviceInfoUserDA(db);
-//		_mNotificationDA=new mNotificationDA(db);
-//		_mEmployeeAreaDA=new mEmployeeAreaDA(db);
-//		_mEmployeeBranchDA=new mEmployeeBranchDA(db);
-//		_mEmployeeSalesProductDA=new mEmployeeSalesProductDA(db);
-//		_mCounterNumberDA=new mCounterNumberDA(db);
-//		_tAbsenUserDA=new tAbsenUserDA(db);
-//		_mMenuDA=new mMenuDA(db);
-//		_mProductBrandHeaderDA=new mProductBrandHeaderDA(db);
-//		_tNotificationDA=new tNotificationDA(db);
+		_tTimerLogDA.DropTable(db);
+		_tDeviceInfoUserDA=new tDeviceInfoUserDA(db);
 		_tUserLoginDA = new tUserLoginDA(db);
 		_mRoleDA = new mRoleDA(db);
 		_mSPMHeaderDA = new mSPMHeaderDA(db);
 		_mSPMDetailDA = new mSPMDetailDA(db);
+		_tDisplayPictureDA = new tDisplayPictureDA(db);
+        _tTimerLogDA = new tTimerLogDA(db);
 
-//		int sumdata_mUserDA = _tUserLoginDA.getContactsCount(db);
-//		if (sumdata_mUserDA == 0) {
-//			_tUserLoginDA.InsertDefaultMUser(db);
-//		}
-
-		int sumdata_mRoleDA = _mRoleDA.getContactsCount(db);
-		if (sumdata_mRoleDA == 0) {
-			_mRoleDA.InsertDefaultMRole(db);
-		}
-
-//		int sumdata_mSPMHeaderDA = _mSPMHeaderDA.getContactsCount(db);
-//		if (sumdata_mSPMHeaderDA == 0) {
-//			_mSPMHeaderDA.InsertDefaultSPMHeader(db);
-//		}
-//
-//		int sumdata_mSPMDetailDA = _mSPMDetailDA.getContactsCount(db);
-//		if (sumdata_mSPMDetailDA == 0) {
-//			_mSPMDetailDA.InsertDefaultmSPMDetail(db);
-//		}
-
-		clsHardCode clsdthc=new clsHardCode();
-		clsHelper _clsHelper=new clsHelper();
-//		File dir = new File(clsdthc.txtPathUserData);
-//		_clsHelper.DeleteRecursive(dir);
 		mconfigDA _mconfigDA = new mconfigDA(db);
 		int sumdata = _mconfigDA.getContactsCount(db);
 		if (sumdata == 0) {
@@ -303,7 +203,7 @@ public class clsHelper {
 		}
 
 	}
-	
+
 	public String ResultJsonData(String dt){
 		return dt.substring(16,dt.length()-2);
 	}
@@ -395,7 +295,7 @@ public class clsHelper {
 
 		clsHardCode clsdthc= new clsHardCode();
 		File appDir=new File(clsdthc.txtPathApp);
-		if(!appDir.exists() && !appDir.isDirectory()) 
+		if(!appDir.exists() && !appDir.isDirectory())
 	    {
 	        // create empty directory
 	        if (appDir.mkdirs())
@@ -418,9 +318,9 @@ public class clsHelper {
 		String itemID = split[1];
 		Long num0x= (long) 0 ;
 		if(itemID.contains("0")){
-			num0x = Long.valueOf(itemID.substring(itemID.indexOf("0")));	
+			num0x = Long.valueOf(itemID.substring(itemID.indexOf("0")));
 		}else{
-			num0x = Long.valueOf(itemID);	
+			num0x = Long.valueOf(itemID);
 		}
 		String second = split[0]+Separator+String.format("%0"+Length+"d", num0x + 1);
 		return second;

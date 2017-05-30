@@ -5,7 +5,7 @@ package library.common;
  */
 
 public class mSPMHeaderData {
-    public mSPMHeaderData(String intSPMId, String txtNoSPM, String txtBranchCode, String txtBranchName, String txtSalesOrder, String intUserId, String bitStatus, String bitSync) {
+    public mSPMHeaderData(String intSPMId, String txtNoSPM, String txtBranchCode, String txtBranchName, String txtSalesOrder, String intUserId, String bitStatus, String bitSync, String dtStart, String dtEnd) {
         this.intSPMId = intSPMId;
         this.txtNoSPM = txtNoSPM;
         this.txtBranchCode = txtBranchCode;
@@ -14,6 +14,8 @@ public class mSPMHeaderData {
         this.intUserId = intUserId;
         this.bitStatus = bitStatus;
         this.bitSync = bitSync;
+        this.dtStart = dtStart;
+        this.dtEnd = dtEnd;
     }
 
     public mSPMHeaderData() {
@@ -85,6 +87,30 @@ public class mSPMHeaderData {
         this.bitStatus = bitStatus;
     }
 
+    public String getBitStart() {
+        return bitStart;
+    }
+
+    public void setBitStart(String bitStart) {
+        this.bitStart = bitStart;
+    }
+
+    public String getDtEnd() {
+        return dtEnd;
+    }
+
+    public void setDtEnd(String dtEnd) {
+        this.dtEnd = dtEnd;
+    }
+
+    public String getDtStart() {
+        return dtStart;
+    }
+
+    public void setDtStart(String dtStart) {
+        this.dtStart = dtStart;
+    }
+
     private String intSPMId;
     private String txtNoSPM;
     private String txtBranchCode;
@@ -93,6 +119,9 @@ public class mSPMHeaderData {
     private String intUserId;
     private String bitStatus;
     private String bitSync;
+    private String bitStart;
+    private String dtStart;
+    private String dtEnd;
 
     public String Property_intSPMId = "intSPMId";
     public String Property_txtNoSPM = "txtNoSPM";
@@ -102,7 +131,11 @@ public class mSPMHeaderData {
     public String Property_intUserId = "intUserId";
     public String Property_bitStatus = "bitStatus";
     public String Property_bitSync = "bitSync";
+    public String Property_bitStart = "bitStart";
+    public String Property_dtStart = "dtStart";
+    public String Property_dtEnd = "dtEnd";
+    public String Property_mSPMHeaderData = "mSPMHeaderData";
 
-    public String Property_All=Property_intSPMId+","+Property_txtNoSPM+","+Property_txtBranchCode+","+Property_txtBranchName+","+Property_txtSalesOrder+","+Property_intUserId+","+Property_bitStatus+","+Property_bitSync;
+    public String Property_All=Property_intSPMId+","+Property_txtNoSPM+","+Property_txtBranchCode+","+Property_txtBranchName+","+Property_txtSalesOrder+","+Property_intUserId+","+Property_bitStatus+","+Property_bitSync+","+Property_bitStart+","+Property_dtStart+","+Property_dtEnd;
 
 }

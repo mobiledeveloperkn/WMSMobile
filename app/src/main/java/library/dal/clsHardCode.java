@@ -9,10 +9,12 @@ import java.io.File;
  */
 
 public class clsHardCode  {
-    public String txtPathApp= Environment.getExternalStorageDirectory()+ File.separator+"Android"+File.separator+"data"+File.separator+"WMSMoblie"+File.separator+"app_database"+File.separator;
+    public String txtPathApp= Environment.getExternalStorageDirectory()+ File.separator+"Android"+File.separator+"data"+File.separator+"WMSMobile"+File.separator+"app_database"+File.separator;
+    public String txtPathUserData = Environment.getExternalStorageDirectory() + File.separator + "Android" + File.separator + "data" + File.separator + "WMSMobile" + File.separator + "user_data" + File.separator;
     public String txtDatabaseName=txtPathApp+"WMSMobile";
     public String txtTable_mConfig = "mconfig";
     public String txtTable_mUser = "tUserLogin";
+    public String txtTable_tTimerLog = "tTimerLog";
     public String txtTable_mUserRole = "mUserRole";
     public String txtTable_mSPMHeader = "mSPMHeader";
     public String txtTable_mSPMDetail = "mSPMDetail";
@@ -23,6 +25,20 @@ public class clsHardCode  {
     public String txtMessGetUserRole = "Getting User Role..";
     public String txtMessWrongPass = "Password is Incorect...";
     public String txtMessLogin = "Login..";
+    public String txtServerHubName = "hubAPI";
+    public String txtMethodServerGetRole = "getRoleByUsername";
+    public String txtMethodServerGetVersionName = "getDataLastVersion";
+    public String txtMethodServerLogin = "login";
+    public String txtMethodServerLogout = "logout";
+    public String txtMethodServerGetNoSPM = "getDataSPM";
+    public String txtMethodServerRefreshDataSTAR = "RefreshDataSTAR";
+    public String txtMethodServerConfirmSPMDetail = "confirmSPMDetail";
+    public String txtMethodServerConfirmSPMHeader = "confirmSPMHeader";
+    public String txtMethodServerRefreshSPMHeader = "refreshSPMHeader";
+    public String txtMethodPushData = "pushDataOffline";
+    public String txtMethodServerCancelSPMDetail = "cancelSPMDetail";
+    public String txtTable_tDisplayPicture = "tDisplayPicture";
+    public String txtTable_tDeviceInfoUser = "tDeviceInfoUser";
 
 
 }

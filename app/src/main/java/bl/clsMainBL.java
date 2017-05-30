@@ -61,7 +61,7 @@ public class clsMainBL {
 		boolean result = false;
 		tUserLoginDA _tUserLoginDA=new tUserLoginDA(db);
 		clsStatusMenuStart _clsStatusMenuStart =new clsStatusMenuStart();
-		if(_tUserLoginDA.CheckLoginNow(db)){
+		if(_tUserLoginDA.CheckLogin(db)){
 			_clsStatusMenuStart.set_intStatus(enumStatusMenuStart.UserActiveLogin);
 		} else{
 			Boolean dvalid=false;

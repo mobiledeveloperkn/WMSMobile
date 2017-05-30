@@ -10,9 +10,16 @@
     <!--</style>-->
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="actionMenuTextAppearance">@style/menutextappearance</item>
+    </style>
+
+    <style name="menutextappearance">
+        <item name="android:textColor">#fff</item>
+        <item name="android:textSize">17sp</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
+        <item name="actionMenuTextAppearance">@style/menutextappearance</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
@@ -22,9 +29,43 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="AppThemeGreen" parent="AppTheme">
+        <item name="actionMenuTextAppearance">@style/menutextappearance</item>
         <item name="colorPrimary">@color/primary_color_theme</item>
         <item name="colorPrimaryDark">@color/primary_color_theme</item>
         <item name="colorAccent">@color/primary_color_theme</item>
+    </style>
+    <style name="Cropper.Widget.Drawer.Option.TextView" parent="android:Widget.DeviceDefault.Light.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/drawer_text_padding</item>
+        <item name="android:textSize">@dimen/drawer_text_size</item>
+        <item name="android:clickable">true</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+
+    </style>
+    <style name="error_appearance" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/red</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="AppThemeBlue" parent="AppTheme">
+        <item name="colorPrimary">@color/color_primary_blue</item>
+        <item name="colorPrimaryDark">@color/color_primary_blue_dark</item>
+        <item name="colorAccent">@color/color_accent_pink</item>
+    </style>
+
+    <style name="full_screen_dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+    </style>
+
+    <style name="AppTheme.Button" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/white</item>
+        <item name="android:textColor">@color/color_primary_red_dark</item>
     </style>
 
 </resources>
