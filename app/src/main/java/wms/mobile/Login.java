@@ -86,7 +86,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
     private CoordinatorLayout coordinatorLayout;
     ConnectivityManager conMan;
     TextInputLayout tilEmail, tilPass;
-    TextView txtInfo;
+    TextView txtInfo, txtVersion;
 
     private PackageInfo pInfo = null;
     private String versionName = "";
@@ -115,6 +115,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         tilEmail = (TextInputLayout) findViewById(R.id.input_layout_email);
         tilPass = (TextInputLayout) findViewById(R.id.input_layout_pass);
         txtInfo = (TextView) findViewById(R.id.txtVersionLogin);
+        txtVersion = (TextView) findViewById(R.id.txtVersionApp);
 
         ImageView imgBanner = (ImageView) findViewById(R.id.header);
         imgBanner.setAdjustViewBounds(true);
@@ -132,6 +133,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
 
         if(pInfo!=null){
             versionName = pInfo.versionName;
+            txtVersion.setText(pInfo.versionName);
         }
 
         requestCheckVersion(pInfo.versionName);
@@ -325,7 +327,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                         executeLogin(jsonObject);
                     } else if (strMethodName.equalsIgnoreCase("getDataLastVersion")) {
                         initMethodCheckinVersion(jsonObject);
+                    } else if(strMethodName.equalsIgnoreCase("BroadcastMessage")){
+                        initMethodBroadcastMessage(jsonObject);
                     }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -368,6 +373,35 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                     });
                 }
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initMethodBroadcastMessage(JSONObject jsonObject) {
+        String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated, txtLink;
+        arrrole = new ArrayList<>();
+        arrrole = arrNodata;
+
+        try {
+            strMessage = jsonObject.get("strMessage").toString();
+
+            AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(this);
+            builder1.setTitle("Inforamation");
+            builder1.setMessage(strMessage);
+            builder1.setCancelable(true);
+
+            builder1.setPositiveButton(
+                    "Close",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+
+            AlertDialog alert11 = builder1.create();
+            alert11.show();
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

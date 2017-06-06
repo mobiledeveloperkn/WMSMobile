@@ -168,14 +168,25 @@
                 android:background="@drawable/btn_on_click"/>
 
             <TextView
+                android:id="@+id/txtVersionApp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/white"
+                android:text="VERSION_APP"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/txtVersionLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/white"
+                android:text="URL"
                 android:textStyle="bold" />
 
         </LinearLayout>
