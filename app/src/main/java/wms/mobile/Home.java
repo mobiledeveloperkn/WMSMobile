@@ -29,7 +29,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 
 import addon.ConnectivityReceiver;
@@ -40,6 +44,7 @@ import bl.clsMainBL;
 import bl.mSPMDetailBL;
 import bl.mSPMHeaderBL;
 import bl.tDisplayPictureBL;
+import bl.tTimerLogBL;
 import bl.tUserLoginBL;
 import de.hdodenhof.circleimageview.CircleImageView;
 import jim.h.common.android.lib.zxing.config.ZXingLibConfig;
@@ -49,6 +54,7 @@ import library.common.clsHelper;
 import library.common.mSPMDetailData;
 import library.common.mSPMHeaderData;
 import library.common.tDisplayPictureData;
+import library.common.tTimerLogData;
 import library.common.tUserLoginData;
 import service.WMSMobileService;
 
@@ -202,8 +208,49 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
         dataLogin = new tUserLoginData();
         dataLogin = new tUserLoginBL().getUserActive();
         boolean status = false;
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        String dt = dateFormat.format(cal.getTime());
 
-        status = new WMSMobileService().logout(dataLogin.getTxtDataId(), versionName, dataLogin.getIntUserId());
+        List<tTimerLogData> ltTimerLogData = new ArrayList<>();
+
+        tTimerLogData dtTimerLogLogout = new tTimerLogData();
+
+        dtTimerLogLogout.setDtExecute(dt);
+        dtTimerLogLogout.setBitActive("1");
+        dtTimerLogLogout.setTxtTimerType("Logout");
+        dtTimerLogLogout.setTxtTimerStatus("Close");
+        dtTimerLogLogout.setTxtStarNo(_mSPMHeaderData.getTxtNoSPM());
+        dtTimerLogLogout.setTxtTimerLogId(new clsMainBL().GenerateGuid());
+
+        new tTimerLogBL().insertData(dtTimerLogLogout);
+
+        ltTimerLogData = new tTimerLogBL().getAllData();
+
+        JSONObject resJson = new JSONObject();
+        tTimerLogData _tTimerLogData = new tTimerLogData();
+        Collection<JSONObject> itemsListJquey = new ArrayList<>();
+        for (tTimerLogData data : ltTimerLogData){
+            JSONObject item1 = new JSONObject();
+            try {
+                item1.put(_tTimerLogData.Property_txtTimerLogId, String.valueOf(data.getTxtTimerLogId()));
+                item1.put(_tTimerLogData.Property_bitActive, String.valueOf(data.getBitActive()));
+                item1.put(_tTimerLogData.Property_dtExecute, String.valueOf(data.getDtExecute()));
+                item1.put(_tTimerLogData.Property_txtStarNo, String.valueOf(data.getTxtStarNo()));
+                item1.put(_tTimerLogData.Property_txtTimerStatus, String.valueOf(data.getTxtTimerStatus()));
+                item1.put(_tTimerLogData.Property_txtTimerType, String.valueOf(data.getTxtTimerType()));
+                itemsListJquey.add(item1);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            resJson.put("ListOfTimerLog", new JSONArray(itemsListJquey));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        status = new WMSMobileService().logout(dataLogin.getTxtDataId(), versionName, dataLogin.getIntUserId(), resJson.toString());
 
         if (!status) {
             progressDialog.dismiss();

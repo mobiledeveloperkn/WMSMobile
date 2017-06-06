@@ -167,7 +167,7 @@ public class WMSMobileService extends Service {
         return status;
     }
 
-    public boolean logout(String txtDataId, String versionName, String intUserId) {
+    public boolean logout(String txtDataId, String versionName, String intUserId, String json) {
         boolean status = false;
         String METHOD_SERVER = new clsHardCode().txtMethodServerLogout;
         JSONObject jsonObject = new JSONObject();
@@ -175,6 +175,7 @@ public class WMSMobileService extends Service {
             jsonObject.put("txtDataId", txtDataId);
             jsonObject.put("pInfo", versionName);
             jsonObject.put("intUserId", intUserId);
+            jsonObject.put("dataTimer", json);
         } catch (JSONException e) {
             e.printStackTrace();
         }
