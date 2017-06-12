@@ -148,7 +148,8 @@ public class mconfigDA {
                 + "select  1,'android:versionCode','5','5',1;";
         db.execSQL(txtQuery);
         txtQuery = "insert into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
-                + "select 2,'API','http://10.171.10.9/wmsonline','http://10.171.10.13/wmsonline',1;";
+//                + "select 2,'API','http://10.171.10.9/wmsonline','http://10.171.10.13/wmsonline',1;";
+                + "select 2,'API','http://wms.kalbenutritionals.web.id','http://10.171.10.13/wmsonline',1;";
         db.execSQL(txtQuery);
     }
 
