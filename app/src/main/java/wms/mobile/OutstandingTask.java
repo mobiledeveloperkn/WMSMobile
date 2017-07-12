@@ -91,7 +91,6 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         setContentView(R.layout.activity_outstanding_task);
         btnTaskView = (Button) findViewById(R.id.btn_taskview);
         btnRefresh = (Button) findViewById(R.id.btn_refresh);

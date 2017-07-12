@@ -144,11 +144,14 @@ public class mconfigDA {
     }
 
     public void InsertDefaultMconfig(SQLiteDatabase db) {
-        String txtQuery = "insert into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
+        String txtQuery = "insert or replace into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
                 + "select  1,'android:versionCode','5','5',1;";
         db.execSQL(txtQuery);
-        txtQuery = "insert into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
-                + "select 2,'API','http://10.171.10.9/wmsonline','http://10.171.10.13/wmsonline',1;";
+        txtQuery = "insert or replace into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
+                + "select 2,'API','http://wms.kalbenutritionals.web.id','http://10.171.10.13/wmsonline',1;";
+
+//        txtQuery = "insert or replace into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
+//                + "select 2,'API','http://10.171.10.14/wmsonline','http://10.171.10.13/wmsonline',1;";
         db.execSQL(txtQuery);
     }
 

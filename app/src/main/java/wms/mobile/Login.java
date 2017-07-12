@@ -136,7 +136,26 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
             txtVersion.setText(pInfo.versionName);
         }
 
-        requestCheckVersion(pInfo.versionName);
+        try{
+            requestCheckVersion(pInfo.versionName);
+        }
+        catch(Exception ex){
+            AlertDialog.Builder builder1 = new AlertDialog.Builder(Login.this);
+            builder1.setMessage("Failed connect to server. Please try again later");
+            builder1.setCancelable(true);
+
+            builder1.setPositiveButton(
+                    "Close",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+
+            AlertDialog alert11 = builder1.create();
+            alert11.show();
+        }
+
         new tDeviceInfoUserBL().SaveInfoDevice("","", versionName);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayoutLogin);
 
