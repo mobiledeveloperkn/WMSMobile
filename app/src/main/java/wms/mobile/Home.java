@@ -204,7 +204,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
 
     private void requestLogout() {
         progressDialog.show();
-        new clsMainActivity().timerDelayRemoveDialog(time, progressDialog);
+//        new clsMainActivity().timerDelayRemoveDialog(time, progressDialog);
         dataLogin = new tUserLoginData();
         dataLogin = new tUserLoginBL().getUserActive();
         boolean status = false;
@@ -291,7 +291,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
             final String result = scanResult.getContents();
             if (result != null) {
                 progressDialog.show();
-                new clsMainActivity().timerDelayRemoveDialog(time, progressDialog);
+//                new clsMainActivity().timerDelayRemoveDialog(time, progressDialog);
                 tUserLoginData _tUserLoginData = new tUserLoginData();
                 _tUserLoginData = new tUserLoginBL().getUserActive();
                 status = new WMSMobileService().getDataSPM(result, _tUserLoginData.getIntUserId(), versionName);
@@ -488,6 +488,9 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
                 startActivity(myIntent);
                 finish();
             } else {
+                if(progressDialog!=null){
+                    progressDialog.dismiss();
+                }
                 new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, false);
             }
             progressDialog.dismiss();
@@ -563,7 +566,13 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
                     btnOutstandingTask.setEnabled(false);
                     btnOutstandingTask.setBackgroundResource(R.drawable.btn_innermenu_gray);
                 }
+                if(progressDialog!=null){
+                    progressDialog.dismiss();
+                }
             } else {
+                if(progressDialog!=null){
+                    progressDialog.dismiss();
+                }
                 new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, false);
             }
             progressDialog.dismiss();

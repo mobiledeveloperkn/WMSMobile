@@ -492,7 +492,7 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
 
         if (result != null) {
             progressDialog.show();
-            new clsMainActivity().timerDelayRemoveDialog(time, progressDialog);
+//            new clsMainActivity().timerDelayRemoveDialog(time, progressDialog);
             tUserLoginData _tUserLoginData = new tUserLoginBL().getUserActive();
             status = new WMSMobileService().refreshDataSTAR(result, _tUserLoginData.getIntUserId(), versionName);
             if (!status) {
@@ -505,7 +505,7 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
 
     public void confirmTaskHeader() {
         progressDialog.show();
-        new clsMainActivity().timerDelayRemoveDialog(time, progressDialog);
+//        new clsMainActivity().timerDelayRemoveDialog(time, progressDialog);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         String dt = dateFormat.format(cal.getTime());
@@ -658,7 +658,13 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
                 } else if (status.equals("1") && sync.equals("1")) {
                     new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, false);
                 }
+                if(progressDialog!=null){
+                    progressDialog.dismiss();
+                }
             } else {
+                if(progressDialog!=null){
+                    progressDialog.dismiss();
+                }
                 new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, false);
             }
             progressDialog.dismiss();
@@ -726,9 +732,15 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
                         new mSPMDetailBL().saveFromPushData(id, statusDetail, syncDetail);
                     }
                 }
+                if(progressDialog!=null){
+                    progressDialog.dismiss();
+                }
                 new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, true);
                 initMethodMappingButton();
             } else {
+                if(progressDialog!=null){
+                    progressDialog.dismiss();
+                }
                 new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, false);
             }
         } catch (JSONException e) {
@@ -813,7 +825,13 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
 //                    Intent myIntent = new Intent(OutstandingTask.this, Home.class);
 //                    startActivity(myIntent);
                 }
+                if(progressDialog!=null){
+                    progressDialog.dismiss();
+                }
             } else {
+                if(progressDialog!=null){
+                    progressDialog.dismiss();
+                }
                 Toast.makeText(OutstandingTask.this, String.valueOf(strMessage), Toast.LENGTH_SHORT).show();
                 new tTimerLogBL().deleteDataCompleteWhileError();
             }

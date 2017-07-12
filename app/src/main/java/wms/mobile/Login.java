@@ -290,7 +290,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         boolean status;
         if (txtEmail.length() > 0) {
             progressDialog.show();
-            new clsMainActivity().timerDelayRemoveDialog(time, progressDialog);
+//            new clsMainActivity().timerDelayRemoveDialog(time, progressDialog);
             status = new WMSMobileService().getRole(txtEmail, versionName);
             if (!status) {
                 progressDialog.dismiss();
@@ -305,12 +305,16 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
 
     private void sendRequestLogin(View view) {
         String nameRole = selectedRole;
-        boolean status;
+        boolean status = false;
 
         if (txtPass.length() > 0) {
             progressDialog.show();
-            new clsMainActivity().timerDelayRemoveDialog(time, progressDialog);
-            status = new WMSMobileService().login(txtEmail, txtPass, HMRole.get(nameRole), versionName, dataLogin.getIntUserId());
+//            new clsMainActivity().timerDelayRemoveDialog(time, progressDialog);
+            try {
+                status = new WMSMobileService().login(txtEmail, txtPass, HMRole.get(nameRole), versionName, dataLogin.getIntUserId());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             if (!status) {
                 progressDialog.dismiss();
                 boolean report = new SignalRBL().buildingConnection();
@@ -456,8 +460,14 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
 
                         HMRole.put(txtRoleName, intRoleId);
                     }
+                    if(progressDialog!=null){
+                        progressDialog.dismiss();
+                    }
                     tilEmail.setError(null);
                 } else {
+                    if(progressDialog!=null){
+                        progressDialog.dismiss();
+                    }
                     tilEmail.setError("Username not Valid");
                     spnRole.setAdapter(new MyAdapter(getApplicationContext(), R.layout.custom_spinner, arrrole));
                     etTxtEmail.requestFocus();
@@ -548,6 +558,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                 Intent myIntent = new Intent(Login.this, Home.class);
                 startActivity(myIntent);
             } else {
+                if(progressDialog!=null){
+                    progressDialog.dismiss();
+                }
                 etTxtPass.requestFocus();
                 tilPass.requestFocus();
                 tilPass.setError(strMessage);

@@ -145,7 +145,7 @@ public class WMSMobileService extends Service {
         return status;
     }
 
-    public boolean login(String txtEmail, String pass, String roleId, String pInfo, String intUserId) {
+    public boolean login(String txtEmail, String pass, String roleId, String pInfo, String intUserId) throws InterruptedException {
         boolean status = false;
         String METHOD_SERVER = new clsHardCode().txtMethodServerLogin;
         JSONObject jsonObject = new JSONObject();
@@ -160,6 +160,7 @@ public class WMSMobileService extends Service {
         }
             if (mHubConnection.getConnectionId() != null) {
                 mHubProxy.invoke(METHOD_SERVER, jsonObject.toString());
+//                mHubProxy.wait(4000);
                 status = true;
             } else {
                 status = false;

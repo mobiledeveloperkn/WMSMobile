@@ -528,7 +528,7 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
     public void showProgressDialog(boolean valid) {
         if(valid){
             progressDialog.show();
-            new clsMainActivity().timerDelayRemoveDialog(time, progressDialog);
+//            new clsMainActivity().timerDelayRemoveDialog(time, progressDialog);
         }
     }
 
