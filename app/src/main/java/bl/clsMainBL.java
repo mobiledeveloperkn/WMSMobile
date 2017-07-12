@@ -58,6 +58,8 @@ public class clsMainBL {
 
 	public clsStatusMenuStart checkUserActive() throws ParseException {
 		this.db = getDb();
+		mconfigDA _mconfigDA = new mconfigDA(db);
+		_mconfigDA.InsertDefaultMconfig(db);
 		boolean result = false;
 		tUserLoginDA _tUserLoginDA=new tUserLoginDA(db);
 		clsStatusMenuStart _clsStatusMenuStart =new clsStatusMenuStart();

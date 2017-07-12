@@ -831,10 +831,11 @@ public class clsMainActivity extends Activity implements WMSMobileService.update
                         snackbarOffline.show();
                         setSnackBarClose(clsMainActivity.this);
                         status = new WMSMobileService().pushFromOfflineAct(dtJson.getDtdataJson().txtJSON().toString(), versionName);
-//                        if (status){
-//                            snackbar.dismiss();
-////                            new TabsTaskHeader().updateListView();
-//                        }
+                        if (status){
+                            snackbar.dismiss();
+                            snackbarOffline.dismiss();
+                            new TabsTaskHeader().updateListView();
+                        }
                     } catch (Exception e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
