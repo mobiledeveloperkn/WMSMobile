@@ -117,6 +117,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         txtInfo = (TextView) findViewById(R.id.txtVersionLogin);
         txtVersion = (TextView) findViewById(R.id.txtVersionApp);
 
+        etTxtEmail.setFocusableInTouchMode(true);
+        etTxtPass.setFocusableInTouchMode(true);
+
         ImageView imgBanner = (ImageView) findViewById(R.id.header);
         imgBanner.setAdjustViewBounds(true);
         imgBanner.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -251,9 +254,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                     if (txtEmail.length() > 0) {
                         sendRequestGetRole();
                     } else {
+                        etTxtEmail.clearFocus();
+                        etTxtPass.clearFocus();
                         etTxtEmail.requestFocus();
-                        tilEmail.requestFocus();
                         tilEmail.setError("Username cannot empty");
+                        arrrole = new ArrayList<>();
+                        arrrole = arrNodata;
+                        spnRole.setAdapter(new MyAdapter(getApplicationContext(), R.layout.custom_spinner, arrrole));
                     }
                     return true;
                 }
@@ -271,7 +278,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                     return true;
                 }
         }
-        return false;
+        return true;
     }
 
     private void requestCheckVersion(String versionName) {
@@ -298,6 +305,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                 etTxtEmail.requestFocus();
             }
         } else {
+            etTxtEmail.clearFocus();
+            etTxtPass.clearFocus();
             etTxtEmail.requestFocus();
             new clsMainActivity().showSnackbar(coordinatorLayout, "Username cannot empty", false, "");
         }
@@ -464,6 +473,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                         progressDialog.dismiss();
                     }
                     tilEmail.setError(null);
+                    etTxtPass.requestFocus();
                 } else {
                     if (progressDialog != null) {
                         progressDialog.dismiss();
@@ -474,7 +484,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                 }
                 spnRole.setAdapter(new MyAdapter(getApplicationContext(), R.layout.custom_spinner, arrrole));
                 spnRole.setEnabled(true);
-                etTxtPass.requestFocus();
             } else {
                 spnRole.setAdapter(new MyAdapter(getApplicationContext(), R.layout.custom_spinner, arrrole));
                 spnRole.setEnabled(false);
