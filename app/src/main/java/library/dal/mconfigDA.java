@@ -72,16 +72,20 @@ public class mconfigDA {
         if (cursor != null)
             cursor.moveToFirst();
         mconfigData contact = new mconfigData();
-        if (cursor.getCount() > 0) {
-            contact = new mconfigData(Integer.parseInt(cursor.getString(0)),
-                    cursor.getString(1), cursor.getString(2),
-                    cursor.getString(3), Integer.parseInt(cursor.getString(4)));
+        if (cursor != null) {
+            if (cursor.getCount() > 0) {
+                contact = new mconfigData(Integer.parseInt(cursor.getString(0)),
+                        cursor.getString(1), cursor.getString(2),
+                        cursor.getString(3), Integer.parseInt(cursor.getString(4)));
 
-            // return contact
-        } else {
-            contact = null;
+                // return contact
+            } else {
+                contact = null;
+            }
         }
-        cursor.close();
+        if (cursor != null) {
+            cursor.close();
+        }
         return contact;
     }
 
@@ -147,11 +151,11 @@ public class mconfigDA {
         String txtQuery = "insert or replace into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
                 + "select  1,'android:versionCode','5','5',1;";
         db.execSQL(txtQuery);
-        txtQuery = "insert or replace into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
-                + "select 2,'API','http://wms.kalbenutritionals.web.id','http://10.171.10.13/wmsonline',1;";
-
 //        txtQuery = "insert or replace into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
-//                + "select 2,'API','http://10.171.10.14/wmsonline','http://10.171.10.13/wmsonline',1;";
+//                + "select 2,'API','http://wms.kalbenutritionals.web.id/mobileapi','http://10.171.10.13/wmsonline',1;";
+
+        txtQuery = "insert or replace into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
+                + "select 2,'API','http://10.201.10.49:8001','http://10.171.10.13/wmsonline',1;";
         db.execSQL(txtQuery);
     }
 
@@ -166,21 +170,25 @@ public class mconfigDA {
         if (cursor != null)
             cursor.moveToFirst();
         mconfigData data = new mconfigData();
-        if (cursor.getCount() > 0) {
-            data = new mconfigData(Integer.parseInt(cursor.getString(0)),
-                    cursor.getString(1), cursor.getString(2),
-                    cursor.getString(3), Integer.parseInt(cursor.getString(4)));
+        if (cursor != null) {
+            if (cursor.getCount() > 0) {
+                data = new mconfigData(Integer.parseInt(cursor.getString(0)),
+                        cursor.getString(1), cursor.getString(2),
+                        cursor.getString(3), Integer.parseInt(cursor.getString(4)));
 
-            if (data.get_txtValue().equals("")) {
-                txtLinkAPI = data.get_txtDefaultValue();
+                if (data.get_txtValue().equals("")) {
+                    txtLinkAPI = data.get_txtDefaultValue();
+                } else {
+                    txtLinkAPI = data.get_txtValue();
+                }
+                // return contact
             } else {
-                txtLinkAPI = data.get_txtValue();
+                data = null;
             }
-            // return contact
-        } else {
-            data = null;
         }
-        cursor.close();
+        if (cursor != null) {
+            cursor.close();
+        }
         // return contact list
         return txtLinkAPI;
     }
@@ -196,21 +204,25 @@ public class mconfigDA {
         if (cursor != null)
             cursor.moveToFirst();
         mconfigData data = new mconfigData();
-        if (cursor.getCount() > 0) {
-            data = new mconfigData(Integer.parseInt(cursor.getString(0)),
-                    cursor.getString(1), cursor.getString(2),
-                    cursor.getString(3), Integer.parseInt(cursor.getString(4)));
+        if (cursor != null) {
+            if (cursor.getCount() > 0) {
+                data = new mconfigData(Integer.parseInt(cursor.getString(0)),
+                        cursor.getString(1), cursor.getString(2),
+                        cursor.getString(3), Integer.parseInt(cursor.getString(4)));
 
-            if (data.get_txtValue().equals("")) {
-                txtLinkAPI = data.get_txtDefaultValue();
+                if (data.get_txtValue().equals("")) {
+                    txtLinkAPI = data.get_txtDefaultValue();
+                } else {
+                    txtLinkAPI = data.get_txtValue();
+                }
+                // return contact
             } else {
-                txtLinkAPI = data.get_txtValue();
+                data = null;
             }
-            // return contact
-        } else {
-            data = null;
         }
-        cursor.close();
+        if (cursor != null) {
+            cursor.close();
+        }
         // return contact list
         return txtLinkAPI;
     }

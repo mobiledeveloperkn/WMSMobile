@@ -99,7 +99,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         super.onCreate(savedInstanceState);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_login);
 
@@ -129,17 +129,21 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         mconfigData dataAPI = _mconfigDA.getData(db, enumConfigData.ApiKalbe.getidConfigData());
         txtInfo.setText(dataAPI.get_txtValue());
 
-        pInfo= new clsMainActivity().getPinfo(this);
+        pInfo = new clsMainActivity().getPinfo(this);
 
-        if(pInfo!=null){
+        if (pInfo != null) {
             versionName = pInfo.versionName;
             txtVersion.setText(pInfo.versionName);
         }
 
-        try{
+        progressDialog = new ProgressDialog(Login.this);
+        progressDialog.setMessage("Loading... Please Wait");
+        progressDialog.setIndeterminate(false); //ukur berapa persen, false maka not do
+        progressDialog.setCancelable(false);
+
+        try {
             requestCheckVersion(pInfo.versionName);
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             AlertDialog.Builder builder1 = new AlertDialog.Builder(Login.this);
             builder1.setMessage("Failed connect to server. Please try again later");
             builder1.setCancelable(true);
@@ -156,7 +160,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
             alert11.show();
         }
 
-        new tDeviceInfoUserBL().SaveInfoDevice("","", versionName);
+        new tDeviceInfoUserBL().SaveInfoDevice("", "", versionName);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayoutLogin);
 
         arrNodata = new ArrayList<>();
@@ -182,11 +186,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
 
         dataLogin = new tUserLoginData();
 
-        //bikin progres dialognya
-        progressDialog = new ProgressDialog(Login.this);
-        progressDialog.setMessage("Loading... Please Wait");
-        progressDialog.setIndeterminate(false); //ukur berapa persen, false maka not do
-        progressDialog.setCancelable(false);
     }
 
     @Override
@@ -276,13 +275,14 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
     }
 
     private void requestCheckVersion(String versionName) {
-//        progressDialog.show();
         boolean status = false;
         if (versionName != null) {
+            progressDialog.show();
             status = new WMSMobileService().getDataLastVersion(versionName);
             if (!status) {
                 new clsMainActivity().checkConnection(coordinatorLayout, conMan);
             }
+            progressDialog.dismiss();
         }
     }
 
@@ -350,7 +350,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                         executeLogin(jsonObject);
                     } else if (strMethodName.equalsIgnoreCase("getDataLastVersion")) {
                         initMethodCheckinVersion(jsonObject);
-                    } else if(strMethodName.equalsIgnoreCase("BroadcastMessage")){
+                    } else if (strMethodName.equalsIgnoreCase("BroadcastMessage")) {
                         initMethodBroadcastMessage(jsonObject);
                     }
 
@@ -460,15 +460,15 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
 
                         HMRole.put(txtRoleName, intRoleId);
                     }
-                    if(progressDialog!=null){
+                    if (progressDialog != null) {
                         progressDialog.dismiss();
                     }
                     tilEmail.setError(null);
                 } else {
-                    if(progressDialog!=null){
+                    if (progressDialog != null) {
                         progressDialog.dismiss();
                     }
-                    tilEmail.setError("Username not Valid");
+                    tilEmail.setError(strMessage);
                     spnRole.setAdapter(new MyAdapter(getApplicationContext(), R.layout.custom_spinner, arrrole));
                     etTxtEmail.requestFocus();
                 }
@@ -558,7 +558,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                 Intent myIntent = new Intent(Login.this, Home.class);
                 startActivity(myIntent);
             } else {
-                if(progressDialog!=null){
+                if (progressDialog != null) {
                     progressDialog.dismiss();
                 }
                 etTxtPass.requestFocus();
