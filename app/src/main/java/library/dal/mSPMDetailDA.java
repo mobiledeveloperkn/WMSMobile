@@ -350,6 +350,19 @@ public class mSPMDetailDA {
                 new String[] { String.valueOf(id) });
     }
 
+    public int updateDataRevertById(SQLiteDatabase db, String id, String intUserId) {
+        mSPMDetailData dt = new mSPMDetailData();
+
+        ContentValues values = new ContentValues();
+        values.put(dt.Property_bitStatus, "0");
+        values.put(dt.Property_bitSync, "0");
+        values.put(dt.Property_intUserId, intUserId);
+
+        // updating row
+        return db.update(TABLE_CONTACTS, values, dt.Property_intSPMDetailId + " = ? ",
+                new String[] { String.valueOf(id) });
+    }
+
     public int saveDataPush(SQLiteDatabase db, String id, String status, String sync) {
         mSPMDetailData dt = new mSPMDetailData();
 

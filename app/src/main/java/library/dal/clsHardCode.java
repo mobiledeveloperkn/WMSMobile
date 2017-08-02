@@ -33,6 +33,7 @@ public class clsHardCode  {
     public String txtMethodServerGetNoSPM = "getDataSPM";
     public String txtMethodServerRefreshDataSTAR = "RefreshDataSTAR";
     public String txtMethodServerConfirmSPMDetail = "confirmSPMDetail";
+    public String txtMethodServerUndoCancelSPMDetail = "revertCancelSPMDetail";
     public String txtMethodServerConfirmSPMHeader = "confirmSPMHeader";
     public String txtMethodServerRefreshSPMHeader = "refreshSPMHeader";
     public String txtMethodPushData = "pushDataOffline";

@@ -165,6 +165,41 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
         tvTotalPending.setText(mSPMDetailDataListPending != null ? String.valueOf(mSPMDetailDataListPending.size()) : "0");
         tvTotalConfirm.setText(mSPMDetailDataListSuccess != null ? String.valueOf(mSPMDetailDataListSuccess.size()) : "0");
         tvTotalCancel.setText(mSPMDetailDataListCancel != null ? String.valueOf(mSPMDetailDataListCancel.size()) : "0");
+
+            tvTotalPending.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(_mSPMHeaderData.getBitSync().equals("0")){
+                        Intent intent = new Intent(OutstandingTask.this, TabsTaskHeader.class);
+                        intent.putExtra("txtNoSPM", _mSPMHeaderData.getTxtNoSPM());
+                        intent.putExtra("tab","0");
+                        startActivity(intent);
+                    }
+                }
+            });
+        tvTotalConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(_mSPMHeaderData.getBitSync().equals("0")){
+                    Intent intent = new Intent(OutstandingTask.this, TabsTaskHeader.class);
+                    intent.putExtra("txtNoSPM", _mSPMHeaderData.getTxtNoSPM());
+                    intent.putExtra("tab","1");
+                    startActivity(intent);
+                }
+            }
+        });
+        tvTotalCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(_mSPMHeaderData.getBitSync().equals("0")){
+                    Intent intent = new Intent(OutstandingTask.this, TabsTaskHeader.class);
+                    intent.putExtra("txtNoSPM", _mSPMHeaderData.getTxtNoSPM());
+                    intent.putExtra("tab","2");
+                    startActivity(intent);
+                }
+            }
+        });
+
     }
 
     private void initMethodMappingButton() {

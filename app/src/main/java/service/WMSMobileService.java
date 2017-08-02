@@ -249,6 +249,26 @@ public class WMSMobileService extends Service {
         return status;
     }
 
+    public boolean undoCancelSPMDetail(String intSPMDetailId, String intUserId, String versionName) {
+        boolean status = false;
+        String METHOD_SERVER = new clsHardCode().txtMethodServerUndoCancelSPMDetail;
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("intSPMDetailId", intSPMDetailId);
+            jsonObject.put("intUserId", intUserId);
+            jsonObject.put("pInfo", versionName);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (mHubConnection.getConnectionId() != null) {
+            mHubProxy.invoke(METHOD_SERVER, jsonObject.toString());
+            status = true;
+        } else {
+            status = false;
+        }
+        return status;
+    }
+
     public boolean confirmSPMHeader(String intSPMHeaderId, String versionName, String intUserId, String json) {
         boolean status = false;
         String METHOD_SERVER = new clsHardCode().txtMethodServerConfirmSPMHeader;

@@ -69,6 +69,7 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
     private PackageInfo pInfo = null;
     private String versionName = "";
     private String txtNoSPM;
+    private String tab;
 
     private static ProgressDialog progressDialog;
     private static long time = 15000;
@@ -90,6 +91,7 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
 
         if(bundle != null){
             txtNoSPM = bundle.getString("txtNoSPM");
+            tab = bundle.getString("tab");
         }
 
         dataLogin = new tUserLoginBL().getUserActive();
@@ -100,7 +102,9 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
         List<mSPMDetailData> _mSPMDetailData = new ArrayList<mSPMDetailData>();
         _mSPMDetailData = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
 
-        if (_mSPMDetailData.size() == 0) {
+        if(tab!=null){
+            switchTabDinamis(Integer.parseInt(tab));
+        } else if (_mSPMDetailData.size() == 0) {
             switchTab();
         }
         pInfo = new clsMainActivity().getPinfo(this);
@@ -218,6 +222,8 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
                         initMethodConfirmSPMDetail(jsonObject);
                     } else if (strMethodName.equalsIgnoreCase("cancelSPMDetail")) {
                         initMethodCancelSPMDetail(jsonObject);
+                    } else if(strMethodName.equalsIgnoreCase("revertCancelSPMDetail")){
+                        initMethodRevertSPMDetail(jsonObject);
                     } else if (strMethodName.equalsIgnoreCase("pushDataOffline")) {
 //                        updateListView();
                         updateFromPushDataOffline(jsonObject);
@@ -227,6 +233,49 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
                 }
             }
         });
+    }
+
+    private void initMethodRevertSPMDetail(JSONObject jsonObject) {
+        String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated;
+        String txtNoSPM;
+
+        try {
+            boolValid = jsonObject.get("boolValid").toString();
+            strMessage = jsonObject.get("strMessage").toString();
+            strMethodName = jsonObject.get("strMethodName").toString();
+
+            if (boolValid.equalsIgnoreCase("true")) {
+                JSONObject jsonObjectHeader = jsonObject.getJSONObject("listOfmSPMDetail");
+
+                String status = jsonObjectHeader.get("STATUS").toString();
+                String sync = jsonObjectHeader.get("SYNC").toString();
+                String _intSPMDetailId = jsonObjectHeader.get("SPM_DETAIL_ID").toString();
+                String txtLocator = jsonObjectHeader.get("LOCATOR").toString();
+                txtNoSPM = jsonObjectHeader.getString("SPM_NO").toString();
+
+                if (status.equals("0") && sync.equals("0")) {
+
+//                    new clsMainActivity().saveTimerLog("Open", "Done: " + txtLocator, txtNoSPM);
+
+                    new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, true);
+
+                    new mSPMDetailBL().updateDataRevertById(_intSPMDetailId, dataLogin.getIntUserId());
+                    adapterSuccess.notifyDataSetChanged();
+                    adapterProgress.notifyDataSetChanged();
+//                    adapterCancel.notifyDataSetChanged();
+                    new TaskOnProgressFragment().fetchData(TabsTaskHeader.this);
+                    new TaskSuccessFragment().fetchData(TabsTaskHeader.this);
+                    new TaskCancelFragment().fetchData(TabsTaskHeader.this);
+                    menu.clear();
+                    onCreateOptionsMenu(menu);
+                }
+            } else {
+                new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, false);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        progressDialog.dismiss();
     }
 
     private void updateFromPushDataOffline(JSONObject jsonObject) {
@@ -570,6 +619,10 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
 
     public void switchTab() {
         tabLayout.getTabAt(1).select();
+    }
+
+    public void switchTabDinamis(int position) {
+        tabLayout.getTabAt(position).select();
     }
 
     public void switchTabCancel() {

@@ -86,6 +86,12 @@ public class mSPMDetailBL extends clsMainBL {
         _mSPMDetailDA.updateDataById(_db, idSPMDetail, intUserId);
     }
 
+    public void updateDataRevertById(String idSPMDetail, String intUserId){
+        SQLiteDatabase _db=getDb();
+        mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(_db);
+        _mSPMDetailDA.updateDataRevertById(_db, idSPMDetail, intUserId);
+    }
+
     public void updateDataValueByIdOffline(String idSPMDetail, String intUserId){
         SQLiteDatabase _db=getDb();
         mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(_db);

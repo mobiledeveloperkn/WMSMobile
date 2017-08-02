@@ -25,6 +25,7 @@ import java.util.List;
 import bl.tUserLoginBL;
 import library.common.mSPMDetailData;
 import library.common.tUserLoginData;
+import library.dal.clsHardCode;
 import service.WMSMobileService;
 import wms.mobile.R;
 import wms.mobile.TabsTaskHeader;
@@ -133,7 +134,7 @@ public class SwipeListAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void viewPopupCancel(Activity activity, int position) {
+    private void viewPopupCancel(final Activity activity, final int position) {
         LayoutInflater layoutInflater = LayoutInflater.from(activity);
         final View promptView = layoutInflater.inflate(R.layout.activity_task_detail, null);
 
@@ -161,8 +162,71 @@ public class SwipeListAdapter extends BaseAdapter {
         final AlertDialog alertD = alertDialogBuilder.create();
         alertD.show();
 
-        btnConfirm.setText("CANCELED");
-        btnConfirm.setEnabled(false);
+        btnConfirm.setText("UNDO CANCEL");
+        btnConfirm.setEnabled(true);
+
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
+                alertDialog.setTitle("Revert");
+                alertDialog.setMessage("Are you sure to revert this item?");
+                alertDialog.setCancelable(false);
+                alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String _intSPMDetailId = mSPMDetailDataList.get(position).getIntSPMDetailId();
+                        String txtNoSPM = mSPMDetailDataList.get(position).getTxtNoSPM();
+                        tUserLoginData dataLogin = new tUserLoginBL().getUserActive();
+                        String _intUserId = dataLogin.getIntUserId();
+                        dataLogin.getIntUserId();
+                        boolean status = false;
+                        pInfo = new clsMainActivity().getPinfo(activity);
+                        if(pInfo!=null){
+                            versionName = pInfo.versionName;
+                        }
+                        if(triggerProgressDialog!=null){
+                            addon.SwipeListAdapter.triggerProgressDialog.showProgressDialog(true);
+                        }
+                        status = new WMSMobileService().undoCancelSPMDetail(_intSPMDetailId, _intUserId, versionName);
+                        if (!status) {
+                            JSONObject jsonObject = new JSONObject();
+                            String method = new clsHardCode().txtMethodServerUndoCancelSPMDetail;
+                            String message = "Success";
+                            try {
+                                jsonObject.put("_intSPMDetailId", _intSPMDetailId);
+                                jsonObject.put("_intUserId", _intUserId);
+                                jsonObject.put("txtNoSPM", txtNoSPM);
+                                jsonObject.put("strMethodName", method);
+                                jsonObject.put("message", message);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+//                            new mSPMDetailBL().updateDataValueById(_intSPMDetailId, _intUserId);
+                            new TabsTaskHeader().onNetworkConnectionChanged(true);
+                            if(triggerOnOfflineConnection!=null){
+                                addon.SwipeListAdapter.triggerOnOfflineConnection.onOfflineConnection(jsonObject);
+                            }
+                        }
+
+//                        List<mSPMDetailData> _mSPMDetailData = new ArrayList<mSPMDetailData>();
+//                        _mSPMDetailData = new mSPMDetailBL().getAllDataTaskPending();
+//
+//                        if (_mSPMDetailData.size() == 0) {
+//                            new TabsTaskHeader().switchTab();
+//                        }
+                        alertD.dismiss();
+                    }
+                });
+                alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                alertDialog.show();
+            }
+        });
 
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
