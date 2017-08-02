@@ -37,6 +37,25 @@
             <!--</LinearLayout>-->
         </LinearLayout>
 
+        <!-- layout check version -->
+        <LinearLayout
+            android:id="@+id/llContentWarning"
+            android:layout_width="fill_parent"
+            android:layout_height="0dip"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <Button
+                android:id="@+id/btnCheckVersion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_edtext"
+                android:text="Check Version"
+                android:textStyle="bold" />
+        </LinearLayout>
+
         <!-- BODY -->
         <LinearLayout
             android:id="@+id/llContent"

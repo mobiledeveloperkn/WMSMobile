@@ -32,6 +32,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -92,6 +93,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
     private String versionName = "";
     private tUserLoginData dataLogin;
     private ProgressDialog progressDialog;
+    private LinearLayout llContentWarning;
+    private LinearLayout llContent;
+    private Button btnCheckVersion;
 //    private long time = 15000;
 
     @Override
@@ -117,6 +121,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         txtInfo = (TextView) findViewById(R.id.txtVersionLogin);
         txtVersion = (TextView) findViewById(R.id.txtVersionApp);
 
+        llContentWarning = (LinearLayout) findViewById(R.id.llContentWarning);
+        llContent = (LinearLayout) findViewById(R.id.llContent);
+        btnCheckVersion = (Button) findViewById(R.id.btnCheckVersion);
+
         etTxtEmail.setFocusableInTouchMode(true);
         etTxtPass.setFocusableInTouchMode(true);
 
@@ -132,7 +140,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         mconfigData dataAPI = _mconfigDA.getData(db, enumConfigData.ApiKalbe.getidConfigData());
         txtInfo.setText(dataAPI.get_txtValue());
 
-        PackageInfo pInfo = new clsMainActivity().getPinfo(this);
+        final PackageInfo pInfo = new clsMainActivity().getPinfo(this);
 
         if (pInfo != null) {
             versionName = pInfo.versionName;
@@ -141,29 +149,44 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
 
         progressDialog = new ProgressDialog(Login.this);
         progressDialog.setMessage("Loading... Please Wait");
-        progressDialog.setIndeterminate(false); //ukur berapa persen, false maka not do
+        progressDialog.setIndeterminate(false);
         progressDialog.setCancelable(false);
 
         try {
             if (pInfo != null) {
+                llContentWarning.setVisibility(View.GONE);
+                llContent.setVisibility(View.GONE);
+                btnCheckVersion.setVisibility(View.GONE);
                 requestCheckVersion(pInfo.versionName);
             }
         } catch (Exception ex) {
-            AlertDialog.Builder builder1 = new AlertDialog.Builder(Login.this);
-            builder1.setMessage("Failed connect to server. Please try again later");
-            builder1.setCancelable(true);
-
-            builder1.setPositiveButton(
-                    "Close",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                        }
-                    });
-
-            AlertDialog alert11 = builder1.create();
-            alert11.show();
+            llContentWarning.setVisibility(View.VISIBLE);
+            btnCheckVersion.setVisibility(View.VISIBLE);
+            if(progressDialog.isShowing()){
+                progressDialog.dismiss();
+            }
         }
+
+        btnCheckVersion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                progressDialog = new ProgressDialog(Login.this);
+                progressDialog.setMessage("Loading... Please Wait");
+                progressDialog.setIndeterminate(false);
+                progressDialog.setCancelable(false);
+                try {
+                    if (pInfo != null) {
+                        requestCheckVersion(pInfo.versionName);
+                    }
+                } catch (Exception ex) {
+                    llContentWarning.setVisibility(View.VISIBLE);
+                    btnCheckVersion.setVisibility(View.VISIBLE);
+                    if(progressDialog.isShowing()){
+                        progressDialog.dismiss();
+                    }
+                }
+            }
+        });
 
         new tDeviceInfoUserBL().SaveInfoDevice("", "", versionName);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayoutLogin);
@@ -290,8 +313,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
             status = new WMSMobileService().getDataLastVersion(versionName);
             if (!status) {
                 new clsMainActivity().checkConnection(coordinatorLayout, conMan);
+                progressDialog.dismiss();
+                llContentWarning.setVisibility(View.VISIBLE);
+                btnCheckVersion.setVisibility(View.VISIBLE);
             }
-            progressDialog.dismiss();
+            if(progressDialog.isShowing()){
+                progressDialog.dismiss();
+            }
         }
     }
 
@@ -405,6 +433,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                             downloadTask.cancel(true);
                         }
                     });
+                } else {
+                    llContent.setVisibility(View.VISIBLE);
+                    btnCheckVersion.setVisibility(View.GONE);
+                    llContentWarning.setVisibility(View.GONE);
                 }
             }
         } catch (JSONException e) {
