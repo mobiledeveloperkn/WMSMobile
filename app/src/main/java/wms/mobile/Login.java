@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.StrictMode;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TextInputEditText;
@@ -82,17 +83,16 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
     Spinner spnRole;
     String txtEmail, txtPass, selectedRole;
     private List<String> arrrole, arrNodata;
-    private HashMap<String, String> HMRole = new HashMap<String, String>();
+    private HashMap<String, String> HMRole = new HashMap<>();
     private CoordinatorLayout coordinatorLayout;
     ConnectivityManager conMan;
     TextInputLayout tilEmail, tilPass;
     TextView txtInfo, txtVersion;
 
-    private PackageInfo pInfo = null;
     private String versionName = "";
     private tUserLoginData dataLogin;
     private ProgressDialog progressDialog;
-    private long time = 15000;
+//    private long time = 15000;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -132,7 +132,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         mconfigData dataAPI = _mconfigDA.getData(db, enumConfigData.ApiKalbe.getidConfigData());
         txtInfo.setText(dataAPI.get_txtValue());
 
-        pInfo = new clsMainActivity().getPinfo(this);
+        PackageInfo pInfo = new clsMainActivity().getPinfo(this);
 
         if (pInfo != null) {
             versionName = pInfo.versionName;
@@ -145,7 +145,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         progressDialog.setCancelable(false);
 
         try {
-            requestCheckVersion(pInfo.versionName);
+            if (pInfo != null) {
+                requestCheckVersion(pInfo.versionName);
+            }
         } catch (Exception ex) {
             AlertDialog.Builder builder1 = new AlertDialog.Builder(Login.this);
             builder1.setMessage("Failed connect to server. Please try again later");
@@ -196,7 +198,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         switch (view.getId()) {
             case R.id.buttonLogin:
                 txtPass = etTxtPass.getText().toString();
-                sendRequestLogin(view);
+                sendRequestLogin();
                 break;
             case R.id.buttonPing:
                 sendRequestPing();
@@ -282,7 +284,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
     }
 
     private void requestCheckVersion(String versionName) {
-        boolean status = false;
+        boolean status;
         if (versionName != null) {
             progressDialog.show();
             status = new WMSMobileService().getDataLastVersion(versionName);
@@ -312,7 +314,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         }
     }
 
-    private void sendRequestLogin(View view) {
+    private void sendRequestLogin() {
         String nameRole = selectedRole;
         boolean status = false;
 
@@ -371,13 +373,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
     }
 
     private void initMethodCheckinVersion(JSONObject jsonObject) {
-        String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated, txtLink;
+        String strMethodName, boolValid, txtLink;
         arrrole = new ArrayList<>();
         arrrole = arrNodata;
 
         try {
             boolValid = jsonObject.get("boolValid").toString();
-            strMessage = jsonObject.get("strMessage").toString();
+//            strMessage = jsonObject.get("strMessage").toString();
             strMethodName = jsonObject.get("strMethodName").toString();
 
             if (strMethodName.equalsIgnoreCase("getDataLastVersion")) {
@@ -411,7 +413,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
     }
 
     private void initMethodBroadcastMessage(JSONObject jsonObject) {
-        String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated, txtLink;
+        String strMessage;
         arrrole = new ArrayList<>();
         arrrole = arrNodata;
 
@@ -441,7 +443,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
 
     private void initSpinnerRole(JSONObject jsonObject) {
 
-        String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated, intUserId;
+        String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, intUserId;
         arrrole = new ArrayList<>();
         arrrole = arrNodata;
 
@@ -498,12 +500,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
 
     private void executeLogin(JSONObject jsonObject) {
 
-        String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated;
+        String strMessage, boolValid;
 
         try {
             boolValid = jsonObject.get("boolValid").toString();
             strMessage = jsonObject.get("strMessage").toString();
-            strMethodName = jsonObject.get("strMethodName").toString();
+//            strMethodName = jsonObject.get("strMethodName").toString();
 
             if (boolValid.equalsIgnoreCase("true")) {
                 JSONObject jsonObjectLogin = jsonObject.getJSONObject("listOftUserLogin");
@@ -515,10 +517,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                 _tUserLoginData.setIntUserRole(jsonObjectLogin.get("ROLE_ID").toString());
                 _tUserLoginData.setTxtRoleName(jsonObjectLogin.get("ROLE_NAME").toString());
                 _tUserLoginData.setDtLastLogin(jsonObjectLogin.get("CREATION_DATE").toString());
-                _tUserLoginData.setTxtDataId(jsonObjectLogin.getString("DATA_ID").toString());
+                _tUserLoginData.setTxtDataId(jsonObjectLogin.getString("DATA_ID"));
 
-                if (jsonObject.isNull("listOfmSPMHeader")) {
-                } else {
+                if (!jsonObject.isNull("listOfmSPMHeader")) {
                     JSONObject jsonObjectSPMHeader = jsonObject.getJSONObject("listOfmSPMHeader");
 
                     String status = jsonObjectSPMHeader.get("STATUS").toString();
@@ -540,7 +541,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
 
                         JSONArray jsonArraySPMDetail = jsonObject.getJSONArray("listOfmSPMDetail");
 
-                        List<mSPMDetailData> _mSPMDetailData = new ArrayList<>();
+//                        List<mSPMDetailData> _mSPMDetailData = new ArrayList<>();
 
                         for (int i = 0; i < jsonArraySPMDetail.length(); i++) {
                             String jsonInner = jsonArraySPMDetail.get(i).toString();
@@ -586,12 +587,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
 
     }
 
-    public class MyAdapter extends ArrayAdapter<String> {
+    private class MyAdapter extends ArrayAdapter<String> {
 
         List<String> arrObject;
         Context context;
 
-        public MyAdapter(Context context, int textViewResourceId, List<String> objects) {
+        MyAdapter(Context context, int textViewResourceId, List<String> objects) {
             super(context, textViewResourceId, objects);
             arrObject = new ArrayList<>();
             arrObject = objects;
@@ -599,16 +600,17 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         }
 
         @Override
-        public View getDropDownView(int position, View convertView, ViewGroup parent) {
-            return getCustomView(position, convertView, parent);
+        public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
+            return getCustomView(position, parent);
         }
 
+        @NonNull
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            return getCustomView(position, convertView, parent);
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+            return getCustomView(position, parent);
         }
 
-        public View getCustomView(int position, View convertView, ViewGroup parent) {
+        View getCustomView(int position, ViewGroup parent) {
             LayoutInflater inflater = Login.this.getLayoutInflater();
             View row = inflater.inflate(R.layout.custom_spinner, parent, false);
             TextView label = (TextView) row.findViewById(R.id.tvTitle);
@@ -616,7 +618,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
             TextView sub = (TextView) row.findViewById(R.id.tvDesc);
             sub.setVisibility(View.INVISIBLE);
             sub.setVisibility(View.GONE);
-            row.setBackgroundColor(new Color().TRANSPARENT);
+            row.setBackgroundColor(Color.TRANSPARENT);
             return row;
         }
     }
@@ -635,7 +637,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         private Context context;
         private PowerManager.WakeLock mWakeLock;
 
-        public DownloadTask(Context context) {
+        DownloadTask(Context context) {
             this.context = context;
         }
 
@@ -704,7 +706,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
             return null;
         }
 
-        int intProcesscancel = 0;
+//        int intProcesscancel = 0;
 
         @Override
         protected void onPreExecute() {
