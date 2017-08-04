@@ -434,18 +434,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                         }
                     });
                 } else {
-                    if(strMessage.equals("Last Version Instaled")){
-                        llContentWarning.setVisibility(View.VISIBLE);
-                        btnCheckVersion.setVisibility(View.VISIBLE);
-                        if(progressDialog.isShowing()){
-                            progressDialog.dismiss();
-                        }
-                    } else {
                         llContent.setVisibility(View.VISIBLE);
                         btnCheckVersion.setVisibility(View.GONE);
                         llContentWarning.setVisibility(View.GONE);
                         new clsMainActivity().showToast(getApplicationContext(), strMessage);
-                    }
                 }
             }
         } catch (JSONException e) {
