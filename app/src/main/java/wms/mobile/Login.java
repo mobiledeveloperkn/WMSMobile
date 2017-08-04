@@ -154,9 +154,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
 
         try {
             if (pInfo != null) {
-                llContentWarning.setVisibility(View.GONE);
+                llContentWarning.setVisibility(View.VISIBLE);
                 llContent.setVisibility(View.GONE);
-                btnCheckVersion.setVisibility(View.GONE);
+                btnCheckVersion.setVisibility(View.VISIBLE);
                 requestCheckVersion(pInfo.versionName);
             }
         } catch (Exception ex) {
@@ -401,13 +401,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
     }
 
     private void initMethodCheckinVersion(JSONObject jsonObject) {
-        String strMethodName, boolValid, txtLink;
+        String strMethodName, boolValid, txtLink, strMessage ="";
         arrrole = new ArrayList<>();
         arrrole = arrNodata;
 
         try {
             boolValid = jsonObject.get("boolValid").toString();
-//            strMessage = jsonObject.get("strMessage").toString();
+            strMessage = jsonObject.get("strMessage").toString();
             strMethodName = jsonObject.get("strMethodName").toString();
 
             if (strMethodName.equalsIgnoreCase("getDataLastVersion")) {
@@ -434,9 +434,18 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                         }
                     });
                 } else {
-                    llContent.setVisibility(View.VISIBLE);
-                    btnCheckVersion.setVisibility(View.GONE);
-                    llContentWarning.setVisibility(View.GONE);
+                    if(strMessage.equals("Last Version Instaled")){
+                        llContentWarning.setVisibility(View.VISIBLE);
+                        btnCheckVersion.setVisibility(View.VISIBLE);
+                        if(progressDialog.isShowing()){
+                            progressDialog.dismiss();
+                        }
+                    } else {
+                        llContent.setVisibility(View.VISIBLE);
+                        btnCheckVersion.setVisibility(View.GONE);
+                        llContentWarning.setVisibility(View.GONE);
+                        new clsMainActivity().showToast(getApplicationContext(), strMessage);
+                    }
                 }
             }
         } catch (JSONException e) {

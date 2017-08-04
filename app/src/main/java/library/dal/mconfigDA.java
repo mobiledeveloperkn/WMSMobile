@@ -155,7 +155,7 @@ public class mconfigDA {
 //                + "select 2,'API','http://wms.kalbenutritionals.web.id/mobileapi','http://10.171.10.13/wmsonline',1;";
 
         txtQuery = "insert or replace into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
-                + "select 2,'API','http://10.171.10.6/wmsonline','http://10.171.10.13/wmsonline',1;";
+                + "select 2,'API','http://wms.kalbenutritionals.web.id/mobileapi','http://10.171.10.13/wmsonline',1;";
         db.execSQL(txtQuery);
     }
 
