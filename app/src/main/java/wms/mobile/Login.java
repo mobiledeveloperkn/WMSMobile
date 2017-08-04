@@ -437,7 +437,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                         llContent.setVisibility(View.VISIBLE);
                         btnCheckVersion.setVisibility(View.GONE);
                         llContentWarning.setVisibility(View.GONE);
-                        new clsMainActivity().showToast(getApplicationContext(), strMessage);
+                        new clsMainActivity().showCustomToast(Login.this, strMessage, true);
                 }
             }
         } catch (JSONException e) {
