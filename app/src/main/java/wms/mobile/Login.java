@@ -88,7 +88,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
     private CoordinatorLayout coordinatorLayout;
     ConnectivityManager conMan;
     TextInputLayout tilEmail, tilPass;
-    TextView txtInfo, txtVersion;
+    TextView txtInfo, txtVersion, tvInstance;
 
     private String versionName = "";
     private tUserLoginData dataLogin;
@@ -120,6 +120,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         tilPass = (TextInputLayout) findViewById(R.id.input_layout_pass);
         txtInfo = (TextView) findViewById(R.id.txtVersionLogin);
         txtVersion = (TextView) findViewById(R.id.txtVersionApp);
+        tvInstance = (TextView) findViewById(R.id.tvInstance);
 
         llContentWarning = (LinearLayout) findViewById(R.id.llContentWarning);
         llContent = (LinearLayout) findViewById(R.id.llContent);
@@ -162,7 +163,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         } catch (Exception ex) {
             llContentWarning.setVisibility(View.VISIBLE);
             btnCheckVersion.setVisibility(View.VISIBLE);
-            if(progressDialog.isShowing()){
+            if (progressDialog.isShowing()) {
                 progressDialog.dismiss();
             }
         }
@@ -181,7 +182,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                 } catch (Exception ex) {
                     llContentWarning.setVisibility(View.VISIBLE);
                     btnCheckVersion.setVisibility(View.VISIBLE);
-                    if(progressDialog.isShowing()){
+                    if (progressDialog.isShowing()) {
                         progressDialog.dismiss();
                     }
                 }
@@ -317,7 +318,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                 llContentWarning.setVisibility(View.VISIBLE);
                 btnCheckVersion.setVisibility(View.VISIBLE);
             }
-            if(progressDialog.isShowing()){
+            if (progressDialog.isShowing()) {
                 progressDialog.dismiss();
             }
         }
@@ -401,7 +402,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
     }
 
     private void initMethodCheckinVersion(JSONObject jsonObject) {
-        String strMethodName, boolValid, txtLink, strMessage ="";
+        String strMethodName, boolValid, txtLink, strMessage, txtInstance = "";
         arrrole = new ArrayList<>();
         arrrole = arrNodata;
 
@@ -411,11 +412,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
             strMethodName = jsonObject.get("strMethodName").toString();
 
             if (strMethodName.equalsIgnoreCase("getDataLastVersion")) {
+                JSONObject jsonObjectInner = jsonObject.getJSONObject("listOfmDataVesion");
+                txtInstance = jsonObjectInner.get("INSTANCE").toString();
+                tvInstance.setText(txtInstance);
 
                 if (boolValid.equalsIgnoreCase("false")) {
-                    JSONObject jsonObjectInner = jsonObject.getJSONObject("listOfmDataVesion");
-
                     txtLink = jsonObjectInner.get("LINK_FILE").toString();
+
                     // instantiate it within the onCreate method
                     mProgressDialog = new ProgressDialog(Login.this);
                     mProgressDialog.setMessage("Please Wait For Downloading File....");
@@ -434,10 +437,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                         }
                     });
                 } else {
-                        llContent.setVisibility(View.VISIBLE);
-                        btnCheckVersion.setVisibility(View.GONE);
-                        llContentWarning.setVisibility(View.GONE);
-                        new clsMainActivity().showCustomToast(Login.this, strMessage, true);
+                    llContent.setVisibility(View.VISIBLE);
+                    btnCheckVersion.setVisibility(View.GONE);
+                    llContentWarning.setVisibility(View.GONE);
+                    new clsMainActivity().showCustomToast(Login.this, strMessage, true);
                 }
             }
         } catch (JSONException e) {
@@ -590,7 +593,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                             data.setIntQty(jsonObject.get("QUANTITY").toString());
                             data.setBitStatus(jsonObject.get("STATUS").toString());
                             data.setBitSync(jsonObject.get("SYNC").toString());
-
+                            data.setTxtUOM(jsonObject.get("UOM").toString());
+                            data.setTxtLotNumber(jsonObject.get("LOT_NUM").toString());
                             new mSPMDetailBL().insert(data);
                         }
                     }

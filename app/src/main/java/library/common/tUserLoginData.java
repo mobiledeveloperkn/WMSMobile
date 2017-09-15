@@ -6,12 +6,13 @@ package library.common;
 
 public class tUserLoginData {
 
-    public tUserLoginData(String IntUserId, String txtUserName, String txtPassword, String IntUserRole, String txtRoleName) {
+    public tUserLoginData(String IntUserId, String txtUserName, String txtPassword, String IntUserRole, String txtRoleName, String txtInstance) {
         this.IntUserId = IntUserId;
         this.txtUserName = txtUserName;
         this.txtPassword = txtPassword;
         this.IntUserRole = IntUserRole;
         this.txtRoleName = txtRoleName;
+        this.txtInstance = txtInstance;
     }
 
     public tUserLoginData() {
@@ -83,6 +84,7 @@ public class tUserLoginData {
     private String txtRoleName;
     private String dtLastLogin;
     private String txtDataId;
+    private String txtInstance;
 
     public String Property_IntUserId = "IntUserId";
     public String Property_txtUserName = "txtUserName";
@@ -91,6 +93,15 @@ public class tUserLoginData {
     public String Property_txtRoleName = "txtRoleName";
     public String Property_dtLastLogin = "dtLastLogin";
     public String Property_txtDataId = "txtDataId";
+    public String Property_txtInstance = "txtInstance";
 
-    public String Property_All=Property_IntUserId+","+Property_txtUserName+","+Property_txtPassword+","+Property_IntUserRole+","+Property_txtRoleName+","+Property_dtLastLogin+","+Property_txtDataId;
+    public String Property_All = Property_IntUserId + "," + Property_txtUserName + "," + Property_txtPassword + "," + Property_IntUserRole + "," + Property_txtRoleName + "," + Property_dtLastLogin + "," + Property_txtDataId + "," + Property_txtInstance;
+
+    public String getTxtInstance() {
+        return txtInstance;
+    }
+
+    public void setTxtInstance(String txtInstance) {
+        this.txtInstance = txtInstance;
+    }
 }

@@ -6,7 +6,7 @@
     <dimen name="title_height">35dip</dimen>
     <dimen name="text_size_small">14sp</dimen>
     <dimen name="text_size_medium">18sp</dimen>
-    <dimen name="text_size_large">22sp</dimen>
+    <dimen name="text_size_large">27sp</dimen>
 
     <dimen name="navigation_drawer_width">240dp</dimen>
     <dimen name="drawer_text_size">15sp</dimen>

@@ -28,7 +28,9 @@ public class mSPMDetailDA {
                 + dt.Property_bitSync + " TEXT NULL,"
                 + dt.Property_txtReason + " TEXT NULL,"
                 + dt.Property_intUserId + " TEXT NULL,"
-                + dt.Property_intFlag + " TEXT  NULL)";
+                + dt.Property_intFlag + " TEXT NULL,"
+                + dt.Property_txtLotNumber + " TEXT NULL,"
+                + dt.Property_txtUOM + " TEXT  NULL)";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
@@ -63,6 +65,8 @@ public class mSPMDetailDA {
                 + "," + dt.Property_txtReason
                 + "," + dt.Property_intUserId
                 + "," + dt.Property_intFlag
+                + "," + dt.Property_txtLotNumber
+                + "," + dt.Property_txtUOM
 
                 + ") " + "values('"
                 + String.valueOf(data.getIntSPMDetailId()) + "','"
@@ -75,19 +79,23 @@ public class mSPMDetailDA {
                 + String.valueOf(data.getBitSync()) + "','"
                 + String.valueOf(data.getTxtReason()) + "','"
                 + String.valueOf(data.getIntUserId()) + "','"
-                + String.valueOf(data.getIntFlag()) + "')");
+                + String.valueOf(data.getIntFlag()) + "','"
+                + String.valueOf(data.getTxtLotNumber()) + "','"
+                + String.valueOf(data.getTxtUOM()) + "')");
         // db.insert(TABLE_CONTACTS, null, values);
         // db.close(); // Closing database connection
     }
+
     public void DeleteAllDataMConfig(SQLiteDatabase db) {
-        db.execSQL("DELETE FROM " + TABLE_CONTACTS );
+        db.execSQL("DELETE FROM " + TABLE_CONTACTS);
         // db.insert(TABLE_CONTACTS, null, values);
         // db.close(); // Closing database connection
     }
+
     // Getting single contact
     public mSPMDetailData getData(SQLiteDatabase db, int id) {
         mSPMDetailData dt = new mSPMDetailData();
-        Cursor cursor = db.query(TABLE_CONTACTS, new String[] {
+        Cursor cursor = db.query(TABLE_CONTACTS, new String[]{
                         dt.Property_intSPMDetailId
                         , dt.Property_txtNoSPM
                         , dt.Property_txtLocator
@@ -98,8 +106,10 @@ public class mSPMDetailDA {
                         , dt.Property_bitSync
                         , dt.Property_txtReason
                         , dt.Property_intUserId
-                        , dt.Property_intFlag},
-                dt.Property_intSPMDetailId + "=?", new String[] { String.valueOf(id) },
+                        , dt.Property_intFlag
+                        , dt.Property_txtLotNumber
+                        , dt.Property_txtUOM},
+                dt.Property_intSPMDetailId + "=?", new String[]{String.valueOf(id)},
                 null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -116,6 +126,8 @@ public class mSPMDetailDA {
             contact.setTxtReason(cursor.getString(8));
             contact.setIntUserId(cursor.getString(9));
             contact.setIntFlag(cursor.getString(10));
+            contact.setTxtLotNumber(cursor.getString(11));
+            contact.setTxtUOM(cursor.getString(12));
             // return contact
         } else {
             contact = null;
@@ -130,8 +142,7 @@ public class mSPMDetailDA {
         List<mSPMDetailData> contactList = new ArrayList<mSPMDetailData>();
         // Select All Query
         mSPMDetailData dt = new mSPMDetailData();
-        String selectQuery = "SELECT  " + dt.Property_All + " FROM "
-                + TABLE_CONTACTS;
+        String selectQuery = "SELECT  " + dt.Property_All + " FROM " + TABLE_CONTACTS;
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
 
@@ -149,6 +160,8 @@ public class mSPMDetailDA {
                 contact.setTxtReason(cursor.getString(8));
                 contact.setIntUserId(cursor.getString(9));
                 contact.setIntFlag(cursor.getString(10));
+                contact.setTxtLotNumber(cursor.getString(11));
+                contact.setTxtUOM(cursor.getString(12));
                 // Adding contact to list
                 contactList.add(contact);
             } while (cursor.moveToNext());
@@ -163,7 +176,7 @@ public class mSPMDetailDA {
         // Select All Query
         mSPMDetailData dt = new mSPMDetailData();
         String selectQuery = "SELECT  " + dt.Property_All + " FROM "
-                + TABLE_CONTACTS +" WHERE "+dt.Property_txtNoSPM+"='"+id+"'";
+                + TABLE_CONTACTS + " WHERE " + dt.Property_txtNoSPM + "='" + id + "'";
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
 
@@ -181,6 +194,8 @@ public class mSPMDetailDA {
                 contact.setTxtReason(cursor.getString(8));
                 contact.setIntUserId(cursor.getString(9));
                 contact.setIntFlag(cursor.getString(10));
+                contact.setTxtLotNumber(cursor.getString(11));
+                contact.setTxtUOM(cursor.getString(12));
                 // Adding contact to list
                 contactList.add(contact);
             } while (cursor.moveToNext());
@@ -195,11 +210,11 @@ public class mSPMDetailDA {
         // Select All Query
         mSPMDetailData dt = new mSPMDetailData();
         String selectQuery = "SELECT  " + dt.Property_All + " FROM "
-                + TABLE_CONTACTS +" WHERE " +dt.Property_bitStatus +" in (1,2) and "+dt.Property_bitSync+"=0" ;
+                + TABLE_CONTACTS + " WHERE " + dt.Property_bitStatus + " in (1,2) and " + dt.Property_bitSync + "=0";
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
-            contactList=new ArrayList<mSPMDetailData>();
+            contactList = new ArrayList<mSPMDetailData>();
             do {
                 mSPMDetailData contact = new mSPMDetailData();
                 contact.setIntSPMDetailId(cursor.getString(0));
@@ -213,6 +228,8 @@ public class mSPMDetailDA {
                 contact.setTxtReason(cursor.getString(8));
                 contact.setIntUserId(cursor.getString(9));
                 contact.setIntFlag(cursor.getString(10));
+                contact.setTxtLotNumber(cursor.getString(11));
+                contact.setTxtUOM(cursor.getString(12));
                 // Adding contact to list
                 contactList.add(contact);
             } while (cursor.moveToNext());
@@ -227,7 +244,7 @@ public class mSPMDetailDA {
         // Select All Query
         mSPMDetailData dt = new mSPMDetailData();
         String selectQuery = "SELECT  " + dt.Property_All + " FROM "
-                + TABLE_CONTACTS +" WHERE "+dt.Property_bitSync+"=0 And "+dt.Property_bitStatus+"=0 And "+dt.Property_txtNoSPM+"='"+id+"' order by intSPMDetailId";
+                + TABLE_CONTACTS + " WHERE " + dt.Property_bitSync + "=0 And " + dt.Property_bitStatus + "=0 And " + dt.Property_txtNoSPM + "='" + id + "' order by intSPMDetailId";
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
 
@@ -245,6 +262,8 @@ public class mSPMDetailDA {
                 contact.setTxtReason(cursor.getString(8));
                 contact.setIntUserId(cursor.getString(9));
                 contact.setIntFlag(cursor.getString(10));
+                contact.setTxtLotNumber(cursor.getString(11));
+                contact.setTxtUOM(cursor.getString(12));
                 // Adding contact to list
                 contactList.add(contact);
             } while (cursor.moveToNext());
@@ -253,12 +272,13 @@ public class mSPMDetailDA {
         // return contact list
         return contactList;
     }
+
     public List<mSPMDetailData> getAllDataTaskConfirm(SQLiteDatabase db, String id) {
         List<mSPMDetailData> contactList = new ArrayList<mSPMDetailData>();
         // Select All Query
         mSPMDetailData dt = new mSPMDetailData();
         String selectQuery = "SELECT  " + dt.Property_All + " FROM "
-                + TABLE_CONTACTS +" WHERE "+dt.Property_bitStatus+"=1 And "+dt.Property_txtNoSPM+"='"+id+"'";
+                + TABLE_CONTACTS + " WHERE " + dt.Property_bitStatus + "=1 And " + dt.Property_txtNoSPM + "='" + id + "'";
         //+dt.Property_bitSync+"=1 And "
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
@@ -277,6 +297,8 @@ public class mSPMDetailDA {
                 contact.setTxtReason(cursor.getString(8));
                 contact.setIntUserId(cursor.getString(9));
                 contact.setIntFlag(cursor.getString(10));
+                contact.setTxtLotNumber(cursor.getString(11));
+                contact.setTxtUOM(cursor.getString(12));
                 // Adding contact to list
                 contactList.add(contact);
             } while (cursor.moveToNext());
@@ -291,7 +313,7 @@ public class mSPMDetailDA {
         // Select All Query
         mSPMDetailData dt = new mSPMDetailData();
         String selectQuery = "SELECT  " + dt.Property_All + " FROM "
-                + TABLE_CONTACTS +" WHERE "+dt.Property_bitStatus+"=2 And "+dt.Property_txtNoSPM+"='"+id+"'";
+                + TABLE_CONTACTS + " WHERE " + dt.Property_bitStatus + "=2 And " + dt.Property_txtNoSPM + "='" + id + "'";
         //+dt.Property_bitSync+"=1 And "
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
@@ -310,6 +332,8 @@ public class mSPMDetailDA {
                 contact.setTxtReason(cursor.getString(8));
                 contact.setIntUserId(cursor.getString(9));
                 contact.setIntFlag(cursor.getString(10));
+                contact.setTxtLotNumber(cursor.getString(11));
+                contact.setTxtUOM(cursor.getString(12));
                 // Adding contact to list
                 contactList.add(contact);
             } while (cursor.moveToNext());
@@ -323,7 +347,7 @@ public class mSPMDetailDA {
     public void deleteContact(SQLiteDatabase db, int id) {
         mSPMDetailData dt = new mSPMDetailData();
         db.delete(TABLE_CONTACTS, dt.Property_intSPMDetailId + " = ?",
-                new String[] { String.valueOf(id) });
+                new String[]{String.valueOf(id)});
         // db.close();
     }
 
@@ -347,7 +371,7 @@ public class mSPMDetailDA {
 
         // updating row
         return db.update(TABLE_CONTACTS, values, dt.Property_intSPMDetailId + " = ? ",
-                new String[] { String.valueOf(id) });
+                new String[]{String.valueOf(id)});
     }
 
     public int updateDataRevertById(SQLiteDatabase db, String id, String intUserId) {
@@ -360,7 +384,7 @@ public class mSPMDetailDA {
 
         // updating row
         return db.update(TABLE_CONTACTS, values, dt.Property_intSPMDetailId + " = ? ",
-                new String[] { String.valueOf(id) });
+                new String[]{String.valueOf(id)});
     }
 
     public int saveDataPush(SQLiteDatabase db, String id, String status, String sync) {
@@ -372,7 +396,7 @@ public class mSPMDetailDA {
 
         // updating row
         return db.update(TABLE_CONTACTS, values, dt.Property_intSPMDetailId + " = ? ",
-                new String[] { String.valueOf(id) });
+                new String[]{String.valueOf(id)});
     }
 
     public int updateDataByIdOffline(SQLiteDatabase db, String id, String intUserId) {
@@ -385,10 +409,10 @@ public class mSPMDetailDA {
 
         // updating row
         return db.update(TABLE_CONTACTS, values, dt.Property_intSPMDetailId + " = ? ",
-                new String[] { String.valueOf(id) });
+                new String[]{String.valueOf(id)});
     }
 
-    public int updateDataSPMCancelById(SQLiteDatabase db, String id,String _intUserId, String reason) {
+    public int updateDataSPMCancelById(SQLiteDatabase db, String id, String _intUserId, String reason) {
         mSPMDetailData dt = new mSPMDetailData();
 
         ContentValues values = new ContentValues();
@@ -399,10 +423,10 @@ public class mSPMDetailDA {
 
         // updating row
         return db.update(TABLE_CONTACTS, values, dt.Property_intSPMDetailId + " = ? ",
-                new String[] { String.valueOf(id) });
+                new String[]{String.valueOf(id)});
     }
 
-    public int updateDataSPMCancelByIdOffline(SQLiteDatabase db, String id,String _intUserId, String reason) {
+    public int updateDataSPMCancelByIdOffline(SQLiteDatabase db, String id, String _intUserId, String reason) {
         mSPMDetailData dt = new mSPMDetailData();
 
         ContentValues values = new ContentValues();
@@ -413,7 +437,7 @@ public class mSPMDetailDA {
 
         // updating row
         return db.update(TABLE_CONTACTS, values, dt.Property_intSPMDetailId + " = ? ",
-                new String[] { String.valueOf(id) });
+                new String[]{String.valueOf(id)});
     }
 
     public void InsertDefaultmSPMDetail(SQLiteDatabase db) {

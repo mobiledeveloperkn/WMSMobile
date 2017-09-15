@@ -683,6 +683,8 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
                         data.setIntQty(jsonObject.get("QUANTITY").toString());
                         data.setBitStatus(jsonObject.get("STATUS").toString());
                         data.setBitSync(jsonObject.get("SYNC").toString());
+                        data.setTxtLotNumber(jsonObject.get("LOT_NUM").toString());
+                        data.setTxtUOM(jsonObject.get("UOM").toString());
                         data.setIntUserId(dataLogin.getIntUserId());
 
                         new mSPMDetailBL().insert(data);

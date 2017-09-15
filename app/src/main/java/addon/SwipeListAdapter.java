@@ -288,13 +288,15 @@ public class SwipeListAdapter extends BaseAdapter {
         final Button btnConfirm = (Button) promptView.findViewById(R.id.btn_confirm);
         final Button btnCancel = (Button) promptView.findViewById(R.id.btn_cancelDetail);
         final TextView qty = (TextView) promptView.findViewById(R.id.tv_qty);
+        final TextView tvLotNumber = (TextView) promptView.findViewById(R.id.tv_lot_number);
 
 //        ll_background.setBackgroundResource(R.color.color_primary_red);
 //        ll_background.setAlpha(1);
         tvLocator.setText(mSPMDetailDataList.get(position).getTxtLocator());
         tvItemCode.setText(mSPMDetailDataList.get(position).getTxtItemCode());
         tvItemName.setText(mSPMDetailDataList.get(position).getTxtItemName());
-        qty.setText(mSPMDetailDataList.get(position).getIntQty());
+        qty.setText(mSPMDetailDataList.get(position).getIntQty() + " " + mSPMDetailDataList.get(position).getTxtUOM());
+        tvLotNumber.setText(mSPMDetailDataList.get(position).getTxtLotNumber());
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(activity);
         alertDialogBuilder.setView(promptView);

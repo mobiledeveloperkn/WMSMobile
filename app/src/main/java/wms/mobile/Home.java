@@ -69,7 +69,6 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
     ConnectivityManager conMan;
     private tUserLoginData dataLogin;
 
-    private PackageInfo pInfo = null;
     private String versionName = "";
 
     private ProgressDialog progressDialog;
@@ -125,9 +124,9 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
         btnScan.setOnClickListener(this);
         btnLogout.setOnClickListener(this);
 
-        pInfo = new clsMainActivity().getPinfo(this);
+        PackageInfo pInfo = new clsMainActivity().getPinfo(this);
 
-        if(pInfo!=null){
+        if(pInfo !=null){
             versionName = pInfo.versionName;
         }
 
@@ -144,7 +143,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
 
         String dateTime = dataLogin.getDtLastLogin();
         String dtTime = new clsMainActivity().splitDateTime(dateTime);
-        tv_Email.setText("Last Login : " + dtTime);
+        tv_Email.setText(String.format("Last Login : %s", dtTime));
 
         if (tDisplayPictureData.get_image() != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(tDisplayPictureData.get_image(), 0, tDisplayPictureData.get_image().length);
@@ -268,8 +267,8 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        SQLiteDatabase db = new clsMainBL().getDb();
-        boolean status = false;
+//        SQLiteDatabase db = new clsMainBL().getDb();
+        boolean status;
 
         if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE && resultCode == AppCompatActivity.RESULT_OK) {
             Uri imageUri = CropImage.getPickImageResultUri(this, data);
@@ -285,10 +284,10 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
             }
         } else if (requestCode == IntentIntegrator.REQUEST_CODE) {
             IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-            if (scanResult.getContents() == null && scanResult.getFormatName() == null) {
+            if (scanResult != null && scanResult.getContents() == null && scanResult.getFormatName() == null) {
                 return;
             }
-            final String result = scanResult.getContents();
+            final String result = scanResult != null ? scanResult.getContents() : null;
             if (result != null) {
                 progressDialog.show();
 //                new clsMainActivity().timerDelayRemoveDialog(time, progressDialog);
@@ -378,7 +377,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
         Home.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                JSONArray jsonArray = null;
+//                JSONArray jsonArray = null;
                 String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated;
 
                 try {
@@ -550,8 +549,9 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
                         data.setIntQty(jsonObject.get("QUANTITY").toString());
                         data.setBitStatus(jsonObject.get("STATUS").toString());
                         data.setBitSync(jsonObject.get("SYNC").toString());
+                        data.setTxtUOM(jsonObject.get("UOM").toString());
+                        data.setTxtLotNumber(jsonObject.get("LOT_NUM").toString());
                         data.setIntUserId(dataLogin.getIntUserId());
-
                         new mSPMDetailBL().insert(data);
                     }
                     btnScan.setEnabled(false);
@@ -588,7 +588,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
     public void unSetHubConnection(WMSMobileService.mHubConnectionSevice hubConnection) {
         WMSMobileService.mHubConnectionSevice = null;
     }
-    public interface updateSnackbar {
+    interface updateSnackbar {
         void onUpdateSnackBar(boolean info);
     }
 }

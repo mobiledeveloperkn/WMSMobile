@@ -216,6 +216,18 @@
                 android:text="URL"
                 android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/tvInstance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/white"
+                android:text="INSTANCE"
+                android:textStyle="bold"
+                android:textAllCaps="true"/>
+
         </LinearLayout>
 
     </LinearLayout>

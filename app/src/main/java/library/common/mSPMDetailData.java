@@ -34,6 +34,8 @@ public class mSPMDetailData {
     private String txtReason;
     private String intUserId;
     private String intFlag;
+    private String txtLotNumber;
+    private String txtUOM;
 
     public String Property_intSPMDetailId = "intSPMDetailId";
     public String Property_txtNoSPM = "txtNoSPM";
@@ -46,8 +48,10 @@ public class mSPMDetailData {
     public String Property_txtReason = "txtReason";
     public String Property_intUserId = "intUserId";
     public String Property_intFlag = "intFlag";
+    public String Property_txtLotNumber = "txtLotNumber";
+    public String Property_txtUOM = "txtUOM";
 
-    public String Property_All=Property_intSPMDetailId+","+Property_txtNoSPM+","+Property_txtLocator+","+Property_txtItemCode+","+Property_txtItemName+","+Property_intQty+","+Property_bitStatus+","+Property_bitSync+","+Property_txtReason+","+Property_intUserId+","+Property_intFlag;
+    public String Property_All=Property_intSPMDetailId+","+Property_txtNoSPM+","+Property_txtLocator+","+Property_txtItemCode+","+Property_txtItemName+","+Property_intQty+","+Property_bitStatus+","+Property_bitSync+","+Property_txtReason+","+Property_intUserId+","+Property_intFlag + "," + Property_txtLotNumber + "," + Property_txtUOM;
 
     public String getTxtNoSPM() {
         return txtNoSPM;
@@ -134,5 +138,21 @@ public class mSPMDetailData {
 
     public void setIntFlag(String intFlag) {
         this.intFlag = intFlag;
+    }
+
+    public String getTxtLotNumber() {
+        return txtLotNumber;
+    }
+
+    public void setTxtLotNumber(String txtLotNumber) {
+        this.txtLotNumber = txtLotNumber;
+    }
+
+    public String getTxtUOM() {
+        return txtUOM;
+    }
+
+    public void setTxtUOM(String txtUOM) {
+        this.txtUOM = txtUOM;
     }
 }
