@@ -499,7 +499,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
         }
     }
 
-    private void initMethodSPM(JSONObject jsonObject) {
+    private void initMethodSPM(final JSONObject jsonObject) {
         String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated;
 
         try {
@@ -508,7 +508,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
             strMethodName = jsonObject.get("strMethodName").toString();
 
             if (boolValid.equalsIgnoreCase("true")) {
-                JSONObject jsonObjectHeader = jsonObject.getJSONObject("listOfmSPMHeader");
+                final JSONObject jsonObjectHeader = jsonObject.getJSONObject("listOfmSPMHeader");
 
                 String status = jsonObjectHeader.get("STATUS").toString();
                 String sync = jsonObjectHeader.get("SYNC").toString();
@@ -517,47 +517,72 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
 
                 if (status.equals("1") && sync.equals("0")) {
 
-                    new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, true);
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getApplicationContext());
+                    builder1.setTitle("Confirmation");
+                    builder1.setMessage("Are you sure want to take STAR " + jsonObjectHeader.get("SPM_NO").toString() + " ?");
+                    builder1.setCancelable(true);
 
-                    _mSPMHeaderData.setIntSPMId(jsonObjectHeader.get("SPM_HEADER_ID").toString());
-                    _mSPMHeaderData.setTxtNoSPM(jsonObjectHeader.get("SPM_NO").toString());
-                    _mSPMHeaderData.setTxtBranchCode(jsonObjectHeader.get("BRANCH_CODE").toString());
-                    _mSPMHeaderData.setTxtSalesOrder(jsonObjectHeader.get("SALES_ORDER").toString());
-                    _mSPMHeaderData.setIntUserId(jsonObjectHeader.get("USER_ID").toString());
-                    _mSPMHeaderData.setBitStatus("0");
-                    _mSPMHeaderData.setBitSync("0");
-                    _mSPMHeaderData.setBitStart("1");
-                    _mSPMHeaderData.setIntUserId(dataLogin.getIntUserId());
+                    builder1.setPositiveButton(
+                            "Yes",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    //                    new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, true);
 
-                    new mSPMHeaderBL().saveData(_mSPMHeaderData);
+                                    try {
+                                        _mSPMHeaderData.setIntSPMId(jsonObjectHeader.get("SPM_HEADER_ID").toString());
+                                        _mSPMHeaderData.setTxtNoSPM(jsonObjectHeader.get("SPM_NO").toString());
+                                        _mSPMHeaderData.setTxtBranchCode(jsonObjectHeader.get("BRANCH_CODE").toString());
+                                        _mSPMHeaderData.setTxtSalesOrder(jsonObjectHeader.get("SALES_ORDER").toString());
+                                        _mSPMHeaderData.setIntUserId(jsonObjectHeader.get("USER_ID").toString());
+                                        _mSPMHeaderData.setBitStatus("0");
+                                        _mSPMHeaderData.setBitSync("0");
+                                        _mSPMHeaderData.setBitStart("1");
+                                        _mSPMHeaderData.setIntUserId(dataLogin.getIntUserId());
 
-                    JSONArray jsonArrayInner = jsonObject.getJSONArray("listOfmSPMDetail");
+                                        new mSPMHeaderBL().saveData(_mSPMHeaderData);
 
-                    List<mSPMDetailData> _mSPMDetailData = new ArrayList<>();
+                                        JSONArray jsonArrayInner = jsonObject.getJSONArray("listOfmSPMDetail");
 
-                    for (int i = 0; i < jsonArrayInner.length(); i++) {
+                                        List<mSPMDetailData> _mSPMDetailData = new ArrayList<>();
 
-                        jsonObject = jsonArrayInner.getJSONObject(i);
+                                        for (int i = 0; i < jsonArrayInner.length(); i++) {
 
-                        mSPMDetailData data = new mSPMDetailData();
+                                            JSONObject jsonObjectDetail = jsonArrayInner.getJSONObject(i);
 
-                        data.setIntSPMDetailId(jsonObject.get("SPM_DETAIL_ID").toString());
-                        data.setTxtNoSPM(jsonObject.get("SPM_NO").toString());
-                        data.setTxtLocator(jsonObject.get("LOCATOR").toString());
-                        data.setTxtItemCode(jsonObject.get("ITEM_CODE").toString());
-                        data.setTxtItemName(jsonObject.get("ITEM_NAME").toString());
-                        data.setIntQty(jsonObject.get("QUANTITY").toString());
-                        data.setBitStatus(jsonObject.get("STATUS").toString());
-                        data.setBitSync(jsonObject.get("SYNC").toString());
-                        data.setTxtUOM(jsonObject.get("UOM").toString());
-                        data.setTxtLotNumber(jsonObject.get("LOT_NUM").toString());
-                        data.setIntUserId(dataLogin.getIntUserId());
-                        new mSPMDetailBL().insert(data);
-                    }
-                    btnScan.setEnabled(false);
-                    btnScan.setBackgroundResource(R.drawable.btn_innermenu_gray);
-                    btnOutstandingTask.setEnabled(true);
-                    btnOutstandingTask.setBackgroundResource(R.drawable.btn_innermenu);
+                                            mSPMDetailData data = new mSPMDetailData();
+
+                                            data.setIntSPMDetailId(jsonObjectDetail.get("SPM_DETAIL_ID").toString());
+                                            data.setTxtNoSPM(jsonObjectDetail.get("SPM_NO").toString());
+                                            data.setTxtLocator(jsonObjectDetail.get("LOCATOR").toString());
+                                            data.setTxtItemCode(jsonObjectDetail.get("ITEM_CODE").toString());
+                                            data.setTxtItemName(jsonObjectDetail.get("ITEM_NAME").toString());
+                                            data.setIntQty(jsonObjectDetail.get("QUANTITY").toString());
+                                            data.setBitStatus(jsonObjectDetail.get("STATUS").toString());
+                                            data.setBitSync(jsonObjectDetail.get("SYNC").toString());
+                                            data.setTxtUOM(jsonObjectDetail.get("UOM").toString());
+                                            data.setTxtLotNumber(jsonObjectDetail.get("LOT_NUM").toString());
+                                            data.setIntUserId(dataLogin.getIntUserId());
+                                            new mSPMDetailBL().insert(data);
+                                        }
+                                        btnScan.setEnabled(false);
+                                        btnScan.setBackgroundResource(R.drawable.btn_innermenu_gray);
+                                        btnOutstandingTask.setEnabled(true);
+                                        btnOutstandingTask.setBackgroundResource(R.drawable.btn_innermenu);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                    builder1.setNegativeButton(
+                            "No",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
                 } else if (status.equals("1") && sync.equals("1")) {
 
                     new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, false);
