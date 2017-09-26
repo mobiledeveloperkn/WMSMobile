@@ -517,7 +517,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
 
                 if (status.equals("1") && sync.equals("0")) {
 
-                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getApplicationContext());
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
                     builder1.setTitle("Confirmation");
                     builder1.setMessage("Are you sure want to take STAR " + jsonObjectHeader.get("SPM_NO").toString() + " ?");
                     builder1.setCancelable(true);
