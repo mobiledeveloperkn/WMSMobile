@@ -51,11 +51,14 @@ import jim.h.common.android.lib.zxing.config.ZXingLibConfig;
 import jim.h.common.android.lib.zxing.integrator.IntentIntegrator;
 import jim.h.common.android.lib.zxing.integrator.IntentResult;
 import library.common.clsHelper;
+import library.common.enumConfigData;
 import library.common.mSPMDetailData;
 import library.common.mSPMHeaderData;
+import library.common.mconfigData;
 import library.common.tDisplayPictureData;
 import library.common.tTimerLogData;
 import library.common.tUserLoginData;
+import library.dal.mconfigDA;
 import service.WMSMobileService;
 
 public class Home extends AppCompatActivity implements View.OnClickListener, ConnectivityReceiver.ConnectivityReceiverListener, WMSMobileService.mHubConnectionSevice {
@@ -115,6 +118,14 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
         tv_Email = (TextView) findViewById(R.id.tvEmail);
         CircleImageView ivProfile = (CircleImageView) findViewById(R.id.profile_image);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayoutHome);
+
+        TextView txtInfo = (TextView) findViewById(R.id.txtVersionLogin);
+
+        SQLiteDatabase db = new clsMainBL().getDb();
+        mconfigDA _mconfigDA = new mconfigDA(db);
+
+        mconfigData dataAPI = _mconfigDA.getData(db, enumConfigData.ApiKalbe.getidConfigData());
+        txtInfo.setText(dataAPI.get_txtValue());
 
         conMan = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -292,7 +303,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
                 builder1.setTitle("Confirmation");
                 builder1.setMessage("Continue to take STAR " + result + " ?");
-                builder1.setCancelable(true);
+                builder1.setCancelable(false);
 
                 builder1.setPositiveButton(
                         "Yes",

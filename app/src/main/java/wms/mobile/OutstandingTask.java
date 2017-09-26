@@ -138,10 +138,12 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
         btnRefresh.setOnClickListener(this);
         btnBreak.setOnClickListener(this);
 
-        if (_mSPMHeaderData.getBitStart().equals("0")) {
-            initMethodMappingButton();
-        } else {
-            showPopupStartButton();
+        if(_mSPMHeaderData!=null){
+            if (_mSPMHeaderData.getBitStart().equals("0")) {
+                initMethodMappingButton();
+            } else {
+                showPopupStartButton();
+            }
         }
 
         setCircleReport();
@@ -593,10 +595,10 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
 //                    adapterProgress.notifyDataSetChanged();
 //                    new TaskOnProgressFragment().fetchData(OutstandingTask.this);
 //                    new TaskSuccessFragment().fetchData(OutstandingTask.this);
-            btnTaskView.setEnabled(false);
-            btnComplete.setEnabled(false);
-            btnTaskView.setBackgroundResource(R.drawable.btn_innermenu_gray);
-            btnComplete.setBackgroundResource(R.drawable.btn_innermenu_gray);
+//            btnTaskView.setEnabled(false);
+//            btnComplete.setEnabled(false);
+//            btnTaskView.setBackgroundResource(R.drawable.btn_innermenu_gray);
+//            btnComplete.setBackgroundResource(R.drawable.btn_innermenu_gray);
 
             new mSPMHeaderBL().updateDtEndById(_mSPMHeaderData.getIntSPMId(), dt);
 
@@ -605,11 +607,14 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
             new mSPMDetailDA(db).DeleteAllDataMConfig(db);
             new tTimerLogDA(db).DropTable(db);
             progressDialog.dismiss();
-            finish();
-            onBackPressed();
+//            finish();
+//            onBackPressed();
 //            Intent myIntent = new Intent(OutstandingTask.this, Home.class);
 //            startActivity(myIntent);
 
+        } else {
+            new clsMainActivity().showCustomToast(getApplicationContext(), "Error Connection", false);
+            progressDialog.dismiss();
         }
     }
 
@@ -835,14 +840,14 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
             String strMethodName = jsonObject.get("strMethodName").toString();
 
             if (boolValid.equalsIgnoreCase("true")) {
-                JSONObject jsonObjectHeader = jsonObject.getJSONObject("listOfmSPMHeader");
 
-                String status = jsonObjectHeader.get("STATUS").toString();
-                String sync = jsonObjectHeader.get("SYNC").toString();
-                String _intSPMHeaderId = jsonObjectHeader.get("SPM_HEADER_ID").toString();
+                    JSONObject jsonObjectHeader = jsonObject.getJSONObject("listOfmSPMHeader");
 
-                if (status.equals("1") && sync.equals("1")) {
+                    String status = jsonObjectHeader.get("STATUS").toString();
+                    String sync = jsonObjectHeader.get("SYNC").toString();
+                    String _intSPMHeaderId = jsonObjectHeader.get("SPM_HEADER_ID").toString();
 
+                    if (status.equals("1") && sync.equals("1")) {
                     new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, true);
 
                     new mSPMHeaderBL().updateDataValueById(_intSPMHeaderId);
@@ -869,9 +874,53 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
                 if(progressDialog!=null){
                     progressDialog.dismiss();
                 }
-                Toast.makeText(OutstandingTask.this, String.valueOf(strMessage), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(OutstandingTask.this, String.valueOf(strMessage), Toast.LENGTH_SHORT).show();
+                new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, false);
                 new tTimerLogBL().deleteDataCompleteWhileError();
-            }
+
+//                JSONObject jsonObjectHeader = jsonObject.getJSONObject("listOfmSPMHeader");
+//
+//                String status = jsonObjectHeader.get("STATUS").toString();
+//                String sync = jsonObjectHeader.get("SYNC").toString();
+//
+//                _mSPMHeaderData = new mSPMHeaderData();
+//
+//                    _mSPMHeaderData.setIntSPMId(jsonObjectHeader.get("SPM_HEADER_ID").toString());
+//                    _mSPMHeaderData.setTxtNoSPM(jsonObjectHeader.get("SPM_NO").toString());
+//                    _mSPMHeaderData.setTxtBranchCode(jsonObjectHeader.get("BRANCH_CODE").toString());
+//                    _mSPMHeaderData.setTxtSalesOrder(jsonObjectHeader.get("SALES_ORDER").toString());
+//                    _mSPMHeaderData.setIntUserId(jsonObjectHeader.get("USER_ID").toString());
+//                    _mSPMHeaderData.setBitStatus("0");
+//                    _mSPMHeaderData.setBitSync("0");
+//                    _mSPMHeaderData.setBitStart("1");
+//                    _mSPMHeaderData.setIntUserId(dataLogin.getIntUserId());
+//
+//                    new mSPMHeaderBL().saveData(_mSPMHeaderData);
+//
+//                    JSONArray jsonArrayInner = jsonObject.getJSONArray("listOfmSPMDetail");
+//
+//                    List<mSPMDetailData> _mSPMDetailData = new ArrayList<>();
+//
+//                    for (int i = 0; i < jsonArrayInner.length(); i++) {
+//
+//                        jsonObject = jsonArrayInner.getJSONObject(i);
+//
+//                        mSPMDetailData data = new mSPMDetailData();
+//
+//                        data.setIntSPMDetailId(jsonObject.get("SPM_DETAIL_ID").toString());
+//                        data.setTxtNoSPM(jsonObject.get("SPM_NO").toString());
+//                        data.setTxtLocator(jsonObject.get("LOCATOR").toString());
+//                        data.setTxtItemCode(jsonObject.get("ITEM_CODE").toString());
+//                        data.setTxtItemName(jsonObject.get("ITEM_NAME").toString());
+//                        data.setIntQty(jsonObject.get("QUANTITY").toString());
+//                        data.setBitStatus(jsonObject.get("STATUS").toString());
+//                        data.setBitSync(jsonObject.get("SYNC").toString());
+//                        data.setTxtUOM(jsonObject.get("UOM").toString());
+//                        data.setTxtLotNumber(jsonObject.get("LOT_NUM").toString());
+//                        data.setIntUserId(dataLogin.getIntUserId());
+//                        new mSPMDetailBL().insert(data);
+//                    }
+                }
             progressDialog.dismiss();
         } catch (JSONException e) {
             e.printStackTrace();
