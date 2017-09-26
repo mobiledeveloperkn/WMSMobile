@@ -268,7 +268,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
         super.onActivityResult(requestCode, resultCode, data);
 
 //        SQLiteDatabase db = new clsMainBL().getDb();
-        boolean status;
+        final boolean[] status = new boolean[1];
 
         if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE && resultCode == AppCompatActivity.RESULT_OK) {
             Uri imageUri = CropImage.getPickImageResultUri(this, data);
@@ -289,17 +289,37 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
             }
             final String result = scanResult != null ? scanResult.getContents() : null;
             if (result != null) {
-                progressDialog.show();
-//                new clsMainActivity().timerDelayRemoveDialog(time, progressDialog);
-                tUserLoginData _tUserLoginData = new tUserLoginData();
-                _tUserLoginData = new tUserLoginBL().getUserActive();
-                status = new WMSMobileService().getDataSPM(result, _tUserLoginData.getIntUserId(), versionName);
-                validReceiver = false;
-                if (!status) {
-                    progressDialog.dismiss();
-                    boolean report = new SignalRBL().buildingConnection();
-                    new clsMainActivity().showCustomToast(getApplicationContext(), "Please Check Your Connection...", false);
-                }
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+                builder1.setTitle("Confirmation");
+                builder1.setMessage("Continue to take STAR " + result + " ?");
+                builder1.setCancelable(true);
+
+                builder1.setPositiveButton(
+                        "Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                progressDialog.show();
+                                tUserLoginData _tUserLoginData;
+                                _tUserLoginData = new tUserLoginBL().getUserActive();
+                                status[0] = new WMSMobileService().getDataSPM(result, _tUserLoginData.getIntUserId(), versionName);
+                                validReceiver = false;
+                                if (!status[0]) {
+                                    progressDialog.dismiss();
+                                    new clsMainActivity().showCustomToast(getApplicationContext(), "Please Check Your Connection...", false);
+                                }
+                            }
+                        });
+                builder1.setNegativeButton(
+                        "No",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog alert11 = builder1.create();
+                alert11.show();
             }
         }
     }
@@ -499,7 +519,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
         }
     }
 
-    private void initMethodSPM(final JSONObject jsonObject) {
+    private void initMethodSPM(JSONObject jsonObject) {
         String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated;
 
         try {
@@ -508,7 +528,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
             strMethodName = jsonObject.get("strMethodName").toString();
 
             if (boolValid.equalsIgnoreCase("true")) {
-                final JSONObject jsonObjectHeader = jsonObject.getJSONObject("listOfmSPMHeader");
+                JSONObject jsonObjectHeader = jsonObject.getJSONObject("listOfmSPMHeader");
 
                 String status = jsonObjectHeader.get("STATUS").toString();
                 String sync = jsonObjectHeader.get("SYNC").toString();
@@ -517,72 +537,47 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
 
                 if (status.equals("1") && sync.equals("0")) {
 
-                    AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-                    builder1.setTitle("Confirmation");
-                    builder1.setMessage("Are you sure want to take STAR " + jsonObjectHeader.get("SPM_NO").toString() + " ?");
-                    builder1.setCancelable(true);
+                    new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, true);
 
-                    builder1.setPositiveButton(
-                            "Yes",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    //                    new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, true);
+                    _mSPMHeaderData.setIntSPMId(jsonObjectHeader.get("SPM_HEADER_ID").toString());
+                    _mSPMHeaderData.setTxtNoSPM(jsonObjectHeader.get("SPM_NO").toString());
+                    _mSPMHeaderData.setTxtBranchCode(jsonObjectHeader.get("BRANCH_CODE").toString());
+                    _mSPMHeaderData.setTxtSalesOrder(jsonObjectHeader.get("SALES_ORDER").toString());
+                    _mSPMHeaderData.setIntUserId(jsonObjectHeader.get("USER_ID").toString());
+                    _mSPMHeaderData.setBitStatus("0");
+                    _mSPMHeaderData.setBitSync("0");
+                    _mSPMHeaderData.setBitStart("1");
+                    _mSPMHeaderData.setIntUserId(dataLogin.getIntUserId());
 
-                                    try {
-                                        _mSPMHeaderData.setIntSPMId(jsonObjectHeader.get("SPM_HEADER_ID").toString());
-                                        _mSPMHeaderData.setTxtNoSPM(jsonObjectHeader.get("SPM_NO").toString());
-                                        _mSPMHeaderData.setTxtBranchCode(jsonObjectHeader.get("BRANCH_CODE").toString());
-                                        _mSPMHeaderData.setTxtSalesOrder(jsonObjectHeader.get("SALES_ORDER").toString());
-                                        _mSPMHeaderData.setIntUserId(jsonObjectHeader.get("USER_ID").toString());
-                                        _mSPMHeaderData.setBitStatus("0");
-                                        _mSPMHeaderData.setBitSync("0");
-                                        _mSPMHeaderData.setBitStart("1");
-                                        _mSPMHeaderData.setIntUserId(dataLogin.getIntUserId());
+                    new mSPMHeaderBL().saveData(_mSPMHeaderData);
 
-                                        new mSPMHeaderBL().saveData(_mSPMHeaderData);
+                    JSONArray jsonArrayInner = jsonObject.getJSONArray("listOfmSPMDetail");
 
-                                        JSONArray jsonArrayInner = jsonObject.getJSONArray("listOfmSPMDetail");
+                    List<mSPMDetailData> _mSPMDetailData = new ArrayList<>();
 
-                                        List<mSPMDetailData> _mSPMDetailData = new ArrayList<>();
+                    for (int i = 0; i < jsonArrayInner.length(); i++) {
 
-                                        for (int i = 0; i < jsonArrayInner.length(); i++) {
+                        jsonObject = jsonArrayInner.getJSONObject(i);
 
-                                            JSONObject jsonObjectDetail = jsonArrayInner.getJSONObject(i);
+                        mSPMDetailData data = new mSPMDetailData();
 
-                                            mSPMDetailData data = new mSPMDetailData();
-
-                                            data.setIntSPMDetailId(jsonObjectDetail.get("SPM_DETAIL_ID").toString());
-                                            data.setTxtNoSPM(jsonObjectDetail.get("SPM_NO").toString());
-                                            data.setTxtLocator(jsonObjectDetail.get("LOCATOR").toString());
-                                            data.setTxtItemCode(jsonObjectDetail.get("ITEM_CODE").toString());
-                                            data.setTxtItemName(jsonObjectDetail.get("ITEM_NAME").toString());
-                                            data.setIntQty(jsonObjectDetail.get("QUANTITY").toString());
-                                            data.setBitStatus(jsonObjectDetail.get("STATUS").toString());
-                                            data.setBitSync(jsonObjectDetail.get("SYNC").toString());
-                                            data.setTxtUOM(jsonObjectDetail.get("UOM").toString());
-                                            data.setTxtLotNumber(jsonObjectDetail.get("LOT_NUM").toString());
-                                            data.setIntUserId(dataLogin.getIntUserId());
-                                            new mSPMDetailBL().insert(data);
-                                        }
-                                        btnScan.setEnabled(false);
-                                        btnScan.setBackgroundResource(R.drawable.btn_innermenu_gray);
-                                        btnOutstandingTask.setEnabled(true);
-                                        btnOutstandingTask.setBackgroundResource(R.drawable.btn_innermenu);
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            });
-                    builder1.setNegativeButton(
-                            "No",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-
-                    AlertDialog alert11 = builder1.create();
-                    alert11.show();
+                        data.setIntSPMDetailId(jsonObject.get("SPM_DETAIL_ID").toString());
+                        data.setTxtNoSPM(jsonObject.get("SPM_NO").toString());
+                        data.setTxtLocator(jsonObject.get("LOCATOR").toString());
+                        data.setTxtItemCode(jsonObject.get("ITEM_CODE").toString());
+                        data.setTxtItemName(jsonObject.get("ITEM_NAME").toString());
+                        data.setIntQty(jsonObject.get("QUANTITY").toString());
+                        data.setBitStatus(jsonObject.get("STATUS").toString());
+                        data.setBitSync(jsonObject.get("SYNC").toString());
+                        data.setTxtUOM(jsonObject.get("UOM").toString());
+                        data.setTxtLotNumber(jsonObject.get("LOT_NUM").toString());
+                        data.setIntUserId(dataLogin.getIntUserId());
+                        new mSPMDetailBL().insert(data);
+                    }
+                    btnScan.setEnabled(false);
+                    btnScan.setBackgroundResource(R.drawable.btn_innermenu_gray);
+                    btnOutstandingTask.setEnabled(true);
+                    btnOutstandingTask.setBackgroundResource(R.drawable.btn_innermenu);
                 } else if (status.equals("1") && sync.equals("1")) {
 
                     new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, false);
