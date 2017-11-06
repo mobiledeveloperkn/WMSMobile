@@ -147,6 +147,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
 
         _mSPMHeaderData = new mSPMHeaderData();
         _mSPMHeaderData = new mSPMHeaderBL().GetAllData();
+        dataLogin = new tUserLoginData();
         dataLogin = new tUserLoginBL().getUserActive();
 
         tv_userName.setText(dataLogin.getTxtUserName());
@@ -179,9 +180,11 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
             case R.id.btn_outstanding:
 //                finish();
                 startActivity(new Intent(Home.this, OutstandingTask.class));
+
                 break;
             case R.id.btn_scan:
-                IntentIntegrator.initiateScan(this, zxingLibConfig);
+                checkDataWaiting();
+//                IntentIntegrator.initiateScan(this, zxingLibConfig);
                 break;
             case R.id.btn_logout:
 
@@ -209,6 +212,25 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
                 pickImage();
                 break;
 
+        }
+    }
+
+    private void checkDataWaiting() {
+        boolean status = false;
+        final String result = new mSPMHeaderBL().GetAllData().getIntSPMId();
+
+        if(result!=null){
+            progressDialog.show();
+            tUserLoginData _tUserLoginData;
+            _tUserLoginData = new tUserLoginBL().getUserActive();
+            status = new WMSMobileService().checkWaitingDataSTAR(result, _tUserLoginData.getIntUserId(), versionName);
+            validReceiver = false;
+            if (!status) {
+                progressDialog.dismiss();
+                new clsMainActivity().showCustomToast(getApplicationContext(), "Please Check Your Connection...", false);
+            }
+        } else {
+            IntentIntegrator.initiateScan(this, zxingLibConfig);
         }
     }
 
@@ -420,6 +442,8 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
                         initMethodSPM(jsonObject);
                     } else if (strMethodName.equalsIgnoreCase("Logout")){
                         initMethodLogout(jsonObject);
+                    } else if(strMethodName.equalsIgnoreCase("checkWaitingDataSTAR")){
+                        initMethodCheckDataSTAR(jsonObject);
                     } else if (strMethodName.equalsIgnoreCase("pushDataOffline")) {
 //                        updateListView();
                         if(updateSnackbar != null){
@@ -432,6 +456,29 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
                 }
             }
         });
+    }
+
+    private void initMethodCheckDataSTAR(JSONObject jsonObject) {
+        String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated;
+
+        try {
+            boolValid = jsonObject.get("boolValid").toString();
+            strMessage = jsonObject.get("strMessage").toString();
+            strMethodName = jsonObject.get("strMethodName").toString();
+
+            if (boolValid.equalsIgnoreCase("true")) {
+                IntentIntegrator.initiateScan(this, zxingLibConfig);
+            } else {
+                if(progressDialog!=null){
+                    progressDialog.dismiss();
+                }
+                new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, false);
+            }
+            progressDialog.dismiss();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            progressDialog.dismiss();
+        }
     }
 
     private void updateFromPushDataOffline(JSONObject jsonObject) {
@@ -547,6 +594,9 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
                 _mSPMHeaderData = new mSPMHeaderData();
 
                 if (status.equals("1") && sync.equals("0")) {
+
+                    SQLiteDatabase db = new clsMainBL().getDb();
+                    new clsHelper().DeleteHeaderDetailStar(db);
 
                     new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, true);
 

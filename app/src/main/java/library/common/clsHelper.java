@@ -204,6 +204,15 @@ public class clsHelper {
 
 	}
 
+	public void DeleteHeaderDetailStar(SQLiteDatabase db){
+		mSPMHeaderDA _mSPMHeaderDA = new mSPMHeaderDA(db);
+		mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(db);
+
+		_mSPMHeaderDA.DeleteAllDataMConfig(db);
+		_mSPMDetailDA.DeleteAllDataMConfig(db);
+
+	}
+
 	public String ResultJsonData(String dt){
 		return dt.substring(16,dt.length()-2);
 	}

@@ -109,6 +109,7 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
         if (pInfo != null) {
             versionName = pInfo.versionName;
         }
+        dataLogin = new tUserLoginData();
         dataLogin = new tUserLoginBL().getUserActive();
         //bikin progres dialognya
         progressDialog = new ProgressDialog(OutstandingTask.this);
@@ -603,8 +604,8 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
             new mSPMHeaderBL().updateDtEndById(_mSPMHeaderData.getIntSPMId(), dt);
 
             SQLiteDatabase db = new clsMainBL().getDb();
-            new mSPMHeaderDA(db).DeleteAllDataMConfig(db);
-            new mSPMDetailDA(db).DeleteAllDataMConfig(db);
+//            new mSPMHeaderDA(db).DeleteAllDataMConfig(db);
+//            new mSPMDetailDA(db).DeleteAllDataMConfig(db);
             new tTimerLogDA(db).DropTable(db);
             progressDialog.dismiss();
 //            finish();

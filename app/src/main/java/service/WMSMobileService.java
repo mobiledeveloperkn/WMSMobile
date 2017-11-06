@@ -100,15 +100,15 @@ public class WMSMobileService extends Service {
         }
     }
 
-    public boolean checkinConnHub(){
+    public boolean checkinConnHub() {
         boolean valid = false;
-        if(mHubConnection.getConnectionId()!=null){
+        if (mHubConnection.getConnectionId() != null) {
             valid = true;
         }
         return valid;
     }
 
-    public boolean getDataLastVersion(String versionName){
+    public boolean getDataLastVersion(String versionName) {
         String METHOD_SERVER = new clsHardCode().txtMethodServerGetVersionName;
         boolean status = false;
         JSONObject jsonObject = new JSONObject();
@@ -136,12 +136,12 @@ public class WMSMobileService extends Service {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-            if (mHubConnection.getConnectionId() != null) {
-                mHubProxy.invoke(METHOD_SERVER, jsonObject.toString());
-                status = true;
-            } else {
-                status = false;
-            }
+        if (mHubConnection.getConnectionId() != null) {
+            mHubProxy.invoke(METHOD_SERVER, jsonObject.toString());
+            status = true;
+        } else {
+            status = false;
+        }
         return status;
     }
 
@@ -158,13 +158,13 @@ public class WMSMobileService extends Service {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-            if (mHubConnection.getConnectionId() != null) {
-                mHubProxy.invoke(METHOD_SERVER, jsonObject.toString());
+        if (mHubConnection.getConnectionId() != null) {
+            mHubProxy.invoke(METHOD_SERVER, jsonObject.toString());
 //                mHubProxy.wait(4000);
-                status = true;
-            } else {
-                status = false;
-            }
+            status = true;
+        } else {
+            status = false;
+        }
         return status;
     }
 
@@ -200,12 +200,12 @@ public class WMSMobileService extends Service {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-            if (mHubConnection.getConnectionId() != null) {
-                mHubProxy.invoke(METHOD_SERVER, jsonObject.toString());
-                status = true;
-            } else {
-                status = false;
-            }
+        if (mHubConnection.getConnectionId() != null) {
+            mHubProxy.invoke(METHOD_SERVER, jsonObject.toString());
+            status = true;
+        } else {
+            status = false;
+        }
         return status;
     }
 
@@ -215,6 +215,26 @@ public class WMSMobileService extends Service {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("txtBarcode", result);
+            jsonObject.put("intUserId", intUserId);
+            jsonObject.put("pInfo", versionName);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (mHubConnection.getConnectionId() != null) {
+            mHubProxy.invoke(METHOD_SERVER, jsonObject.toString());
+            status = true;
+        } else {
+            status = false;
+        }
+        return status;
+    }
+
+    public boolean checkWaitingDataSTAR(String result, String intUserId, String versionName) {
+        boolean status = false;
+        String METHOD_SERVER = new clsHardCode().txtMethodServerCheckWaitingDataSTAR;
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("intSPMHeaderId", result);
             jsonObject.put("intUserId", intUserId);
             jsonObject.put("pInfo", versionName);
         } catch (JSONException e) {
@@ -240,12 +260,12 @@ public class WMSMobileService extends Service {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-            if (mHubConnection.getConnectionId() != null) {
-                mHubProxy.invoke(METHOD_SERVER, jsonObject.toString());
-                status = true;
-            } else {
-                status = false;
-            }
+        if (mHubConnection.getConnectionId() != null) {
+            mHubProxy.invoke(METHOD_SERVER, jsonObject.toString());
+            status = true;
+        } else {
+            status = false;
+        }
         return status;
     }
 
@@ -281,12 +301,12 @@ public class WMSMobileService extends Service {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-            if (mHubConnection.getConnectionId() != null) {
-                mHubProxy.invoke(METHOD_SERVER, jsonObject.toString());
-                status = true;
-            } else {
-                status = false;
-            }
+        if (mHubConnection.getConnectionId() != null) {
+            mHubProxy.invoke(METHOD_SERVER, jsonObject.toString());
+            status = true;
+        } else {
+            status = false;
+        }
         return status;
     }
 
@@ -330,7 +350,7 @@ public class WMSMobileService extends Service {
         return status;
     }
 
-    public  boolean pushFromOfflineAct(String json, String versionName){
+    public boolean pushFromOfflineAct(String json, String versionName) {
         boolean status = false;
         String METHOD_SERVER = new clsHardCode().txtMethodPushData;
         JSONObject jsonObject = new JSONObject();
