@@ -86,7 +86,7 @@ public class SwipeListAdapter extends BaseAdapter {
 
         if (mSPMDetailDataList.get(position).getBitStatus().equals("0") && mSPMDetailDataList.get(position).getBitSync().equals("0")) {
             iv_status.setVisibility(View.INVISIBLE);
-            if (position == 0) {
+//            if (position == 0) {
                 convertView.setBackgroundResource(R.color.white);
                 rl_row.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -94,9 +94,9 @@ public class SwipeListAdapter extends BaseAdapter {
                         viewTaskDetail(activity, position);
                     }
                 });
-            } else if (position>0){
-                convertView.setBackgroundResource(R.color.gray);
-            }
+//            } else if (position>0){
+//                convertView.setBackgroundResource(R.color.gray);
+//            }
 
         } else if (mSPMDetailDataList.get(position).getBitStatus().equals("1") && mSPMDetailDataList.get(position).getBitSync().equals("1")) {
             iv_status.setVisibility(View.VISIBLE);
