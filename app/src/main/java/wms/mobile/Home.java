@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -163,7 +164,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
         } else {
             ivProfile.setImageBitmap(BitmapFactory.decodeResource(getApplicationContext().getResources(),
                     R.drawable.profile));
-        }
+        } 
         ivProfile.setOnClickListener(this);
         new clsMainActivity().checkConnection(coordinatorLayout, conMan);
 
@@ -172,6 +173,11 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
         progressDialog.setMessage("Loading... Please Wait");
         progressDialog.setIndeterminate(false); //ukur berapa persen, false maka not do
         progressDialog.setCancelable(false);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            registerReceiver(new ConnectivityReceiver(),
+                    new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }
     }
 
     @Override
