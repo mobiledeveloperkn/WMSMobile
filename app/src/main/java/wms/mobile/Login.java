@@ -112,26 +112,26 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         conMan = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        btn_login = (Button) findViewById(R.id.buttonLogin);
-        btn_ping = (Button) findViewById(R.id.buttonPing);
-        btn_exit = (Button) findViewById(R.id.buttonExit);
-        etTxtEmail = (EditText) findViewById(R.id.txtLoginEmail);
-        etTxtPass = (TextInputEditText) findViewById(R.id.editTextPass);
-        spnRole = (Spinner) findViewById(R.id.spnRole);
-        tilEmail = (TextInputLayout) findViewById(R.id.input_layout_email);
-        tilPass = (TextInputLayout) findViewById(R.id.input_layout_pass);
-        txtInfo = (TextView) findViewById(R.id.txtVersionLogin);
-        txtVersion = (TextView) findViewById(R.id.txtVersionApp);
-        tvInstance = (TextView) findViewById(R.id.tvInstance);
+        btn_login = findViewById(R.id.buttonLogin);
+        btn_ping = findViewById(R.id.buttonPing);
+        btn_exit = findViewById(R.id.buttonExit);
+        etTxtEmail = findViewById(R.id.txtLoginEmail);
+        etTxtPass = findViewById(R.id.editTextPass);
+        spnRole = findViewById(R.id.spnRole);
+        tilEmail = findViewById(R.id.input_layout_email);
+        tilPass = findViewById(R.id.input_layout_pass);
+        txtInfo = findViewById(R.id.txtVersionLogin);
+        txtVersion = findViewById(R.id.txtVersionApp);
+        tvInstance = findViewById(R.id.tvInstance);
 
-        llContentWarning = (LinearLayout) findViewById(R.id.llContentWarning);
-        llContent = (LinearLayout) findViewById(R.id.llContent);
-        btnCheckVersion = (Button) findViewById(R.id.btnCheckVersion);
+        llContentWarning = findViewById(R.id.llContentWarning);
+        llContent = findViewById(R.id.llContent);
+        btnCheckVersion = findViewById(R.id.btnCheckVersion);
 
         etTxtEmail.setFocusableInTouchMode(true);
         etTxtPass.setFocusableInTouchMode(true);
 
-        ImageView imgBanner = (ImageView) findViewById(R.id.header);
+        ImageView imgBanner = findViewById(R.id.header);
         imgBanner.setAdjustViewBounds(true);
         imgBanner.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
@@ -192,7 +192,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         });
 
         new tDeviceInfoUserBL().SaveInfoDevice("", "", versionName);
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayoutLogin);
+        coordinatorLayout = findViewById(R.id.coordinatorLayoutLogin);
 
         arrNodata = new ArrayList<>();
         arrNodata.add("-");
@@ -351,16 +351,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
 
     private void sendRequestLogin() {
         String nameRole = selectedRole;
-        boolean status = false;
 
         if (txtPass.length() > 0) {
             progressDialog.show();
 //            new clsMainActivity().timerDelayRemoveDialog(time, progressDialog);
-            try {
-                status = new WMSMobileService().login(txtEmail, txtPass, HMRole.get(nameRole), versionName, dataLogin.getIntUserId());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            boolean status = new WMSMobileService().login(txtEmail, txtPass, HMRole.get(nameRole), versionName, dataLogin.getIntUserId());
             if (!status) {
                 progressDialog.dismiss();
                 boolean report = new SignalRBL().buildingConnection();
@@ -656,9 +651,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         View getCustomView(int position, ViewGroup parent) {
             LayoutInflater inflater = Login.this.getLayoutInflater();
             View row = inflater.inflate(R.layout.custom_spinner, parent, false);
-            TextView label = (TextView) row.findViewById(R.id.tvTitle);
+            TextView label = row.findViewById(R.id.tvTitle);
             label.setText(arrObject.get(position));
-            TextView sub = (TextView) row.findViewById(R.id.tvDesc);
+            TextView sub = row.findViewById(R.id.tvDesc);
             sub.setVisibility(View.INVISIBLE);
             sub.setVisibility(View.GONE);
             row.setBackgroundColor(Color.TRANSPARENT);

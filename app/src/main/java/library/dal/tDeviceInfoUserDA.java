@@ -43,25 +43,23 @@ public class tDeviceInfoUserDA {
 	// Adding new contact
 	public void SaveDatatDeviceInfoUserData(SQLiteDatabase db, tDeviceInfoUserData data) {
 		tDeviceInfoUserData dt=new tDeviceInfoUserData();
-		//ContentValues values = new ContentValues();
-		//values.put(dt.Property_intIdMenu, data.get_intIdMenu()); 
-		//values.put(dt.Property_txtRoleId, data.get_txtRoleId()); 
-		// Inserting Row
-		//db.insert(TABLE_CONTACTS, null, values);
-		db.execSQL("INSERT OR REPLACE into "+TABLE_CONTACTS+" ("+dt.Property_intId+","
-				+dt.Property_txtDevice+","
-				+dt.Property_txtDeviceId+","
-				+dt.Property_txtModel+","
-				+dt.Property_txtUserId+","
-				+dt.Property_txtVersion+","
-				+dt.Property_txtVersionName+") "+
-			"values('"	+ String.valueOf(data.get_intId())+"','"
-				+ String.valueOf(data.get_txtDevice())+"','"
-				+ String.valueOf(data.get_txtDeviceId())+"','"
-				+ String.valueOf(data.get_txtModel())+"','"
-				+ String.valueOf(data.get_txtUserId())+"','"
-				+ String.valueOf(data.get_txtVersion())+"','"
-				+ String.valueOf(data.get_txtVersionName())+"')");
+
+		String exec = "INSERT OR REPLACE into "+TABLE_CONTACTS+" ("+dt.Property_intId+","
+                +dt.Property_txtDevice+","
+                +dt.Property_txtDeviceId+","
+                +dt.Property_txtModel+","
+                +dt.Property_txtUserId+","
+                +dt.Property_txtVersion+","
+                +dt.Property_txtVersionName+") "+
+                "values('"	+ String.valueOf(data.get_intId())+"','"
+                + String.valueOf(data.get_txtDevice())+"','"
+                + String.valueOf(data.get_txtDeviceId())+"','"
+                + String.valueOf(data.get_txtModel())+"','"
+                + String.valueOf(data.get_txtUserId())+"','"
+                + String.valueOf(data.get_txtVersion())+"','"
+                + String.valueOf(data.get_txtVersionName())+"')";
+
+		db.execSQL(exec);
 		
 	}
 
@@ -81,7 +79,8 @@ public class tDeviceInfoUserDA {
 		}
 
 		// return contact
-		cursor.close();
+        assert cursor != null;
+        cursor.close();
 		return contact;
 	}
 	
@@ -112,27 +111,5 @@ public class tDeviceInfoUserDA {
 		cursor.close();
 		// return contact list
 		return contactList;
-	}
-
-	// Deleting single contact
-	public void deleteContact(SQLiteDatabase db, int id) {
-		tDeviceInfoUserData dt = new tDeviceInfoUserData();
-		db.delete(TABLE_CONTACTS, dt.Property_intId + " = ?",
-				new String[] { String.valueOf(id) });
-	}
-
-	public void DeleteAllDAta(SQLiteDatabase db) {
-		// Drop older table if existed
-		db.execSQL("DELETE FROM " + TABLE_CONTACTS);
-	}
-	// Getting contacts Count
-	public int getContactsCount(SQLiteDatabase db) {
-		String countQuery = "SELECT * FROM " + TABLE_CONTACTS;
-		Cursor cursor = db.rawQuery(countQuery, null);
-		int num =cursor.getCount();
-		cursor.close();
-
-		// return count
-		return num;
 	}
 }

@@ -58,9 +58,11 @@ import java.util.UUID;
 import bl.SignalRBL;
 import bl.clsHelperBL;
 import bl.clsMainBL;
+import bl.mSPMHeaderBL;
 import bl.tDeviceInfoUserBL;
 import bl.tTimerLogBL;
 import library.common.clsPushData;
+import library.common.mSPMHeaderData;
 import library.common.tDeviceInfoUserData;
 import library.common.tTimerLogData;
 import service.WMSMobileService;
@@ -782,17 +784,18 @@ public class clsMainActivity extends Activity implements WMSMobileService.update
     @Override
     public void onUpdateSnackBar(boolean info) {
         if(info){
-            snackbarOffline.dismiss();
+//            snackbarOffline.dismiss();
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class AsyncTestConnection extends AsyncTask<Boolean, Void, Boolean> {
 
 
-        public AsyncTestConnection(CoordinatorLayout coordinatorLayout) {
+        AsyncTestConnection(CoordinatorLayout coordinatorLayout) {
             super();
             coordinatorLayoutTask = coordinatorLayout;
-            snackbar = Snackbar.make(coordinatorLayoutTask, "Connecting...", Snackbar.LENGTH_INDEFINITE);
+            snackbar = Snackbar.make(coordinatorLayoutTask, "Connecting...", Snackbar.LENGTH_SHORT);
             snackBarView = snackbar.getView();
         }
 
@@ -814,33 +817,46 @@ public class clsMainActivity extends Activity implements WMSMobileService.update
                 String versionName = "";
                 if(dtJson.getDtdataJson()!=null){
                     try {
-                        snackbarOffline = Snackbar.make(coordinatorLayoutTask, "Sync Data...", Snackbar.LENGTH_INDEFINITE);
-                        View snackBarView = snackbarOffline.getView();
+                        snackbarOffline = null;
+//                        snackbarOffline = Snackbar.make(coordinatorLayoutTask, "Sync Data...", Snackbar.LENGTH_SHORT);
+//                        View snackBarView = snackbarOffline.getView();
                         snackBarView.setBackgroundResource(R.color.color_primary_blue);
                         TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
                         textView.setTextColor(Color.WHITE);
                         final Snackbar finalSnackbar = snackbarOffline;
-                        snackbarOffline.getView().getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                            @Override
-                            public boolean onPreDraw() {
-                                finalSnackbar.getView().getViewTreeObserver().removeOnPreDrawListener(this);
-                                ((CoordinatorLayout.LayoutParams) finalSnackbar.getView().getLayoutParams()).setBehavior(null);
-                                return true;
-                            }
-                        });
-                        snackbarOffline.show();
+//                        snackbarOffline.getView().getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+//                            @Override
+//                            public boolean onPreDraw() {
+//                                finalSnackbar.getView().getViewTreeObserver().removeOnPreDrawListener(this);
+//                                ((CoordinatorLayout.LayoutParams) finalSnackbar.getView().getLayoutParams()).setBehavior(null);
+//                                return true;
+//                            }
+//                        });
+//                        snackbarOffline.show();
                         setSnackBarClose(clsMainActivity.this);
                         status = new WMSMobileService().pushFromOfflineAct(dtJson.getDtdataJson().txtJSON().toString(), versionName);
                         if (status){
                             snackbar.dismiss();
-                            snackbarOffline.dismiss();
-                            new TabsTaskHeader().updateListView();
+//                            snackbarOffline.dismiss();
+
+                            try{
+                                new TabsTaskHeader().updateListView();
+                            }
+                            catch (Exception ignored){
+
+                            }
                         }
                     } catch (Exception e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
 
+                }
+
+                mSPMHeaderData dt = new mSPMHeaderBL().GetAllData();
+
+                if(dt != null){
+                    new WMSMobileService().getLatestSTAR(dt.getTxtNoSPM());
                 }
             } else {
                 snackbar.dismiss();

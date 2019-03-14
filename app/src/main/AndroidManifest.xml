@@ -38,7 +38,7 @@
         </receiver>
 
         <activity
-            android:name=".Splash"
+            android:name="wms.mobile.Splash"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
@@ -48,25 +48,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Login"
+            android:name="wms.mobile.Login"
             android:label="Login"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"></activity>
         <activity
-            android:name=".Home"
+            android:name="wms.mobile.Home"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="landscape"></activity>
         <activity
-            android:name=".TabsTaskHeader"
+            android:name="wms.mobile.TabsTaskHeader"
             android:configChanges="orientation|screenSize"
-            android:parentActivityName=".OutstandingTask"
+            android:parentActivityName="wms.mobile.OutstandingTask"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"></activity>
         <activity
-            android:name=".OutstandingTask"
+            android:name="wms.mobile.OutstandingTask"
             android:configChanges="orientation|screenSize"
             android:label="Outstanding Task"
-            android:parentActivityName=".Home"
+            android:parentActivityName="wms.mobile.Home"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"></activity>
         <activity

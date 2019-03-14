@@ -13,6 +13,7 @@ public class clsHardCode  {
     public String txtPathUserData = Environment.getExternalStorageDirectory() + File.separator + "Android" + File.separator + "data" + File.separator + "WMSMobile" + File.separator + "user_data" + File.separator;
     public String txtDatabaseName=txtPathApp+"WMSMobile";
     public String txtTable_mConfig = "mconfig";
+    public String txtTable_mSystemConfig = "mSystemConfig";
     public String txtTable_mUser = "tUserLogin";
     public String txtTable_tTimerLog = "tTimerLog";
     public String txtTable_mUserRole = "mUserRole";
@@ -41,6 +42,6 @@ public class clsHardCode  {
     public String txtMethodServerCancelSPMDetail = "cancelSPMDetail";
     public String txtTable_tDisplayPicture = "tDisplayPicture";
     public String txtTable_tDeviceInfoUser = "tDeviceInfoUser";
-
-
+    public String txtUpdateConnectionId = "updateConnectionId";
+    public String txtGetLatestSTAR = "getLatestSTAR";
 }

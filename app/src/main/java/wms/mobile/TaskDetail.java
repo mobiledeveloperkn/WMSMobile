@@ -1,5 +1,6 @@
 package wms.mobile;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
@@ -27,10 +28,10 @@ public class TaskDetail extends AppCompatActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_detail);
 
-        btnConfirm = (Button) findViewById(R.id.btn_confirm);
-        tvLocator = (TextView) findViewById(R.id.tv_locator);
-        tvItemCode = (TextView) findViewById(R.id.tv_itemcode);
-        tvItemName = (TextView) findViewById(R.id.tv_itemname);
+        btnConfirm = findViewById(R.id.btn_confirm);
+        tvLocator = findViewById(R.id.tv_locator);
+        tvItemCode = findViewById(R.id.tv_itemcode);
+        tvItemName = findViewById(R.id.tv_itemname);
 
         btnConfirm.setOnClickListener(this);
 
@@ -75,6 +76,7 @@ public class TaskDetail extends AppCompatActivity implements View.OnClickListene
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class AsyncCallUpdateDetail extends AsyncTask<JSONArray, Void, JSONArray> {
         String dummy;
         @Override

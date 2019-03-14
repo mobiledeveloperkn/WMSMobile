@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import library.common.mSPMDetailData;
+import library.common.mSystemConfigData;
+import library.common.mconfigData;
 
 /**
  * Created by ASUS ZE on 16/11/2016.
@@ -242,9 +244,12 @@ public class mSPMDetailDA {
     public List<mSPMDetailData> getAllDataTaskPending(SQLiteDatabase db, String id) {
         List<mSPMDetailData> contactList = new ArrayList<mSPMDetailData>();
         // Select All Query
+
+        mSystemConfigData cnf = new mSystemConfigDA(db).getData(db, 1);
+
         mSPMDetailData dt = new mSPMDetailData();
         String selectQuery = "SELECT  " + dt.Property_All + " FROM "
-                + TABLE_CONTACTS + " WHERE " + dt.Property_bitSync + "=0 And " + dt.Property_bitStatus + "=0 And " + dt.Property_txtNoSPM + "='" + id + "' order by intSPMDetailId";
+                + TABLE_CONTACTS + " WHERE " + dt.Property_bitSync + "=0 And " + dt.Property_bitStatus + "=0 And " + dt.Property_txtNoSPM + "='" + id + "' order by intSPMDetailId " + cnf.get_txtValue();
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
 
@@ -276,9 +281,10 @@ public class mSPMDetailDA {
     public List<mSPMDetailData> getAllDataTaskConfirm(SQLiteDatabase db, String id) {
         List<mSPMDetailData> contactList = new ArrayList<mSPMDetailData>();
         // Select All Query
+        mSystemConfigData cnf = new mSystemConfigDA(db).getData(db, 1);
+
         mSPMDetailData dt = new mSPMDetailData();
-        String selectQuery = "SELECT  " + dt.Property_All + " FROM "
-                + TABLE_CONTACTS + " WHERE " + dt.Property_bitStatus + "=1 And " + dt.Property_txtNoSPM + "='" + id + "'";
+        String selectQuery = "SELECT  " + dt.Property_All + " FROM " + TABLE_CONTACTS + " WHERE " + dt.Property_bitStatus + "=1 And " + dt.Property_txtNoSPM + "='" + id + "' ORDER BY intSPMDetailId " + cnf.get_txtValue();
         //+dt.Property_bitSync+"=1 And "
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
@@ -309,11 +315,12 @@ public class mSPMDetailDA {
     }
 
     public List<mSPMDetailData> getAllDataTaskCancel(SQLiteDatabase db, String id) {
+        mSystemConfigData cnf = new mSystemConfigDA(db).getData(db, 1);
         List<mSPMDetailData> contactList = new ArrayList<mSPMDetailData>();
         // Select All Query
         mSPMDetailData dt = new mSPMDetailData();
         String selectQuery = "SELECT  " + dt.Property_All + " FROM "
-                + TABLE_CONTACTS + " WHERE " + dt.Property_bitStatus + "=2 And " + dt.Property_txtNoSPM + "='" + id + "'";
+                + TABLE_CONTACTS + " WHERE " + dt.Property_bitStatus + "=2 And " + dt.Property_txtNoSPM + "='" + id + "' ORDER BY intSPMDetailId " + cnf.get_txtValue();
         //+dt.Property_bitSync+"=1 And "
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list

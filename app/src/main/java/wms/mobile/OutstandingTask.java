@@ -54,7 +54,6 @@ import library.common.mSPMHeaderData;
 import library.common.tTimerLogData;
 import library.common.tUserLoginData;
 import library.dal.mSPMDetailDA;
-import library.dal.mSPMHeaderDA;
 import library.dal.tTimerLogDA;
 import service.WMSMobileService;
 
@@ -646,10 +645,12 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
 
                     if (strMethodName.equalsIgnoreCase("ConfirmSPMHeader")) {
                         initMethodConfirmSPMHeader(jsonObject);
-                    } else if (strMethodName.equalsIgnoreCase("pushDataOffline")) {
-                        updateFromPushDataOffline(jsonObject);
+//                    } else if (strMethodName.equalsIgnoreCase("pushDataOffline")) {
+//                        updateFromPushDataOffline(jsonObject);
                     } else if (strMethodName.equalsIgnoreCase("RefreshDataSTAR")) {
                         initMethodSPM(jsonObject);
+                    } else if(strMethodName.equalsIgnoreCase("pushDataOffline") || strMethodName.equalsIgnoreCase("ConfirmSPMDetail") || strMethodName.equalsIgnoreCase("cancelSPMDetail") || strMethodName.equalsIgnoreCase("revertCancelSPMDetail")){
+                        recreate();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -2,6 +2,7 @@ package wms.mobile;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
@@ -14,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
@@ -37,12 +39,14 @@ import addon.MyApplication;
 import addon.SwipeListAdapter;
 import bl.mSPMDetailBL;
 import bl.mSPMHeaderBL;
+import bl.mSystemConfigBL;
 import bl.tUserLoginBL;
 import fragment.TaskCancelFragment;
 import fragment.TaskOnProgressFragment;
 import fragment.TaskSuccessFragment;
 import library.common.mSPMDetailData;
 import library.common.mSPMHeaderData;
+import library.common.mSystemConfigData;
 import library.common.tUserLoginData;
 import service.WMSMobileService;
 
@@ -140,25 +144,6 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
         super.onResume();
     }
 
-//    @Override
-//    protected void onDestroy() {
-////        Intent broadcastIntent = new Intent("service.MyRebootReceiver");
-////        sendBroadcast(broadcastIntent);
-////        if(!new clsMainActivity().isMyServiceRunning(getApplicationContext())){
-////            Intent broadcastIntent = new Intent("service.MyRebootReceiver");
-////            sendBroadcast(broadcastIntent);
-////        } else {
-////            boolean valid = new WMSMobileService().checkinConnHub();
-////            if(!valid){
-////                new WMSMobileService().startSignalR();
-////            }
-////        }
-//        coordinatorLayout = null;
-//        conMan = null;
-//        tabLayout = null;
-//        super.onDestroy();
-//    }
-
     private void initToolbar() {
         if(!txtNoSPM.equals("")){
             _mSPMHeaderData = new mSPMHeaderBL().GetDataById(txtNoSPM);
@@ -204,10 +189,35 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
         MenuItem menuItem = menu.findItem(R.id.title);
         mSPMDetailDataListConfirm = new mSPMDetailBL().getAllDataTaskConfirm(txtNoSPM);
         mSPMDetailData = new mSPMDetailBL().getAllDataById(txtNoSPM);
-        SpannableString spanString = new SpannableString(mSPMDetailDataListConfirm.size() + "/" + mSPMDetailData.size());
+        mSystemConfigData dtcnf = new mSystemConfigBL().getData(1);
+        SpannableString spanString = new SpannableString(mSPMDetailDataListConfirm.size() + "/" + mSPMDetailData.size() + " - ORDER BY "+dtcnf.get_txtValue().toUpperCase());
         int end = spanString.length();
         spanString.setSpan(new RelativeSizeSpan(1.4f), 0, end, Spannable.SPAN_COMPOSING);
         menuItem.setTitle(spanString);
+
+        menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                CharSequence[] charSequence = new CharSequence[] {"Ascending","Descending"};
+                mSystemConfigData dt = new mSystemConfigBL().getData(1);
+                int selected_id = dt.get_txtValue().equals("asc") ? 0 : 1;
+
+                new AlertDialog.Builder(TabsTaskHeader.this)
+                        .setTitle("List Order Picking")
+                        .setSingleChoiceItems(charSequence, selected_id, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                new mSystemConfigBL().updateOrderPicking(which);
+                                dialog.dismiss();
+
+                                new clsMainActivity().showCustomToast(getApplicationContext(), "ordering changed", true);
+                                recreate();
+                            }
+                        })
+                        .show();
+                return false;
+            }
+        });
 
         return true;
     }
@@ -234,6 +244,15 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
                     } else if (strMethodName.equalsIgnoreCase("pushDataOffline")) {
 //                        updateListView();
                         updateFromPushDataOffline(jsonObject);
+                    }
+                    else
+                        if(strMethodName.equalsIgnoreCase("getLatestSTAR")){
+                        try{
+                            recreate();
+                        }
+                        catch (Exception ignored){
+
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -442,7 +461,7 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
 
                     new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, true);
 
-                    new mSPMDetailBL().updateDataValueById(_intSPMDetailId, dataLogin.getIntUserId());
+//                    new mSPMDetailBL().updateDataValueById(_intSPMDetailId, dataLogin.getIntUserId());
                     adapterSuccess.notifyDataSetChanged();
                     adapterProgress.notifyDataSetChanged();
 //                    adapterCancel.notifyDataSetChanged();
