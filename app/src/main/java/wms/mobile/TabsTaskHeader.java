@@ -124,10 +124,13 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
         progressDialog.setIndeterminate(false); //ukur berapa persen, false maka not do
         progressDialog.setCancelable(false);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            registerReceiver(new ConnectivityReceiver(),
-                    new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            IntentFilter filter = new IntentFilter();
+//            filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+//            registerReceiver(new ConnectivityReceiver(), filter);
+////            registerReceiver(new ConnectivityReceiver(),
+////                    new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+//        }
     }
 
     @Override
@@ -212,6 +215,16 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
 
                                 new clsMainActivity().showCustomToast(getApplicationContext(), "ordering changed", true);
                                 recreate();
+//                                initViewPagerAndTabs();
+//
+//                                List<mSPMDetailData> _mSPMDetailData = new ArrayList<mSPMDetailData>();
+//                                _mSPMDetailData = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
+//
+//                                if(tab!=null){
+//                                    switchTabDinamis(tabLayout.getSelectedTabPosition());
+//                                } else if (_mSPMDetailData.size() == 0) {
+//                                    switchTab();
+//                                }
                             }
                         })
                         .show();

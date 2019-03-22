@@ -55,6 +55,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import addon.ConnectivityReceiver;
+import addon.InputFilters;
 import addon.MyApplication;
 import bl.SignalRBL;
 import bl.clsMainBL;
@@ -72,7 +73,6 @@ import library.dal.mconfigDA;
 import service.WMSMobileService;
 
 import static junit.framework.Assert.assertEquals;
-import static wms.mobile.R.id.txtLoginEmail;
 
 /**
  * Created by ASUS ZE on 15/11/2016.
@@ -135,7 +135,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         imgBanner.setAdjustViewBounds(true);
         imgBanner.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-        etTxtEmail.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+        char[] chars = {'.', '\''};
+        new InputFilters().etCapsTextWatcherNoSpace(etTxtEmail, null, chars);
+//        etTxtEmail.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
         SQLiteDatabase db = new clsMainBL().getDb();
         mconfigDA _mconfigDA = new mconfigDA(db);
@@ -278,7 +280,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
     @Override
     public boolean onKey(View view, int i, KeyEvent keyEvent) {
         switch (view.getId()) {
-            case txtLoginEmail:
+            case R.id.txtLoginEmail:
                 // If the event is a key-down event on the "enter" button
                 if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) &&
                         (i == KeyEvent.KEYCODE_ENTER)) {
@@ -295,6 +297,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                         spnRole.setAdapter(new MyAdapter(getApplicationContext(), R.layout.custom_spinner, arrrole));
                     }
                     return true;
+                }else if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DEL){
+                    return false;
                 }
             case R.id.editTextPass:
                 if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) &&
@@ -308,6 +312,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                         tilPass.setError("Password Cannot empty");
                     }
                     return true;
+                }else if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DEL){
+                    return false;
                 }
         }
         return true;
