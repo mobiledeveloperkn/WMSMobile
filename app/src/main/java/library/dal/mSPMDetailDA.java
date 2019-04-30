@@ -245,42 +245,42 @@ public class mSPMDetailDA {
         return contactList;
     }
 
-//    public List<mSPMDetailData> getAllDataTaskPending(SQLiteDatabase db, String id) {
-//        List<mSPMDetailData> contactList = new ArrayList<mSPMDetailData>();
-//        // Select All Query
-//
-//        mSystemConfigData cnf = new mSystemConfigDA(db).getData(db, 1);
-//
-//        mSPMDetailData dt = new mSPMDetailData();
-//        String selectQuery = "SELECT  " + dt.Property_All + " FROM "
-//                + TABLE_CONTACTS + " WHERE " + dt.Property_bitSync + "=0 And " + dt.Property_bitStatus + "=0 And " + dt.Property_txtNoSPM + "='" + id + "' order by intSPMDetailId " + cnf.get_txtValue();
-//        Cursor cursor = db.rawQuery(selectQuery, null);
-//        // looping through all rows and adding to list
-//
-//        if (cursor.moveToFirst()) {
-//            do {
-//                mSPMDetailData contact = new mSPMDetailData();
-//                contact.setIntSPMDetailId(cursor.getString(0));
-//                contact.setTxtNoSPM(cursor.getString(1));
-//                contact.setTxtLocator(cursor.getString(2));
-//                contact.setTxtItemCode(cursor.getString(3));
-//                contact.setTxtItemName(cursor.getString(4));
-//                contact.setIntQty(cursor.getString(5));
-//                contact.setBitStatus(cursor.getString(6));
-//                contact.setBitSync(cursor.getString(7));
-//                contact.setTxtReason(cursor.getString(8));
-//                contact.setIntUserId(cursor.getString(9));
-//                contact.setIntFlag(cursor.getString(10));
-//                contact.setTxtLotNumber(cursor.getString(11));
-//                contact.setTxtUOM(cursor.getString(12));
-//                // Adding contact to list
-//                contactList.add(contact);
-//            } while (cursor.moveToNext());
-//        }
-//        cursor.close();
-//        // return contact list
-//        return contactList;
-//    }
+    public List<mSPMDetailData> getAllDataTaskPendingNoFilter(SQLiteDatabase db, String id) {
+        List<mSPMDetailData> contactList = new ArrayList<mSPMDetailData>();
+        // Select All Query
+
+        mSystemConfigData cnf = new mSystemConfigDA(db).getData(db, 1);
+
+        mSPMDetailData dt = new mSPMDetailData();
+        String selectQuery = "SELECT  " + dt.Property_All + " FROM "
+                + TABLE_CONTACTS + " WHERE " + dt.Property_bitSync + "=0 And " + dt.Property_bitStatus + "=0 And " + dt.Property_txtNoSPM + "='" + id + "' order by intSPMDetailId " + cnf.get_txtValue();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // looping through all rows and adding to list
+
+        if (cursor.moveToFirst()) {
+            do {
+                mSPMDetailData contact = new mSPMDetailData();
+                contact.setIntSPMDetailId(cursor.getString(0));
+                contact.setTxtNoSPM(cursor.getString(1));
+                contact.setTxtLocator(cursor.getString(2));
+                contact.setTxtItemCode(cursor.getString(3));
+                contact.setTxtItemName(cursor.getString(4));
+                contact.setIntQty(cursor.getString(5));
+                contact.setBitStatus(cursor.getString(6));
+                contact.setBitSync(cursor.getString(7));
+                contact.setTxtReason(cursor.getString(8));
+                contact.setIntUserId(cursor.getString(9));
+                contact.setIntFlag(cursor.getString(10));
+                contact.setTxtLotNumber(cursor.getString(11));
+                contact.setTxtUOM(cursor.getString(12));
+                // Adding contact to list
+                contactList.add(contact);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        // return contact list
+        return contactList;
+    }
 
     public List<mSPMDetailData> getAllDataTaskPending(SQLiteDatabase db, String id) {
         List<mSPMDetailData> contactList = new ArrayList<mSPMDetailData>();
@@ -347,6 +347,7 @@ public class mSPMDetailDA {
         // return contact list
         return contactList;
     }
+
 
 
     public List<String> getAllSegment2(SQLiteDatabase db, String id) {

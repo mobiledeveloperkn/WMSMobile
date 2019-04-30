@@ -440,11 +440,14 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
                 }
 
                 List<mSPMDetailData> _mSPMDetailData;
-                _mSPMDetailData = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
+                _mSPMDetailData = new mSPMDetailBL().getAllDataTaskPendingNoFilter(txtNoSPM);
+                List<mSPMDetailData> _mSPMDetailDataFilter = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
 
                 if (_mSPMDetailData.size() == 0) {
                     finish();
                     onBackPressed();
+                }else if (_mSPMDetailDataFilter.size()==0){
+                    new mSystemConfigBL().UpdateFilterPicking("");
                 }
                 new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, true);
                 recreate();
@@ -485,12 +488,15 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
                     new TaskSuccessFragment().fetchData(TabsTaskHeader.this);
 //                    new TaskCancelFragment().fetchData(TabsTaskHeader.this);
                     List<mSPMDetailData> _mSPMDetailData;
-                    _mSPMDetailData = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
+                    _mSPMDetailData = new mSPMDetailBL().getAllDataTaskPendingNoFilter(txtNoSPM);
+                    List<mSPMDetailData> _mSPMDetailDataFilter = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
 
                     if (_mSPMDetailData.size() == 0) {
 //                        switchTab();
                         finish();
                         onBackPressed();
+                    }else if (_mSPMDetailDataFilter.size() == 0){
+                        new mSystemConfigBL().UpdateFilterPicking("");
                     }
                 }
             } else {
@@ -545,12 +551,15 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
                     }
 
                     List<mSPMDetailData> _mSPMDetailData;
-                    _mSPMDetailData = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
+                    _mSPMDetailData = new mSPMDetailBL().getAllDataTaskPendingNoFilter(txtNoSPM);
+                    List<mSPMDetailData> _mSPMDetailDataFilter = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
 
                     if (_mSPMDetailData.size() == 0) {
 //                        switchTab();
                         finish();
                         onBackPressed();
+                    }else if (_mSPMDetailDataFilter.size() == 0){
+                        new mSystemConfigBL().UpdateFilterPicking("");
                     }
                 }
             } else {
@@ -618,12 +627,15 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
             new TaskSuccessFragment().fetchData(TabsTaskHeader.this);
 //                    new TaskCancelFragment().fetchData(TabsTaskHeader.this);
             List<mSPMDetailData> _mSPMDetailData;
-            _mSPMDetailData = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
+            _mSPMDetailData = new mSPMDetailBL().getAllDataTaskPendingNoFilter(txtNoSPM);
+            List<mSPMDetailData> _mSPMDetailDataFilter = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
 
             if (_mSPMDetailData.size() == 0) {
 //                        switchTab();
                 finish();
                 onBackPressed();
+            }else  if (_mSPMDetailDataFilter.size() == 0) {
+                new mSystemConfigBL().UpdateFilterPicking("");
             }
 //            menu.clear();
 //            onCreateOptionsMenu(menu);
@@ -654,12 +666,15 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
             new TaskSuccessFragment().fetchData(TabsTaskHeader.this);
 //                    new TaskCancelFragment().fetchData(TabsTaskHeader.this);
             List<mSPMDetailData> _mSPMDetailData;
-            _mSPMDetailData = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
+            _mSPMDetailData = new mSPMDetailBL().getAllDataTaskPendingNoFilter(txtNoSPM);
+            List<mSPMDetailData> _mSPMDetailDataFilter = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
 
             if (_mSPMDetailData.size() == 0) {
 //                        switchTab();
                 finish();
                 onBackPressed();
+            }else if (_mSPMDetailDataFilter.size() == 0){
+                new mSystemConfigBL().UpdateFilterPicking("");
             }
 //            menu.clear();
 //            onCreateOptionsMenu(menu);

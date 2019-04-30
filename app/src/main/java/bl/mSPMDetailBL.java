@@ -52,6 +52,14 @@ public class mSPMDetailBL extends clsMainBL {
         return data;
     }
 
+    public List<mSPMDetailData> getAllDataTaskPendingNoFilter(String id) {
+        SQLiteDatabase db = getDb();
+        mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(db);
+        List<mSPMDetailData> data = _mSPMDetailDA.getAllDataTaskPendingNoFilter(db, id);
+        db.close();
+        return data;
+    }
+
     public List<String> getAllSegment2(String id) {
         SQLiteDatabase db = getDb();
         mSPMDetailDA _mSPMDetailDA = new mSPMDetailDA(db);
