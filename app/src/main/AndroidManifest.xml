@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="wms.mobile">
+    package="wms.mobile"
+    android:versionCode="1">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -51,24 +52,24 @@
             android:name="wms.mobile.Login"
             android:label="Login"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
         <activity
             android:name="wms.mobile.Home"
             android:configChanges="orientation|screenSize"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape"/>
         <activity
             android:name="wms.mobile.TabsTaskHeader"
             android:configChanges="orientation|screenSize"
             android:parentActivityName="wms.mobile.OutstandingTask"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
         <activity
             android:name="wms.mobile.OutstandingTask"
             android:configChanges="orientation|screenSize"
             android:label="Outstanding Task"
             android:parentActivityName="wms.mobile.Home"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
         <activity
             android:name="addon.CropDisplayPicture"
             android:configChanges="orientation|keyboardHidden"

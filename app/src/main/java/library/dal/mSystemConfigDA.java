@@ -73,6 +73,23 @@ public class mSystemConfigDA {
         db.execSQL(query);
     }
 
+    public void UpdateFilterPicking(SQLiteDatabase db, String segment) {
+        String Segment = segment;
+
+        mSystemConfigData dt = new mSystemConfigData();
+
+        String query = "INSERT OR REPLACE into " + TABLE_CONTACTS + " ("
+                + dt.Property_intId + "," + dt.Property_txtName + ","
+                + dt.Property_txtValue + "," + dt.Property_txtDefaultValue + ") " +
+                "values('"
+                + String.valueOf(2) + "','"
+                + String.valueOf("Filtering Picking order") + "','"
+                + String.valueOf(segment) + "','"
+                + String.valueOf(segment) + "')";
+
+        db.execSQL(query);
+    }
+
     // Getting single contact
     public mSystemConfigData getData(SQLiteDatabase db, int id) {
         mSystemConfigData dt = new mSystemConfigData();

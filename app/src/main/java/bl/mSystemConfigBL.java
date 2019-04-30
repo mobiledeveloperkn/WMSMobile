@@ -29,4 +29,11 @@ public class mSystemConfigBL extends clsMainBL {
         _mSystemConfigDA.UpdateOrderPicking(db, id);
         db.close();
     }
+
+    public void UpdateFilterPicking(String filter) {
+        SQLiteDatabase db = getDb();
+        mSystemConfigDA _mSystemConfigDA = new mSystemConfigDA(db);
+        _mSystemConfigDA.UpdateFilterPicking(db, filter);
+        db.close();
+    }
 }

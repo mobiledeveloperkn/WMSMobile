@@ -42,6 +42,7 @@ import bl.SignalRBL;
 import bl.clsMainBL;
 import bl.mSPMDetailBL;
 import bl.mSPMHeaderBL;
+import bl.mSystemConfigBL;
 import bl.tTimerLogBL;
 import bl.tUserLoginBL;
 import library.common.mSPMDetailData;
@@ -106,7 +107,7 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
         progressDialog.setMessage("Loading... Please Wait");
         progressDialog.setIndeterminate(false); //ukur berapa persen, false maka not do
         progressDialog.setCancelable(false);
-
+        new mSystemConfigBL().UpdateFilterPicking("");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             registerReceiver(new ConnectivityReceiver(),
                     new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));

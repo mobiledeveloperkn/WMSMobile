@@ -3,6 +3,7 @@ package wms.mobile;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -174,6 +176,7 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.title_total_spm, menu);
         MenuItem menuItem = menu.findItem(R.id.title);
+        MenuItem menuItem2 = menu.findItem(R.id.icon);
         mSPMDetailDataListConfirm = new mSPMDetailBL().getAllDataTaskConfirm(txtNoSPM);
         mSPMDetailData = new mSPMDetailBL().getAllDataById(txtNoSPM);
         mSystemConfigData dtcnf = new mSystemConfigBL().getData(1);
@@ -200,6 +203,100 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
                         })
                         .show();
                 return false;
+            });
+
+            menuItem2.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    int position = tabLayout.getSelectedTabPosition();
+                    List<String> segment2List =  new mSPMDetailBL().getAllSegment2(txtNoSPM);
+                    String[] charSequence = segment2List.toArray(new String[segment2List.size()]);
+                    mSystemConfigData dt = new mSystemConfigBL().getData(2);
+                    int count = charSequence.length;
+                    boolean[] is_checked = new boolean[count];
+                    String listSegment = "";
+                    if (dt!=null){
+                        listSegment = dt.get_txtValue();
+                    }
+                    List<String> listSegment2 = new ArrayList<>();
+                    if (listSegment.length()>0){
+                        String[] words = listSegment.split(",");
+                        Collections.addAll(listSegment2, words);
+                    }
+
+                    for (int i = 0; i < segment2List.size(); i++){
+                        for (String sgm : listSegment2){
+                            if (segment2List.get(i).equals(sgm)){
+                                is_checked[i] = true;
+                            }
+                        }
+
+                    }
+                    new AlertDialog.Builder(TabsTaskHeader.this)
+                            .setTitle("Select Segments")
+                            .setMultiChoiceItems(charSequence, is_checked, new DialogInterface.OnMultiChoiceClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                                    boolean valid = true;
+                                    if (isChecked){
+                                        for (String segment :listSegment2){
+                                            if (segment.equals(charSequence[which])){
+                                                valid = false;
+                                            }
+                                        }
+                                        if (valid){
+                                            listSegment2.add(charSequence[which]);
+                                        }
+                                    }else {
+                                        for (String segment :listSegment2){
+                                            if (segment.equals(charSequence[which])){
+                                                valid = false;
+                                            }
+                                        }
+                                        if (!valid){
+                                            listSegment2.remove(charSequence[which]);
+                                        }
+                                    }
+                                }
+                            })
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    StringBuilder bd = new StringBuilder();
+                                    for (String segment :listSegment2){
+                                        if (bd.length()==0){
+                                            bd.append(segment);
+                                        }else {
+                                            bd.append(",");
+                                            bd.append(segment);
+                                        }
+                                    }
+                                    new mSystemConfigBL().UpdateFilterPicking(bd.toString());
+                                    dialog.dismiss();
+                                    new clsMainActivity().showCustomToast(getApplicationContext(), "Filtering changed", true);
+                                    recreate();
+//                                Toast.makeText(getApplicationContext(), bd.toString(), Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .setNegativeButton("Reset", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    new mSystemConfigBL().UpdateFilterPicking("");
+                                    dialog.dismiss();
+                                    new clsMainActivity().showCustomToast(getApplicationContext(), "Filtering changed", true);
+                                    recreate();
+                                }
+                            })
+                            .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .show();
+
+                    return false;
+                }
             });
             refresher = true;
         }

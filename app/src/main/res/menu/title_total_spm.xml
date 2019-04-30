@@ -6,4 +6,10 @@
         android:title="-"
         android:enabled="true"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/icon"
+        android:title=""
+        android:enabled="true"
+        android:icon="@mipmap/ic_filter"
+        app:showAsAction="always"/>
 </menu>
