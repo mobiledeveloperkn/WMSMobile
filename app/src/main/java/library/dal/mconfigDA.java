@@ -151,12 +151,12 @@ public class mconfigDA {
         String txtQuery = "insert or replace into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
                 + "select  1,'android:versionCode','5','5',1;";
         db.execSQL(txtQuery);
-//        txtQuery = "insert or replace into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
-//                + "select 2,'API','http://wms.kalbenutritionals.web.id/mobileapi','http://10.171.10.13/wmsonline',1;";
-
         txtQuery = "insert or replace into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
-//                + "select 2,'API','http://10.171.14.34:8011','http://10.171.10.13/wmsonline',1;";
-        + "select 2,'API','http://wms.kalbenutritionals.web.id/mobileapi/','http://10.171.10.13/wmsonline',1;";
+                + "select 2,'API','http://wms.kalbenutritionals.web.id/mobileapi','http://10.171.10.13/wmsonline',1;";
+
+//        txtQuery = "insert or replace into mconfig(intId,txtName,txtValue,txtDefaultValue,intEditAdmin )"
+//                + "select 2,'API','http://192.168.0.11/WMSWebAPINew','http://10.171.10.13/wmsonline',1;";
+//        + "select 2,'API','http://wms.kalbenutritionals.web.id/mobileapi/','http://10.171.10.13/wmsonline',1;";
         db.execSQL(txtQuery);
     }
 

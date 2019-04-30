@@ -72,7 +72,7 @@ import service.WMSMobileService;
 public class clsMainActivity extends Activity implements WMSMobileService.updateSnackbar{
     private static final String TAG_UUID = "id";
     private static Snackbar snackbarOffline;
-    String months[] = {"", "January", "February", "March", "April",
+    String[] months = {"", "January", "February", "March", "April",
             "May", "June", "July", "August", "September",
             "October", "November", "December"};
 
@@ -139,13 +139,13 @@ public class clsMainActivity extends Activity implements WMSMobileService.update
 
     public String splitDateTime(String dateTime) {
         String dateTimeView = "";
-        String datetimeSplit[] = dateTime.split("T");
-        String date[] = datetimeSplit[0].split("-");
+        String[] datetimeSplit = dateTime.split("T");
+        String[] date = datetimeSplit[0].split("-");
         String year = date[0];
         String month = date[1];
         String day = date[2];
         String date_view = day + "-" + month + "-" + year;
-        String timeSplit[] = datetimeSplit[1].split("\\.");
+        String[] timeSplit = datetimeSplit[1].split("\\.");
         String time = timeSplit[0];
         dateTimeView = date_view + " " + time;
         return dateTimeView;
@@ -370,11 +370,11 @@ public class clsMainActivity extends Activity implements WMSMobileService.update
         DateFormat formatDD = new SimpleDateFormat("dd");
         String txtDate = "";
         try {
-            Date dtdate = (Date) dateFormat.parse(DateYYMMDD);
+            Date dtdate = dateFormat.parse(DateYYMMDD);
             int year = Integer.valueOf(formatYY.format(dtdate));
             int month = Integer.valueOf(formatMM.format(dtdate));
             int day = Integer.valueOf(formatDD.format(dtdate));
-            txtDate = String.valueOf(day) + "/" + String.valueOf(month) + "/" + String.valueOf(year);
+            txtDate = day + "/" + month + "/" + year;
         } catch (ParseException e) {
             txtDate = DateYYMMDD;
         }
@@ -389,11 +389,11 @@ public class clsMainActivity extends Activity implements WMSMobileService.update
         DateFormat formatDD = new SimpleDateFormat("dd");
         String txtDate = "";
         try {
-            Date dtdate = (Date) dateFormat.parse(DateYYMMDD);
+            Date dtdate = dateFormat.parse(DateYYMMDD);
             int year = Integer.valueOf(formatYY.format(dtdate));
             int month = Integer.valueOf(formatMM.format(dtdate));
             int day = Integer.valueOf(formatDD.format(dtdate));
-            txtDate = String.valueOf(day) + "/" + String.valueOf(month) + "/" + String.valueOf(year);
+            txtDate = day + "/" + month + "/" + year;
         } catch (ParseException e) {
             txtDate = DateYYMMDD;
         }
@@ -618,7 +618,7 @@ public class clsMainActivity extends Activity implements WMSMobileService.update
 //    }
 
     public void setHeaderFull() {
-        ImageView imgV = (ImageView) findViewById(R.id.header);
+        ImageView imgV = findViewById(R.id.header);
         imgV.setAdjustViewBounds(true);
         imgV.setScaleType(ImageView.ScaleType.CENTER_CROP);
     }
@@ -640,8 +640,8 @@ public class clsMainActivity extends Activity implements WMSMobileService.update
 
         View promptView = mInflater.inflate(R.layout.custom_toast, null);
 
-        TextView tvTextToast = (TextView) promptView.findViewById(R.id.custom_toast_message);
-        ImageView icon = (ImageView) promptView.findViewById(R.id.custom_toast_image);
+        TextView tvTextToast = promptView.findViewById(R.id.custom_toast_message);
+        ImageView icon = promptView.findViewById(R.id.custom_toast_image);
         tvTextToast.setText(message);
 
         GradientDrawable bgShape = (GradientDrawable)promptView.getBackground();
@@ -673,7 +673,7 @@ public class clsMainActivity extends Activity implements WMSMobileService.update
             snackBarView = snackbar.getView();
             snackBarView.setBackgroundResource(R.color.red);
         }
-        TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+        TextView textView = snackBarView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.WHITE);
         snackbar.show();
     }
@@ -698,7 +698,7 @@ public class clsMainActivity extends Activity implements WMSMobileService.update
         View snackBarView = snackbar.getView();
         snackBarView.setBackgroundResource(R.color.red);
         snackbar.setActionTextColor(Color.WHITE);
-        TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+        TextView textView = snackBarView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.WHITE);
         snackbar.getView().getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
@@ -730,7 +730,7 @@ public class clsMainActivity extends Activity implements WMSMobileService.update
                 }
             });
         }
-        TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+        TextView textView = snackBarView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.WHITE);
         snackbar.show();
 
@@ -747,34 +747,14 @@ public class clsMainActivity extends Activity implements WMSMobileService.update
     public void checkConnection(CoordinatorLayout coordinatorLayout, ConnectivityManager connectivityManager){
 
         boolean status = false;
-        //mobile
-        NetworkInfo.State mobile = connectivityManager.getNetworkInfo(0).getState();
+
         //wifi
         NetworkInfo.State wifi = connectivityManager.getNetworkInfo(1).getState();
 
-        if (mobile == NetworkInfo.State.CONNECTED || mobile == NetworkInfo.State.CONNECTING)
+        if (wifi == NetworkInfo.State.CONNECTED || wifi == NetworkInfo.State.CONNECTING)
         {
-//            snackbarWithNoAction(coordinatorLayout, "connecting...", status, "");
             AsyncTestConnection task = new AsyncTestConnection(coordinatorLayout);
             task.execute();
-//            status = new SignalRBL().buildingConnection();
-//            if(!status){
-//                snackbarWithActionRetry(coordinatorLayout,"Connecting Failed", status, "RETRY");
-//            } else {
-//                snackbarWithNoAction(coordinatorLayout,"Connected", status, "");
-//            }
-        }
-        else if (wifi == NetworkInfo.State.CONNECTED || wifi == NetworkInfo.State.CONNECTING)
-        {
-//            snackbarWithNoAction(coordinatorLayout, "connecting...", status, "");
-            AsyncTestConnection task = new AsyncTestConnection(coordinatorLayout);
-            task.execute();
-//            status = new SignalRBL().buildingConnection();
-//            if(!status){
-//                snackbarWithActionRetry(coordinatorLayout,"Connecting Failed", status, "RETRY");
-//            } else {
-//                snackbarProgress(coordinatorLayout,"Connected", status, "");
-//            }
         }
         else {
             snackbarWithNoAction(coordinatorLayout,"No Connectivity", status, "");
@@ -821,7 +801,7 @@ public class clsMainActivity extends Activity implements WMSMobileService.update
 //                        snackbarOffline = Snackbar.make(coordinatorLayoutTask, "Sync Data...", Snackbar.LENGTH_SHORT);
 //                        View snackBarView = snackbarOffline.getView();
                         snackBarView.setBackgroundResource(R.color.color_primary_blue);
-                        TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+                        TextView textView = snackBarView.findViewById(android.support.design.R.id.snackbar_text);
                         textView.setTextColor(Color.WHITE);
                         final Snackbar finalSnackbar = snackbarOffline;
 //                        snackbarOffline.getView().getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -875,7 +855,105 @@ public class clsMainActivity extends Activity implements WMSMobileService.update
         @Override
         protected void onPreExecute() {
             snackBarView.setBackgroundResource(R.color.red);
-            TextView textView = (TextView) snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+            TextView textView = snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+            textView.setTextColor(Color.WHITE);
+            snackbar.show();
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            snackbar.dismiss();
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class AsyncGetLatestStar extends AsyncTask<Boolean, Void, Boolean> {
+
+
+        AsyncGetLatestStar(CoordinatorLayout coordinatorLayout) {
+            super();
+            coordinatorLayoutTask = coordinatorLayout;
+            snackbar = Snackbar.make(coordinatorLayoutTask, "Connecting...", Snackbar.LENGTH_SHORT);
+            snackBarView = snackbar.getView();
+        }
+
+        private CoordinatorLayout coordinatorLayoutTask;
+        private Snackbar snackbar;
+        private View snackBarView;
+
+        @Override
+        protected void onCancelled() {
+            snackbar.dismiss();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean status) {
+            clsPushData dtJson = new clsHelperBL().pushData();
+            if(status){
+                snackbar.dismiss();
+                snackbarWithNoAction(coordinatorLayoutTask,"Connected", status, "");
+                String versionName = "";
+                if(dtJson.getDtdataJson()!=null){
+                    try {
+                        snackbarOffline = null;
+//                        snackbarOffline = Snackbar.make(coordinatorLayoutTask, "Sync Data...", Snackbar.LENGTH_SHORT);
+//                        View snackBarView = snackbarOffline.getView();
+                        snackBarView.setBackgroundResource(R.color.color_primary_blue);
+                        TextView textView = snackBarView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.WHITE);
+                        final Snackbar finalSnackbar = snackbarOffline;
+//                        snackbarOffline.getView().getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+//                            @Override
+//                            public boolean onPreDraw() {
+//                                finalSnackbar.getView().getViewTreeObserver().removeOnPreDrawListener(this);
+//                                ((CoordinatorLayout.LayoutParams) finalSnackbar.getView().getLayoutParams()).setBehavior(null);
+//                                return true;
+//                            }
+//                        });
+//                        snackbarOffline.show();
+                        setSnackBarClose(clsMainActivity.this);
+                        status = new WMSMobileService().pushFromOfflineAct(dtJson.getDtdataJson().txtJSON().toString(), versionName);
+                        if (status){
+                            snackbar.dismiss();
+//                            snackbarOffline.dismiss();
+
+                            try{
+                                new TabsTaskHeader().updateListView();
+                            }
+                            catch (Exception ignored){
+
+                            }
+                        }
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
+                }
+
+                mSPMHeaderData dt = new mSPMHeaderBL().GetAllData();
+
+                if(dt != null){
+                    new WMSMobileService().getLatestSTAR(dt.getTxtNoSPM());
+                }
+            } else {
+                snackbar.dismiss();
+                snackbarWithActionRetry(coordinatorLayoutTask,"Connecting Failed", status, "RETRY");
+            }
+        }
+
+        @Override
+        protected Boolean doInBackground(Boolean... booleen) {
+//            android.os.Debug.waitForDebugger();
+            boolean status;
+            status = new SignalRBL().buildingConnection();
+            return status;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            snackBarView.setBackgroundResource(R.color.red);
+            TextView textView = snackBarView.findViewById(android.support.design.R.id.snackbar_text);
             textView.setTextColor(Color.WHITE);
             snackbar.show();
         }

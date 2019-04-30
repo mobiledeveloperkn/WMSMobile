@@ -1,13 +1,10 @@
 package wms.mobile;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
 import android.net.ConnectivityManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
@@ -21,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,6 +31,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import addon.ConnectivityReceiver;
 import addon.MyApplication;
@@ -59,26 +58,24 @@ import static fragment.TaskSuccessFragment.adapterSuccess;
 
 public class TabsTaskHeader extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener, WMSMobileService.mHubConnectionSevice, SwipeListAdapter.triggerOnOfflineConnection, SwipeListAdapter.triggerProgressDialog {
 
+    @SuppressLint("StaticFieldLeak")
     private static TabLayout tabLayout;
     private tUserLoginData dataLogin;
 
+    private boolean refresher;
+
     mSPMHeaderData _mSPMHeaderData;
-    private List<mSPMDetailData> mSPMDetailDataListPending;
     private List<mSPMDetailData> mSPMDetailDataListConfirm;
-    private List<mSPMDetailData> mSPMDetailDataListCancel;
     private List<mSPMDetailData> mSPMDetailData;
 
+    @SuppressLint("StaticFieldLeak")
     private static CoordinatorLayout coordinatorLayout;
     private static ConnectivityManager conMan;
 
-    private Menu menu;
-    private PackageInfo pInfo = null;
-    private String versionName = "";
     private String txtNoSPM;
     private String tab;
 
     private static ProgressDialog progressDialog;
-    private static long time = 15000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +86,7 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_tabs_task_header);
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayoutTabsRaskHeader);
+        coordinatorLayout = findViewById(R.id.coordinatorLayoutTabsRaskHeader);
         conMan = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         Intent intent = getIntent();
@@ -105,7 +102,7 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
         initToolbar();
         initViewPagerAndTabs();
 
-        List<mSPMDetailData> _mSPMDetailData = new ArrayList<mSPMDetailData>();
+        List<mSPMDetailData> _mSPMDetailData;
         _mSPMDetailData = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
 
         if(tab!=null){
@@ -113,24 +110,11 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
         } else if (_mSPMDetailData.size() == 0) {
             switchTab();
         }
-        pInfo = new clsMainActivity().getPinfo(this);
-
-        if (pInfo != null) {
-            versionName = pInfo.versionName;
-        }
         //bikin progres dialognya
         progressDialog = new ProgressDialog(TabsTaskHeader.this);
         progressDialog.setMessage("Loading... Please Wait");
         progressDialog.setIndeterminate(false); //ukur berapa persen, false maka not do
         progressDialog.setCancelable(false);
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            IntentFilter filter = new IntentFilter();
-//            filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-//            registerReceiver(new ConnectivityReceiver(), filter);
-////            registerReceiver(new ConnectivityReceiver(),
-////                    new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-//        }
     }
 
     @Override
@@ -152,136 +136,121 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
             _mSPMHeaderData = new mSPMHeaderBL().GetDataById(txtNoSPM);
         }
 
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar1);
+        Toolbar mToolbar = findViewById(R.id.toolbar1);
         setSupportActionBar(mToolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("NO. STAR : " + txtNoSPM);
         mToolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
     }
 
     public void initViewPagerAndTabs() {
-        mSPMDetailDataListPending = new ArrayList<>();
+        List<library.common.mSPMDetailData> mSPMDetailDataListPending;
         mSPMDetailDataListPending = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
         mSPMDetailDataListConfirm = new ArrayList<>();
         mSPMDetailDataListConfirm = new mSPMDetailBL().getAllDataTaskConfirm(txtNoSPM);
-        mSPMDetailDataListCancel = new ArrayList<>();
+        List<library.common.mSPMDetailData> mSPMDetailDataListCancel;
         mSPMDetailDataListCancel = new mSPMDetailBL().getAllDataTaskCancel(txtNoSPM);
         mSPMDetailData = new ArrayList<>();
         mSPMDetailData = new mSPMDetailBL().getAllData();
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+        ViewPager viewPager = findViewById(R.id.viewPager);
         PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
-        pagerAdapter.addFragment(new TaskOnProgressFragment(), "OnProgress(" + String.valueOf(mSPMDetailDataListPending.size()) + ")");
-        pagerAdapter.addFragment(new TaskSuccessFragment(), "Confirm(" + String.valueOf(mSPMDetailDataListConfirm.size()) + ")");
-        pagerAdapter.addFragment(new TaskCancelFragment(), "Cancel(" + String.valueOf(mSPMDetailDataListCancel.size()) + ")");
+        pagerAdapter.addFragment(new TaskOnProgressFragment(), "OnProgress(" + mSPMDetailDataListPending.size() + ")");
+        pagerAdapter.addFragment(new TaskSuccessFragment(), "Confirm(" + mSPMDetailDataListConfirm.size() + ")");
+        pagerAdapter.addFragment(new TaskCancelFragment(), "Cancel(" + mSPMDetailDataListCancel.size() + ")");
         viewPager.setAdapter(pagerAdapter);
-        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        tabLayout = findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
         new clsMainActivity().checkConnection(coordinatorLayout, conMan);
+        refresher = false;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        this.menu = menu;
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.title_total_spm, menu);
         MenuItem menuItem = menu.findItem(R.id.title);
         mSPMDetailDataListConfirm = new mSPMDetailBL().getAllDataTaskConfirm(txtNoSPM);
         mSPMDetailData = new mSPMDetailBL().getAllDataById(txtNoSPM);
         mSystemConfigData dtcnf = new mSystemConfigBL().getData(1);
-        SpannableString spanString = new SpannableString(mSPMDetailDataListConfirm.size() + "/" + mSPMDetailData.size() + " - ORDER BY "+dtcnf.get_txtValue().toUpperCase());
-        int end = spanString.length();
-        spanString.setSpan(new RelativeSizeSpan(1.4f), 0, end, Spannable.SPAN_COMPOSING);
-        menuItem.setTitle(spanString);
 
-        menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
+        if(!refresher){
+            SpannableString spanString = new SpannableString(mSPMDetailDataListConfirm.size() + "/" + mSPMDetailData.size() + " - ORDER BY "+dtcnf.get_txtValue().toUpperCase());
+            int end = spanString.length();
+            spanString.setSpan(new RelativeSizeSpan(1.4f), 0, end, Spannable.SPAN_COMPOSING);
+            menuItem.setTitle(spanString);
+
+            menuItem.setOnMenuItemClickListener(item -> {
                 CharSequence[] charSequence = new CharSequence[] {"Ascending","Descending"};
                 mSystemConfigData dt = new mSystemConfigBL().getData(1);
                 int selected_id = dt.get_txtValue().equals("asc") ? 0 : 1;
 
                 new AlertDialog.Builder(TabsTaskHeader.this)
                         .setTitle("List Order Picking")
-                        .setSingleChoiceItems(charSequence, selected_id, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                new mSystemConfigBL().updateOrderPicking(which);
-                                dialog.dismiss();
+                        .setSingleChoiceItems(charSequence, selected_id, (dialog, which) -> {
+                            new mSystemConfigBL().updateOrderPicking(which);
+                            dialog.dismiss();
 
-                                new clsMainActivity().showCustomToast(getApplicationContext(), "ordering changed", true);
-                                recreate();
-//                                initViewPagerAndTabs();
-//
-//                                List<mSPMDetailData> _mSPMDetailData = new ArrayList<mSPMDetailData>();
-//                                _mSPMDetailData = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
-//
-//                                if(tab!=null){
-//                                    switchTabDinamis(tabLayout.getSelectedTabPosition());
-//                                } else if (_mSPMDetailData.size() == 0) {
-//                                    switchTab();
-//                                }
-                            }
+                            new clsMainActivity().showCustomToast(getApplicationContext(), "ordering changed", true);
+                            recreate();
                         })
                         .show();
                 return false;
-            }
-        });
+            });
+            refresher = true;
+        }
 
         return true;
     }
 
     @Override
     public void onReceiveMessageHub(final JSONObject jsonObject) {
-        TabsTaskHeader.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                JSONArray jsonArray = null;
-                String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated;
+        TabsTaskHeader.this.runOnUiThread(() -> {
+            String strMethodName;
 
-                try {
-                    boolValid = jsonObject.get("boolValid").toString();
-                    strMessage = jsonObject.get("strMessage").toString();
-                    strMethodName = jsonObject.get("strMethodName").toString();
+            try {
+                Log.i("Anjas-ReceiveHub", String.valueOf(refresher));
 
-                    if (strMethodName.equalsIgnoreCase("ConfirmSPMDetail")) {
-                        initMethodConfirmSPMDetail(jsonObject);
-                    } else if (strMethodName.equalsIgnoreCase("cancelSPMDetail")) {
-                        initMethodCancelSPMDetail(jsonObject);
-                    } else if(strMethodName.equalsIgnoreCase("revertCancelSPMDetail")){
-                        initMethodRevertSPMDetail(jsonObject);
-                    } else if (strMethodName.equalsIgnoreCase("pushDataOffline")) {
-//                        updateListView();
-                        updateFromPushDataOffline(jsonObject);
-                    }
-                    else
-                        if(strMethodName.equalsIgnoreCase("getLatestSTAR")){
-                        try{
-                            recreate();
-                        }
-                        catch (Exception ignored){
+                strMethodName = jsonObject.get("strMethodName").toString();
+                Log.i("HIT", strMethodName);
 
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (strMethodName.equalsIgnoreCase("ConfirmSPMDetail")) {
+                    initMethodConfirmSPMDetail(jsonObject);
+                } else if (strMethodName.equalsIgnoreCase("cancelSPMDetail")) {
+                    initMethodCancelSPMDetail(jsonObject);
+                } else if(strMethodName.equalsIgnoreCase("revertCancelSPMDetail")){
+                    initMethodRevertSPMDetail(jsonObject);
+                } else if (strMethodName.equalsIgnoreCase("pushDataOffline")) {
+                    updateFromPushDataOffline(jsonObject);
                 }
+                else if(strMethodName.equalsIgnoreCase("getLatestSTAR")){
+                    try{
+                        finish();
+
+                        Intent intent = new Intent(TabsTaskHeader.this, TabsTaskHeader.class);
+                        intent.putExtra("txtNoSPM", _mSPMHeaderData.getTxtNoSPM());
+                        startActivity(intent);
+                    }
+                    catch (Exception ex){
+                        Log.i("HIT-Exception", ex.toString());
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         });
     }
 
     private void initMethodRevertSPMDetail(JSONObject jsonObject) {
-        String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated;
-        String txtNoSPM;
+        String strMessage, boolValid;
 
         try {
             boolValid = jsonObject.get("boolValid").toString();
             strMessage = jsonObject.get("strMessage").toString();
-            strMethodName = jsonObject.get("strMethodName").toString();
 
             if (boolValid.equalsIgnoreCase("true")) {
                 JSONObject jsonObjectHeader = jsonObject.getJSONObject("listOfmSPMDetail");
@@ -289,8 +258,7 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
                 String status = jsonObjectHeader.get("STATUS").toString();
                 String sync = jsonObjectHeader.get("SYNC").toString();
                 String _intSPMDetailId = jsonObjectHeader.get("SPM_DETAIL_ID").toString();
-                String txtLocator = jsonObjectHeader.get("LOCATOR").toString();
-                txtNoSPM = jsonObjectHeader.getString("SPM_NO").toString();
+                txtNoSPM = jsonObjectHeader.getString("SPM_NO");
 
                 if (status.equals("0") && sync.equals("0")) {
 
@@ -305,8 +273,8 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
                     new TaskOnProgressFragment().fetchData(TabsTaskHeader.this);
                     new TaskSuccessFragment().fetchData(TabsTaskHeader.this);
                     new TaskCancelFragment().fetchData(TabsTaskHeader.this);
-                    menu.clear();
-                    onCreateOptionsMenu(menu);
+//                    menu.clear();
+//                    onCreateOptionsMenu(menu);
                 }
             } else {
                 new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, false);
@@ -318,16 +286,15 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
     }
 
     private void updateFromPushDataOffline(JSONObject jsonObject) {
-        String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated;
-        String txtNoSPM = "";
+        String strMessage, boolValid;
 
         try {
             boolValid = jsonObject.get("boolValid").toString();
             strMessage = jsonObject.get("strMessage").toString();
-            strMethodName = jsonObject.get("strMethodName").toString();
 
             if (boolValid.equalsIgnoreCase("true")) {
 
+                String txtNoSPM = "";
                 if (!jsonObject.isNull("listOfmSPMHeader")) {
                     JSONObject jsonObjectSPMHeader = jsonObject.getJSONObject("listOfmSPMHeader");
 
@@ -353,48 +320,37 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
                 if (!jsonObject.isNull("listOfmSPMDetail")) {
                     JSONArray jsonArraySPMDetail = jsonObject.getJSONArray("listOfmSPMDetail");
 
-                    List<mSPMDetailData> _mSPMDetailData = new ArrayList<>();
-
                     for (int i = 0; i < jsonArraySPMDetail.length(); i++) {
                         String jsonInner = jsonArraySPMDetail.get(i).toString();
                         jsonObject = new JSONObject(jsonInner);
-                        txtNoSPM = jsonObject.getString("SPM_NO").toString();
+                        txtNoSPM = jsonObject.getString("SPM_NO");
                         String statusDetail = jsonObject.get("STATUS").toString();
                         String syncDetail = jsonObject.get("SYNC").toString();
                         String id = jsonObject.get("SPM_DETAIL_ID").toString();
 
-//                        mSPMDetailData data = new mSPMDetailData();
-
-//                            data.setIntSPMDetailId(jsonObject.get("SPM_DETAIL_ID").toString());
-//                            data.setTxtNoSPM(jsonObject.get("SPM_NO").toString());
-//                            data.setTxtLocator(jsonObject.get("LOCATOR").toString());
-//                            data.setTxtItemCode(jsonObject.get("ITEM_CODE").toString());
-//                            data.setTxtItemName(jsonObject.get("ITEM_NAME").toString());
-//                            data.setIntQty(jsonObject.get("QUANTITY").toString());
-//                            data.setBitStatus(jsonObject.get("STATUS").toString());
-//                            data.setBitSync(jsonObject.get("SYNC").toString());
-//                            data.setBitSync(jsonObject.get("REASON").toString());
-
                         new mSPMDetailBL().saveFromPushData(id, statusDetail, syncDetail);
                     }
                 }
-                adapterSuccess.notifyDataSetChanged();
-                adapterProgress.notifyDataSetChanged();
+
+                if(!refresher){
+                    adapterSuccess.notifyDataSetChanged();
+                    adapterProgress.notifyDataSetChanged();
 //                    adapterCancel.notifyDataSetChanged();
-                new TaskOnProgressFragment().fetchData(TabsTaskHeader.this);
-                new TaskSuccessFragment().fetchData(TabsTaskHeader.this);
-//                    new TaskCancelFragment().fetchData(TabsTaskHeader.this);
-                List<mSPMDetailData> _mSPMDetailData = new ArrayList<mSPMDetailData>();
+                    new TaskOnProgressFragment().fetchData(TabsTaskHeader.this);
+                    new TaskSuccessFragment().fetchData(TabsTaskHeader.this);
+
+                    refresher = false;
+                }
+
+                List<mSPMDetailData> _mSPMDetailData;
                 _mSPMDetailData = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
 
                 if (_mSPMDetailData.size() == 0) {
-//                        switchTab();
                     finish();
                     onBackPressed();
                 }
-                menu.clear();
-                onCreateOptionsMenu(menu);
                 new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, true);
+                recreate();
             } else {
                 new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, false);
             }
@@ -404,13 +360,12 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
     }
 
     private void initMethodCancelSPMDetail(JSONObject jsonObject) {
-        String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated;
+        String strMessage, boolValid;
         String txtNoSPM;
 
         try {
             boolValid = jsonObject.get("boolValid").toString();
             strMessage = jsonObject.get("strMessage").toString();
-            strMethodName = jsonObject.get("strMethodName").toString();
 
             if (boolValid.equalsIgnoreCase("true")) {
                 JSONObject jsonObjectHeader = jsonObject.getJSONObject("listOfmSPMDetail");
@@ -419,7 +374,7 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
                 String sync = jsonObjectHeader.get("SYNC").toString();
                 String _intSPMDetailId = jsonObjectHeader.get("SPM_DETAIL_ID").toString();
                 String _reason = jsonObjectHeader.get("REASON").toString();
-                txtNoSPM = jsonObjectHeader.getString("SPM_NO").toString();
+                txtNoSPM = jsonObjectHeader.getString("SPM_NO");
 
                 if (status.equals("2") && sync.equals("1")) {
 
@@ -432,7 +387,7 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
                     new TaskOnProgressFragment().fetchData(TabsTaskHeader.this);
                     new TaskSuccessFragment().fetchData(TabsTaskHeader.this);
 //                    new TaskCancelFragment().fetchData(TabsTaskHeader.this);
-                    List<mSPMDetailData> _mSPMDetailData = new ArrayList<mSPMDetailData>();
+                    List<mSPMDetailData> _mSPMDetailData;
                     _mSPMDetailData = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
 
                     if (_mSPMDetailData.size() == 0) {
@@ -447,17 +402,17 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        recreate();
         progressDialog.dismiss();
     }
 
     private void initMethodConfirmSPMDetail(JSONObject jsonObject) {
-        String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated;
+        String strMessage, boolValid;
         String txtNoSPM;
 
         try {
             boolValid = jsonObject.get("boolValid").toString();
             strMessage = jsonObject.get("strMessage").toString();
-            strMethodName = jsonObject.get("strMethodName").toString();
 
             if (boolValid.equalsIgnoreCase("true")) {
                 JSONObject jsonObjectHeader = jsonObject.getJSONObject("listOfmSPMDetail");
@@ -466,22 +421,33 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
                 String sync = jsonObjectHeader.get("SYNC").toString();
                 String _intSPMDetailId = jsonObjectHeader.get("SPM_DETAIL_ID").toString();
                 String txtLocator = jsonObjectHeader.get("LOCATOR").toString();
-                txtNoSPM = jsonObjectHeader.getString("SPM_NO").toString();
+                txtNoSPM = jsonObjectHeader.getString("SPM_NO");
+
+                mSPMDetailData dtDetail = new mSPMDetailBL().getData(Integer.parseInt(_intSPMDetailId));
 
                 if (status.equals("1") && sync.equals("1")) {
 
                     new clsMainActivity().saveTimerLog("Open", "Done: " + txtLocator, txtNoSPM);
 
-                    new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, true);
+                    if(!dtDetail.getBitStatus().equals("1") && !dtDetail.getBitSync().equals("1")){
+                        new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, true);
+                    }
 
+                    if(!refresher || (!dtDetail.getBitStatus().equals("1") && !dtDetail.getBitSync().equals("1"))){
 //                    new mSPMDetailBL().updateDataValueById(_intSPMDetailId, dataLogin.getIntUserId());
-                    adapterSuccess.notifyDataSetChanged();
-                    adapterProgress.notifyDataSetChanged();
+                        adapterSuccess.notifyDataSetChanged();
+                        adapterProgress.notifyDataSetChanged();
 //                    adapterCancel.notifyDataSetChanged();
-                    new TaskOnProgressFragment().fetchData(TabsTaskHeader.this);
-                    new TaskSuccessFragment().fetchData(TabsTaskHeader.this);
+                        new TaskOnProgressFragment().fetchData(TabsTaskHeader.this);
+                        new TaskSuccessFragment().fetchData(TabsTaskHeader.this);
 //                    new TaskCancelFragment().fetchData(TabsTaskHeader.this);
-                    List<mSPMDetailData> _mSPMDetailData = new ArrayList<mSPMDetailData>();
+
+                        refresher = false;
+//                        menu.clear();
+//                        onCreateOptionsMenu(menu);
+                    }
+
+                    List<mSPMDetailData> _mSPMDetailData;
                     _mSPMDetailData = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
 
                     if (_mSPMDetailData.size() == 0) {
@@ -489,8 +455,6 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
                         finish();
                         onBackPressed();
                     }
-                    menu.clear();
-                    onCreateOptionsMenu(menu);
                 }
             } else {
                 new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, false);
@@ -498,6 +462,7 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        recreate();
         progressDialog.dismiss();
     }
 
@@ -515,35 +480,31 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
 
     @Override
     public void onOfflineConnection(final JSONObject jsonObject) {
-        TabsTaskHeader.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                JSONArray jsonArray = null;
-                String spmId, userId, method;
+        TabsTaskHeader.this.runOnUiThread(() -> {
+            String method;
 
-                try {
-                    method = jsonObject.get("strMethodName").toString();
+            try {
+                method = jsonObject.get("strMethodName").toString();
 
-                    if (method.equals("confirmDetail")) {
-                        initMethodConfirmSPMDetailOffline(jsonObject);
-                    } else if (method.equals("cancelDetail")) {
-                        initMethodCancelSPMDetailOffline(jsonObject);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (method.equals("confirmDetail")) {
+                    initMethodConfirmSPMDetailOffline(jsonObject);
+                } else if (method.equals("cancelDetail")) {
+                    initMethodCancelSPMDetailOffline(jsonObject);
                 }
+                recreate();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         });
     }
 
     private void initMethodCancelSPMDetailOffline(JSONObject jsonObject) {
-        String _intSPMDetailId, _intUserId, message, reason, txtLocator;
+        String _intSPMDetailId, message, reason, txtLocator;
         String txtNoSPM;
 
         try {
             _intSPMDetailId = jsonObject.get("_intSPMDetailId").toString();
-            _intUserId = jsonObject.get("_intUserId").toString();
-            txtNoSPM = jsonObject.getString("txtNoSPM".toString());
+            txtNoSPM = jsonObject.getString("txtNoSPM");
             message = jsonObject.get("message").toString();
             reason = jsonObject.get("reason").toString();
             txtLocator = jsonObject.get("LOCATOR").toString();
@@ -559,7 +520,7 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
             new TaskOnProgressFragment().fetchData(TabsTaskHeader.this);
             new TaskSuccessFragment().fetchData(TabsTaskHeader.this);
 //                    new TaskCancelFragment().fetchData(TabsTaskHeader.this);
-            List<mSPMDetailData> _mSPMDetailData = new ArrayList<mSPMDetailData>();
+            List<mSPMDetailData> _mSPMDetailData;
             _mSPMDetailData = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
 
             if (_mSPMDetailData.size() == 0) {
@@ -567,8 +528,9 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
                 finish();
                 onBackPressed();
             }
-            menu.clear();
-            onCreateOptionsMenu(menu);
+//            menu.clear();
+//            onCreateOptionsMenu(menu);
+            recreate();
             progressDialog.dismiss();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -577,13 +539,12 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
     }
 
     private void initMethodConfirmSPMDetailOffline(JSONObject jsonObject) {
-        String _intSPMDetailId, _intUserId, message;
+        String _intSPMDetailId, message;
         String txtNoSPM;
 
         try {
             _intSPMDetailId = jsonObject.get("_intSPMDetailId").toString();
-            _intUserId = jsonObject.get("_intUserId").toString();
-            txtNoSPM = jsonObject.getString("txtNoSPM".toString());
+            txtNoSPM = jsonObject.getString("txtNoSPM");
             message = jsonObject.get("message").toString();
 
             new clsMainActivity().showCustomToast(getApplicationContext(), message, true);
@@ -595,7 +556,7 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
             new TaskOnProgressFragment().fetchData(TabsTaskHeader.this);
             new TaskSuccessFragment().fetchData(TabsTaskHeader.this);
 //                    new TaskCancelFragment().fetchData(TabsTaskHeader.this);
-            List<mSPMDetailData> _mSPMDetailData = new ArrayList<mSPMDetailData>();
+            List<mSPMDetailData> _mSPMDetailData;
             _mSPMDetailData = new mSPMDetailBL().getAllDataTaskPending(txtNoSPM);
 
             if (_mSPMDetailData.size() == 0) {
@@ -603,8 +564,9 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
                 finish();
                 onBackPressed();
             }
-            menu.clear();
-            onCreateOptionsMenu(menu);
+//            menu.clear();
+//            onCreateOptionsMenu(menu);
+            recreate();
             progressDialog.dismiss();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -625,11 +587,11 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
         private final List<Fragment> fragmentList = new ArrayList<>();
         private final List<String> fragmentTitleList = new ArrayList<>();
 
-        public PagerAdapter(FragmentManager fragmentManager) {
+        PagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
         }
 
-        public void addFragment(Fragment fragment, String title) {
+        void addFragment(Fragment fragment, String title) {
             fragmentList.add(fragment);
             fragmentTitleList.add(title);
         }
@@ -652,27 +614,24 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
 
     public void updateTitleTabs(ArrayList<String> data) {
         for (int i = 0; i < data.size(); i++) {
-            tabLayout.getTabAt(i).setText(data.get(i));
+            Objects.requireNonNull(tabLayout.getTabAt(i)).setText(data.get(i));
         }
     }
 
     public void switchTab() {
-        tabLayout.getTabAt(1).select();
+        Objects.requireNonNull(tabLayout.getTabAt(1)).select();
     }
 
     public void switchTabDinamis(int position) {
-        tabLayout.getTabAt(position).select();
-    }
-
-    public void switchTabCancel() {
-        tabLayout.getTabAt(2).select();
+        Objects.requireNonNull(tabLayout.getTabAt(position)).select();
     }
 
     public void updateListView() {
-        adapterSuccess.notifyDataSetChanged();
-        adapterProgress.notifyDataSetChanged();
-//                    adapterCancel.notifyDataSetChanged();
-        new TaskOnProgressFragment().fetchData(TabsTaskHeader.this);
-        new TaskSuccessFragment().fetchData(TabsTaskHeader.this);
+        recreate();
+//        adapterSuccess.notifyDataSetChanged();
+//        adapterProgress.notifyDataSetChanged();
+//        adapterCancel.notifyDataSetChanged();
+//        new TaskOnProgressFragment().fetchData(TabsTaskHeader.this);
+//        new TaskSuccessFragment().fetchData(TabsTaskHeader.this);
     }
 }

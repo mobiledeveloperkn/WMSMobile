@@ -17,6 +17,7 @@ import bl.mSPMDetailBL;
 import library.common.mSPMDetailData;
 import library.dal.clsHardCode;
 
+@SuppressLint("Registered")
 public class TaskDetail extends AppCompatActivity implements View.OnClickListener {
 
     Button btnConfirm;
@@ -44,35 +45,30 @@ public class TaskDetail extends AppCompatActivity implements View.OnClickListene
 
     @Override
     public void onClick(View view) {
-        switch(view.getId()){
-            case R.id.btn_confirm:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        if (view.getId() == R.id.btn_confirm) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-                builder.setTitle("Confirmation");
-                builder.setMessage("Are you sure want to confirm this?");
+            builder.setTitle("Confirmation");
+            builder.setMessage("Are you sure want to confirm this?");
 
-                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
-                    public void onClick(DialogInterface dialog, int which) {
-                        AsyncCallUpdateDetail task = new AsyncCallUpdateDetail();
-                        task.execute();
-                    }
-                });
+                public void onClick(DialogInterface dialog, int which) {
+                    AsyncCallUpdateDetail task = new AsyncCallUpdateDetail();
+                    task.execute();
+                }
+            });
 
-                builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
 
 //                AlertDialog alert = builder.create();
-                builder.show();
-                break;
-
-            default:
-                break;
+            builder.show();
         }
     }
 

@@ -411,6 +411,7 @@ public class WMSMobileService extends Service {
         mHubConnection = new HubConnection(serverUrl);
         String SERVER_HUB_CHAT = new clsHardCode().txtServerHubName;
         mHubProxy = mHubConnection.createHubProxy(SERVER_HUB_CHAT);
+
         ClientTransport clientTransport = new ServerSentEventsTransport(mHubConnection.getLogger());
         SignalRFuture<Void> signalRFuture = mHubConnection.start(clientTransport);
 
@@ -421,95 +422,87 @@ public class WMSMobileService extends Service {
             status = false;
         }
 
-        mHubConnection.received(new MessageReceivedHandler() {
-            @Override
-            public void onMessageReceived(JsonElement jsonElement) {
-                JSONObject json;
-                JsonObject jsonObject = jsonElement.getAsJsonObject();
-                String jsonString = jsonObject.toString();
+        mHubConnection.received(jsonElement -> {
+            JSONObject json;
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            String jsonString = jsonObject.toString();
 
-                try {
-                    json = new JSONObject(jsonString);
-                    JSONArray jsonArray = json.getJSONArray("A");
-                    String jsonArrayString = jsonArray.get(0).toString();
-                    JSONObject jsonObjectFinal = new JSONObject(jsonArrayString);
-                    String strMethodName = jsonObjectFinal.get("strMethodName").toString();
+            try {
+                json = new JSONObject(jsonString);
+                JSONArray jsonArray = json.getJSONArray("A");
+                String jsonArrayString = jsonArray.get(0).toString();
+                JSONObject jsonObjectFinal = new JSONObject(jsonArrayString);
+                String strMethodName = jsonObjectFinal.get("strMethodName").toString();
 
-                    if (mHubConnectionSevice != null) {
-                        service.WMSMobileService.mHubConnectionSevice.onReceiveMessageHub(jsonObjectFinal);
-                    }
-//                    if(updateSnackbar != null && strMethodName.equalsIgnoreCase("pushDataOffline")){
-//                        WMSMobileService.updateSnackbar.onUpdateSnackBar(true);
-//                    }
+                if (mHubConnectionSevice != null) {
+                    WMSMobileService.mHubConnectionSevice.onReceiveMessageHub(jsonObjectFinal);
+                }
 
-                    if (strMethodName.equalsIgnoreCase("ConfirmSPMDetail")) {
-                        initMethodConfirmSPMDetail(jsonObjectFinal);
-                    } else if (strMethodName.equalsIgnoreCase("cancelSPMDetail")) {
-                        initMethodCancelSPMDetail(jsonObjectFinal);
-                    } else if(strMethodName.equalsIgnoreCase("revertCancelSPMDetail")){
-                        initMethodRevertSPMDetail(jsonObjectFinal);
-                    } else if (strMethodName.equalsIgnoreCase("pushDataOffline")) {
-                        updateFromPushDataOffline(jsonObjectFinal);
-                    }
+                if (strMethodName.equalsIgnoreCase("ConfirmSPMDetail")) {
+                    initMethodConfirmSPMDetail(jsonObjectFinal);
+                } else if (strMethodName.equalsIgnoreCase("cancelSPMDetail")) {
+                    initMethodCancelSPMDetail(jsonObjectFinal);
+                } else if(strMethodName.equalsIgnoreCase("revertCancelSPMDetail")){
+                    initMethodRevertSPMDetail(jsonObjectFinal);
+                } else if (strMethodName.equalsIgnoreCase("pushDataOffline")) {
+                    updateFromPushDataOffline(jsonObjectFinal);
+                }
 
-                    if (strMethodName.equals("getLatestSTAR")) {
-                        JSONObject jsonObjectHeader = jsonObjectFinal.getJSONObject("listOfmSPMHeader");
+                if (strMethodName.equals("getLatestSTAR")) {
+                    JSONObject jsonObjectHeader = jsonObjectFinal.getJSONObject("listOfmSPMHeader");
 
-                        String status = jsonObjectHeader.get("STATUS").toString();
-                        String sync = jsonObjectHeader.get("SYNC").toString();
+                    String status1 = jsonObjectHeader.get("STATUS").toString();
+                    String sync = jsonObjectHeader.get("SYNC").toString();
 
-                        mSPMHeaderData _mSPMHeaderData = new mSPMHeaderData();
+                    mSPMHeaderData _mSPMHeaderData = new mSPMHeaderData();
 
-                        tUserLoginData dataLogin = new tUserLoginData();
-                        dataLogin = new tUserLoginBL().getUserActive();
+                    tUserLoginData dataLogin;
+                    dataLogin = new tUserLoginBL().getUserActive();
 
-                        if (status.equals("1") && sync.equals("0")) {
+                    if (status1.equals("1") && sync.equals("0")) {
 
-                            SQLiteDatabase db = new clsMainBL().getDb();
-                            new clsHelper().DeleteHeaderDetailStar(db);
+                        SQLiteDatabase db1 = new clsMainBL().getDb();
+                        new clsHelper().DeleteHeaderDetailStar(db1);
 
-                            _mSPMHeaderData.setIntSPMId(jsonObjectHeader.get("SPM_HEADER_ID").toString());
-                            _mSPMHeaderData.setTxtNoSPM(jsonObjectHeader.get("SPM_NO").toString());
-                            _mSPMHeaderData.setTxtBranchCode(jsonObjectHeader.get("BRANCH_CODE").toString());
-                            _mSPMHeaderData.setTxtSalesOrder(jsonObjectHeader.get("SALES_ORDER").toString());
-                            _mSPMHeaderData.setIntUserId(jsonObjectHeader.get("USER_ID").toString());
-                            _mSPMHeaderData.setBitStatus(jsonObjectHeader.get("SYNC").toString());
-                            _mSPMHeaderData.setBitSync(jsonObjectHeader.get("SYNC").toString());
-                            _mSPMHeaderData.setBitStart("0");
-                            _mSPMHeaderData.setIntUserId(dataLogin.getIntUserId());
+                        _mSPMHeaderData.setIntSPMId(jsonObjectHeader.get("SPM_HEADER_ID").toString());
+                        _mSPMHeaderData.setTxtNoSPM(jsonObjectHeader.get("SPM_NO").toString());
+                        _mSPMHeaderData.setTxtBranchCode(jsonObjectHeader.get("BRANCH_CODE").toString());
+                        _mSPMHeaderData.setTxtSalesOrder(jsonObjectHeader.get("SALES_ORDER").toString());
+                        _mSPMHeaderData.setIntUserId(jsonObjectHeader.get("USER_ID").toString());
+                        _mSPMHeaderData.setBitStatus(jsonObjectHeader.get("SYNC").toString());
+                        _mSPMHeaderData.setBitSync(jsonObjectHeader.get("SYNC").toString());
+                        _mSPMHeaderData.setBitStart("0");
+                        _mSPMHeaderData.setIntUserId(dataLogin.getIntUserId());
 
-                            new mSPMHeaderBL().saveData(_mSPMHeaderData);
+                        new mSPMHeaderBL().saveData(_mSPMHeaderData);
 
-                            JSONArray jsonArrayInner = jsonObjectFinal.getJSONArray("listOfmSPMDetail");
+                        JSONArray jsonArrayInner = jsonObjectFinal.getJSONArray("listOfmSPMDetail");
 
-                            List<mSPMDetailData> _mSPMDetailData = new ArrayList<>();
+                        JSONObject jsonObjectNew;
 
-                            JSONObject jsonObjectNew = new JSONObject();
+                        for (int i = 0; i < jsonArrayInner.length(); i++) {
 
-                            for (int i = 0; i < jsonArrayInner.length(); i++) {
+                            jsonObjectNew = jsonArrayInner.getJSONObject(i);
 
-                                jsonObjectNew = jsonArrayInner.getJSONObject(i);
+                            mSPMDetailData data = new mSPMDetailData();
 
-                                mSPMDetailData data = new mSPMDetailData();
-
-                                data.setIntSPMDetailId(jsonObjectNew.get("SPM_DETAIL_ID").toString());
-                                data.setTxtNoSPM(jsonObjectNew.get("SPM_NO").toString());
-                                data.setTxtLocator(jsonObjectNew.get("LOCATOR").toString());
-                                data.setTxtItemCode(jsonObjectNew.get("ITEM_CODE").toString());
-                                data.setTxtItemName(jsonObjectNew.get("ITEM_NAME").toString());
-                                data.setIntQty(jsonObjectNew.get("QUANTITY").toString());
-                                data.setBitStatus(jsonObjectNew.get("STATUS").toString());
-                                data.setBitSync(jsonObjectNew.get("SYNC").toString());
-                                data.setTxtUOM(jsonObjectNew.get("UOM").toString());
-                                data.setTxtLotNumber(jsonObjectNew.get("LOT_NUM").toString());
-                                data.setIntUserId(dataLogin.getIntUserId());
-                                new mSPMDetailBL().insert(data);
-                            }
+                            data.setIntSPMDetailId(jsonObjectNew.get("SPM_DETAIL_ID").toString());
+                            data.setTxtNoSPM(jsonObjectNew.get("SPM_NO").toString());
+                            data.setTxtLocator(jsonObjectNew.get("LOCATOR").toString());
+                            data.setTxtItemCode(jsonObjectNew.get("ITEM_CODE").toString());
+                            data.setTxtItemName(jsonObjectNew.get("ITEM_NAME").toString());
+                            data.setIntQty(jsonObjectNew.get("QUANTITY").toString());
+                            data.setBitStatus(jsonObjectNew.get("STATUS").toString());
+                            data.setBitSync(jsonObjectNew.get("SYNC").toString());
+                            data.setTxtUOM(jsonObjectNew.get("UOM").toString());
+                            data.setTxtLotNumber(jsonObjectNew.get("LOT_NUM").toString());
+                            data.setIntUserId(dataLogin.getIntUserId());
+                            new mSPMDetailBL().insert(data);
                         }
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         });
 

@@ -19,7 +19,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 27
         versionCode 1
-        versionName "AND.2018.002"
+        versionName "AND.2019.001"
         multiDexEnabled true
 //        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -88,5 +88,6 @@ dependencies {
     implementation 'com.microsoft.signalr:signalr:1.0.0'
     implementation files ('libs/signalr-client-sdk.jar')
     implementation files ('libs/signalr-client-sdk-android.jar')
+    implementation 'com.google.code.gson:gson:2.8.5'
 //    implementation 'com.smartarmenia:dotnetcoresignalrclientjava:1.14'
 }

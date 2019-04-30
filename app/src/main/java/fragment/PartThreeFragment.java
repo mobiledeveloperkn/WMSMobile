@@ -53,7 +53,7 @@ public class PartThreeFragment extends Fragment {
         List<mSPMDetailData> mSPMDetailDataListPending=new ArrayList<>();
 //        mSPMDetailDataListPending = new mSPMDetailBL().getAllDataTaskPending();
         mListView = (ListView) coordinatorLayout.findViewById(R.id.partThree_lv);
-        adapterProgress = new SwipeListAdapter(getActivity(), mSPMDetailDataListPending, mListView);
+        adapterProgress = new SwipeListAdapter(getActivity(), mSPMDetailDataListPending);
         mListView.setAdapter(adapterProgress);
         mListView.setEmptyView(coordinatorLayout.findViewById(R.id.LayoutEmpty_partthree));
 

@@ -20,7 +20,6 @@ public final class IntentIntegrator {
      * start to scan with default formats and character set.
      * 
      * @param activity
-     * @see #initiateScan(Activity, String, String)
      */
     public static void initiateScan(Activity activity) {
         initiateScan(activity, null, null, null);
@@ -31,7 +30,6 @@ public final class IntentIntegrator {
      * 
      * @param activity
      * @param config can be null
-     * @see #initiateScan(Activity, String, String)
      */
     public static void initiateScan(Activity activity, ZXingLibConfig config) {
         initiateScan(activity, null, null, config);

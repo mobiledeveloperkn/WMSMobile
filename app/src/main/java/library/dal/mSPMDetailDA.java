@@ -3,13 +3,13 @@ package library.dal;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import library.common.mSPMDetailData;
 import library.common.mSystemConfigData;
-import library.common.mconfigData;
 
 /**
  * Created by ASUS ZE on 16/11/2016.
@@ -178,9 +178,11 @@ public class mSPMDetailDA {
         // Select All Query
         mSPMDetailData dt = new mSPMDetailData();
         String selectQuery = "SELECT  " + dt.Property_All + " FROM "
-                + TABLE_CONTACTS + " WHERE " + dt.Property_txtNoSPM + "='" + id + "'";
+                + TABLE_CONTACTS;
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
+
+        int i = 0;
 
         if (cursor.moveToFirst()) {
             do {
@@ -200,6 +202,7 @@ public class mSPMDetailDA {
                 contact.setTxtUOM(cursor.getString(12));
                 // Adding contact to list
                 contactList.add(contact);
+                Log.i("Anjas-dt" + i++, cursor.getString(0));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -289,6 +292,7 @@ public class mSPMDetailDA {
         Cursor cursor = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
 
+        int i = 0;
         if (cursor.moveToFirst()) {
             do {
                 mSPMDetailData contact = new mSPMDetailData();
@@ -307,6 +311,7 @@ public class mSPMDetailDA {
                 contact.setTxtUOM(cursor.getString(12));
                 // Adding contact to list
                 contactList.add(contact);
+
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -368,7 +373,7 @@ public class mSPMDetailDA {
         return countData;
     }
 
-    public int updateDataById(SQLiteDatabase db, String id, String intUserId) {
+    public void updateDataById(SQLiteDatabase db, String id, String intUserId) {
         mSPMDetailData dt = new mSPMDetailData();
 
         ContentValues values = new ContentValues();
@@ -377,7 +382,7 @@ public class mSPMDetailDA {
         values.put(dt.Property_intUserId, intUserId);
 
         // updating row
-        return db.update(TABLE_CONTACTS, values, dt.Property_intSPMDetailId + " = ? ",
+        db.update(TABLE_CONTACTS, values, dt.Property_intSPMDetailId + " = ? ",
                 new String[]{String.valueOf(id)});
     }
 

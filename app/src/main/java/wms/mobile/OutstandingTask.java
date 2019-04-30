@@ -1,13 +1,12 @@
 package wms.mobile;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,17 +15,12 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.owater.library.CircleTextView;
 
@@ -40,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import addon.ConnectivityReceiver;
 import addon.MyApplication;
@@ -63,7 +58,6 @@ import service.WMSMobileService;
 
 public class OutstandingTask extends AppCompatActivity implements View.OnClickListener, WMSMobileService.mHubConnectionSevice, ConnectivityReceiver.ConnectivityReceiverListener {
 
-    private Toolbar toolbar;
     Button btnTaskView, btnRefresh, btnComplete, btnBreak;
     TextView tvNoSPM, tvShopTo, tvSO;
     private mSPMHeaderData _mSPMHeaderData;
@@ -75,38 +69,33 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
     private List<mSPMDetailData> mSPMDetailDataListSuccess;
     private List<mSPMDetailData> mSPMDetailDataListCancel;
 
-    TableLayout tReport;
-
     CircleTextView tvTotalPending, tvTotalConfirm, tvTotalCancel;
 
-    private PackageInfo pInfo = null;
     private String versionName = "";
     private tUserLoginData dataLogin;
 
     private ProgressDialog progressDialog;
-    private long time = 15000;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_outstanding_task);
-        btnTaskView = (Button) findViewById(R.id.btn_taskview);
-        btnRefresh = (Button) findViewById(R.id.btn_refresh);
-        btnComplete = (Button) findViewById(R.id.btn_complete);
-        btnBreak = (Button) findViewById(R.id.btn_break);
-        tvNoSPM = (TextView) findViewById(R.id.tv_noSPM);
-        tvShopTo = (TextView) findViewById(R.id.tv_shipTo);
-        tvSO = (TextView) findViewById(R.id.tv_SO);
-        tvTotalPending = (CircleTextView) findViewById(R.id.tvTotalPending);
-        tvTotalConfirm = (CircleTextView) findViewById(R.id.tvTotalConfirm);
-        tvTotalCancel = (CircleTextView) findViewById(R.id.tvTotalCancel);
-//        tReport = (TableLayout) findViewById(R.id.tl_data_report);
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coorOutstandingTask);
+        btnTaskView = findViewById(R.id.btn_taskview);
+        btnRefresh = findViewById(R.id.btn_refresh);
+        btnComplete = findViewById(R.id.btn_complete);
+        btnBreak = findViewById(R.id.btn_break);
+        tvNoSPM = findViewById(R.id.tv_noSPM);
+        tvShopTo = findViewById(R.id.tv_shipTo);
+        tvSO = findViewById(R.id.tv_SO);
+        tvTotalPending = findViewById(R.id.tvTotalPending);
+        tvTotalConfirm = findViewById(R.id.tvTotalConfirm);
+        tvTotalCancel = findViewById(R.id.tvTotalCancel);
+        coordinatorLayout = findViewById(R.id.coorOutstandingTask);
         conMan = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        pInfo = new clsMainActivity().getPinfo(this);
+        PackageInfo pInfo = new clsMainActivity().getPinfo(this);
         if (pInfo != null) {
             versionName = pInfo.versionName;
         }
@@ -136,16 +125,14 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
         _mSPMHeaderData = new mSPMHeaderData();
         _mSPMHeaderData = new mSPMHeaderBL().GetDataByStatus();
 
-        tvNoSPM.setText("NO. STAR : " + _mSPMHeaderData.getTxtNoSPM());
-//        tvShopTo.setText(_mSPMHeaderData.getTxtBranchCode());
-//        tvSO.setText(_mSPMHeaderData.getTxtSalesOrder());
+        tvNoSPM.setText(String.format("NO. STAR : %s", _mSPMHeaderData.getTxtNoSPM()));
 
         btnTaskView.setOnClickListener(this);
         btnComplete.setOnClickListener(this);
         btnRefresh.setOnClickListener(this);
         btnBreak.setOnClickListener(this);
 
-        if(_mSPMHeaderData!=null){
+        if (_mSPMHeaderData != null) {
             if (_mSPMHeaderData.getBitStart().equals("0")) {
                 initMethodMappingButton();
             } else {
@@ -155,10 +142,10 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
 
         setCircleReport();
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setElevation(0);
         super.onResume();
     }
@@ -175,40 +162,30 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
         tvTotalConfirm.setText(mSPMDetailDataListSuccess != null ? String.valueOf(mSPMDetailDataListSuccess.size()) : "0");
         tvTotalCancel.setText(mSPMDetailDataListCancel != null ? String.valueOf(mSPMDetailDataListCancel.size()) : "0");
 
-            tvTotalPending.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(_mSPMHeaderData.getBitSync().equals("0")){
-                        Intent intent = new Intent(OutstandingTask.this, TabsTaskHeader.class);
-                        intent.putExtra("txtNoSPM", _mSPMHeaderData.getTxtNoSPM());
-                        intent.putExtra("tab","0");
-                        startActivity(intent);
-                    }
-                }
-            });
-        tvTotalConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(_mSPMHeaderData.getBitSync().equals("0")){
-                    Intent intent = new Intent(OutstandingTask.this, TabsTaskHeader.class);
-                    intent.putExtra("txtNoSPM", _mSPMHeaderData.getTxtNoSPM());
-                    intent.putExtra("tab","1");
-                    startActivity(intent);
-                }
+        tvTotalPending.setOnClickListener(view -> {
+            if (_mSPMHeaderData.getBitSync().equals("0")) {
+                Intent intent = new Intent(OutstandingTask.this, TabsTaskHeader.class);
+                intent.putExtra("txtNoSPM", _mSPMHeaderData.getTxtNoSPM());
+                intent.putExtra("tab", "0");
+                startActivity(intent);
             }
         });
-        tvTotalCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(_mSPMHeaderData.getBitSync().equals("0")){
-                    Intent intent = new Intent(OutstandingTask.this, TabsTaskHeader.class);
-                    intent.putExtra("txtNoSPM", _mSPMHeaderData.getTxtNoSPM());
-                    intent.putExtra("tab","2");
-                    startActivity(intent);
-                }
+        tvTotalConfirm.setOnClickListener(view -> {
+            if (_mSPMHeaderData.getBitSync().equals("0")) {
+                Intent intent = new Intent(OutstandingTask.this, TabsTaskHeader.class);
+                intent.putExtra("txtNoSPM", _mSPMHeaderData.getTxtNoSPM());
+                intent.putExtra("tab", "1");
+                startActivity(intent);
             }
         });
-
+        tvTotalCancel.setOnClickListener(view -> {
+            if (_mSPMHeaderData.getBitSync().equals("0")) {
+                Intent intent = new Intent(OutstandingTask.this, TabsTaskHeader.class);
+                intent.putExtra("txtNoSPM", _mSPMHeaderData.getTxtNoSPM());
+                intent.putExtra("tab", "2");
+                startActivity(intent);
+            }
+        });
     }
 
     private void initMethodMappingButton() {
@@ -244,7 +221,8 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
                         btnComplete.setEnabled(false);
                         btnComplete.setBackgroundResource(R.drawable.btn_innermenu_gray);
                     }
-                } else if (mSPMDetailDataListPending.size() == 0) {
+                } else {
+                    mSPMDetailDataListPending.size();
                     if (_mSPMHeaderData.getBitStatus().equals("0")) {
                         btnRefresh.setEnabled(false);
                         btnTaskView.setEnabled(true);
@@ -274,7 +252,8 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
                     btnComplete.setEnabled(false);
                     btnComplete.setBackgroundResource(R.drawable.btn_innermenu_gray);
                 }
-            } else if (mSPMDetailDataListPending.size() == 0) {
+            } else {
+                mSPMDetailDataListPending.size();
                 if (_mSPMHeaderData.getBitStatus().equals("0")) {
                     btnRefresh.setEnabled(false);
                     btnTaskView.setEnabled(true);
@@ -290,18 +269,14 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
                 }
             }
         }
-
     }
 
     private void showPopupStartButton() {
         LayoutInflater layoutInflater = LayoutInflater.from(this);
-        final View promptView = layoutInflater.inflate(R.layout.activity_start, null);
-        final Button btnStart = (Button) promptView.findViewById(R.id.btn_start);
-        final Button btnBack = (Button) promptView.findViewById(R.id.btn_back);
-        final LinearLayout ll = (LinearLayout) promptView.findViewById(R.id.ll_popup);
+        @SuppressLint("InflateParams") final View promptView = layoutInflater.inflate(R.layout.activity_start, null);
+        final Button btnStart = promptView.findViewById(R.id.btn_start);
+        final Button btnBack = promptView.findViewById(R.id.btn_back);
 
-//        ll.setBackgroundColor(Color.TRANSPARENT);
-//        promptView.setBackgroundColor(Color.TRANSPARENT);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setView(promptView);
         alertDialogBuilder
@@ -310,137 +285,42 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
         final AlertDialog alertD = alertDialogBuilder.create();
         alertD.show();
 
-        btnStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        btnStart.setOnClickListener(view -> {
 
-                String dt = "";
-                if(_mSPMHeaderData.getDtStart().length() == 0 || _mSPMHeaderData.getDtStart().toString().equals("NULL")) {
-                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    Calendar cal = Calendar.getInstance();
-                    dt = dateFormat.format(cal.getTime());
-                }
-                else{
-                    dt = _mSPMHeaderData.getDtStart();
-                }
-
-                new mSPMHeaderBL().updateDataSPMStartById(_mSPMHeaderData.getIntSPMId(), dt);
-
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String dt;
+            if (_mSPMHeaderData.getDtStart().length() == 0 || _mSPMHeaderData.getDtStart().equals("NULL")) {
+                @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Calendar cal = Calendar.getInstance();
-                String dtExecute = dateFormat.format(cal.getTime());
+                dt = dateFormat.format(cal.getTime());
+            } else {
+                dt = _mSPMHeaderData.getDtStart();
+            }
 
-                tTimerLogData dataTimerLog = new tTimerLogData();
-                dataTimerLog.setBitActive("1");
-                dataTimerLog.setDtExecute(dtExecute);
-                dataTimerLog.setTxtStarNo(_mSPMHeaderData.getTxtNoSPM());
-                dataTimerLog.setTxtTimerLogId(new clsMainActivity().GenerateGuid());
-                dataTimerLog.setTxtTimerStatus("Open");
-                dataTimerLog.setTxtTimerType("Start Awal");
-                new tTimerLogBL().insertData(dataTimerLog);
+            new mSPMHeaderBL().updateDataSPMStartById(_mSPMHeaderData.getIntSPMId(), dt);
+
+            @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Calendar cal = Calendar.getInstance();
+            String dtExecute = dateFormat.format(cal.getTime());
+
+            tTimerLogData dataTimerLog = new tTimerLogData();
+            dataTimerLog.setBitActive("1");
+            dataTimerLog.setDtExecute(dtExecute);
+            dataTimerLog.setTxtStarNo(_mSPMHeaderData.getTxtNoSPM());
+            dataTimerLog.setTxtTimerLogId(new clsMainActivity().GenerateGuid());
+            dataTimerLog.setTxtTimerStatus("Open");
+            dataTimerLog.setTxtTimerType("Start Awal");
+            new tTimerLogBL().insertData(dataTimerLog);
 
 //                new mSPMHeaderBL().updateStatusStart(_mSPMHeaderData.getIntSPMId(), "0");
 
-                initMethodMappingButton();
-                alertD.dismiss();
-            }
+            initMethodMappingButton();
+            alertD.dismiss();
         });
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-                onBackPressed();
-            }
+        btnBack.setOnClickListener(view -> {
+            finish();
+            onBackPressed();
         });
-    }
-
-    private void initMethodTableReport(Context applicationContext) {
-        tReport.removeAllViews();
-
-        TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1f);
-        params.setMargins(1, 1, 1, 1);
-
-        TableRow tr = new TableRow(applicationContext);
-
-        String[] colTextHeader = {"Locator", "Item Code", "Qty", "Status"};
-
-        for (String text : colTextHeader) {
-            TextView tv = new TextView(applicationContext);
-
-            tv.setTextSize(14);
-            tv.setPadding(10, 10, 10, 10);
-            tv.setText(text);
-            tv.setGravity(Gravity.CENTER);
-            tv.setBackgroundColor(Color.parseColor("#4CAF50"));
-            tv.setTextColor(Color.WHITE);
-            tv.setLayoutParams(params);
-
-            tr.addView(tv);
-        }
-        tReport.addView(tr);
-
-        List<mSPMDetailData> dtListReportData = new ArrayList<>();
-        dtListReportData = new mSPMDetailBL().getAllData();
-
-        if (dtListReportData != null) {
-            int index = 1;
-            for (mSPMDetailData dat : dtListReportData) {
-                tr = new TableRow(applicationContext);
-
-                TextView locator = new TextView(applicationContext);
-                locator.setTextSize(12);
-                locator.setPadding(10, 10, 10, 10);
-//                locator.setBackgroundColor(dat.get_txtGroupKN().contains("TOTAL") ? Color.parseColor("#d2fc47") : Color.parseColor("#f0f0f0"));
-                locator.setTextColor(Color.BLACK);
-                locator.setGravity(Gravity.CENTER);
-                locator.setText(dat.getTxtLocator());
-                locator.setLayoutParams(params);
-
-                tr.addView(locator);
-
-                TextView itemName = new TextView(applicationContext);
-                itemName.setTextSize(12);
-                itemName.setPadding(10, 10, 10, 10);
-//                brand.setBackgroundColor(dat.get_txtGroupKN().contains("TOTAL") ? Color.parseColor("#d2fc47") : Color.parseColor("#f0f0f0"));
-                itemName.setTextColor(Color.BLACK);
-                itemName.setGravity(Gravity.CENTER);
-                itemName.setText(dat.getTxtItemName());
-                itemName.setLayoutParams(params);
-
-                tr.addView(itemName);
-
-                TextView qty = new TextView(applicationContext);
-                qty.setTextSize(12);
-                qty.setPadding(10, 10, 10, 10);
-//                ach_mtd.setBackgroundColor(dat.get_txtGroupKN().contains("TOTAL") ? Color.parseColor("#d2fc47") : Color.parseColor("#f0f0f0"));
-                qty.setTextColor(Color.BLACK);
-                qty.setGravity(Gravity.CENTER);
-                qty.setText(dat.getIntQty());
-                qty.setLayoutParams(params);
-
-                tr.addView(qty);
-
-                TextView status = new TextView(applicationContext);
-                String statusText = "pending";
-                if (dat.getBitStatus().equals("1") && dat.getBitSync().equals("1")) {
-                    statusText = "Sync";
-                } else if (dat.getBitStatus().equals("2") && dat.getBitSync().equals("1")) {
-                    statusText = "Cancel";
-                }
-                status.setTextSize(12);
-                status.setPadding(10, 10, 10, 10);
-//                ach_ytd.setBackgroundColor(dat.get_txtGroupKN().contains("TOTAL") ? Color.parseColor("#d2fc47") : Color.parseColor("#f0f0f0"));
-                status.setTextColor(Color.BLACK);
-                status.setGravity(Gravity.CENTER);
-                status.setText(statusText);
-                status.setLayoutParams(params);
-
-                tr.addView(status);
-
-                tReport.addView(tr, index++);
-            }
-        }
     }
 
     @Override
@@ -456,19 +336,8 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
                 final AlertDialog.Builder alertDialogCancel = new AlertDialog.Builder(this);
                 alertDialogCancel.setTitle("Confirm");
                 alertDialogCancel.setMessage("Are you sure want to refresh STAR?");
-                alertDialogCancel.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        refreshSPMHeader();
-                    }
-                });
-                alertDialogCancel.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-
-                    }
-                });
+                alertDialogCancel.setPositiveButton("OK", (dialog, which) -> refreshSPMHeader());
+                alertDialogCancel.setNegativeButton("CANCEL", (dialog, which) -> dialog.dismiss());
 
                 alertDialogCancel.show();
                 break;
@@ -476,19 +345,8 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
                 final AlertDialog.Builder alertDialogComplete = new AlertDialog.Builder(this);
                 alertDialogComplete.setTitle("Confirm");
                 alertDialogComplete.setMessage("Are you sure to Complete?");
-                alertDialogComplete.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        confirmTaskHeader();
-                    }
-                });
-                alertDialogComplete.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-
-                    }
-                });
+                alertDialogComplete.setPositiveButton("OK", (dialog, which) -> confirmTaskHeader());
+                alertDialogComplete.setNegativeButton("CANCEL", (dialog, which) -> dialog.dismiss());
 
                 alertDialogComplete.show();
                 break;
@@ -496,34 +354,25 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
                 final AlertDialog.Builder alertDialogBreak = new AlertDialog.Builder(this);
                 alertDialogBreak.setTitle("Confirm");
                 alertDialogBreak.setMessage("Are you sure to Break?");
-                alertDialogBreak.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        Calendar cal = Calendar.getInstance();
-                        String dt = dateFormat.format(cal.getTime());
+                alertDialogBreak.setPositiveButton("OK", (dialog, which) -> {
+                    @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Calendar cal = Calendar.getInstance();
+                    String dt = dateFormat.format(cal.getTime());
 
-                        tTimerLogData dataTimerLog = new tTimerLogData();
-                        dataTimerLog.setBitActive("1");
-                        dataTimerLog.setDtExecute(dt);
-                        dataTimerLog.setTxtStarNo(_mSPMHeaderData.getTxtNoSPM());
-                        dataTimerLog.setTxtTimerLogId(new clsMainActivity().GenerateGuid());
-                        dataTimerLog.setTxtTimerStatus("Close");
-                        dataTimerLog.setTxtTimerType("Break");
-                        new tTimerLogBL().insertData(dataTimerLog);
-                        new mSPMHeaderBL().updateStatusStart(_mSPMHeaderData.getIntSPMId(), "");
+                    tTimerLogData dataTimerLog = new tTimerLogData();
+                    dataTimerLog.setBitActive("1");
+                    dataTimerLog.setDtExecute(dt);
+                    dataTimerLog.setTxtStarNo(_mSPMHeaderData.getTxtNoSPM());
+                    dataTimerLog.setTxtTimerLogId(new clsMainActivity().GenerateGuid());
+                    dataTimerLog.setTxtTimerStatus("Close");
+                    dataTimerLog.setTxtTimerType("Break");
+                    new tTimerLogBL().insertData(dataTimerLog);
+                    new mSPMHeaderBL().updateStatusStart(_mSPMHeaderData.getIntSPMId(), "");
 
-                        finish();
-                        onBackPressed();
-                    }
+                    finish();
+                    onBackPressed();
                 });
-                alertDialogBreak.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-
-                    }
-                });
+                alertDialogBreak.setNegativeButton("CANCEL", (dialog, which) -> dialog.dismiss());
 
                 alertDialogBreak.show();
                 break;
@@ -532,16 +381,15 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
 
     private void refreshSPMHeader() {
         final String result = new mSPMHeaderBL().GetAllData().getTxtNoSPM();
-        Boolean status;
+        boolean status;
 
         if (result != null) {
             progressDialog.show();
-//            new clsMainActivity().timerDelayRemoveDialog(time, progressDialog);
             tUserLoginData _tUserLoginData = new tUserLoginBL().getUserActive();
             status = new WMSMobileService().refreshDataSTAR(result, _tUserLoginData.getIntUserId(), versionName);
             if (!status) {
                 progressDialog.dismiss();
-                boolean report = new SignalRBL().buildingConnection();
+                new SignalRBL().buildingConnection();
                 new clsMainActivity().showCustomToast(getApplicationContext(), "Please Check Your Connection...", false);
             }
         }
@@ -549,11 +397,10 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
 
     public void confirmTaskHeader() {
         progressDialog.show();
-//        new clsMainActivity().timerDelayRemoveDialog(time, progressDialog);
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         String dt = dateFormat.format(cal.getTime());
-        boolean status = false;
+        boolean status;
         String _intSPMId = _mSPMHeaderData.getIntSPMId();
 
         tTimerLogData dtTimerLogComplete = new tTimerLogData();
@@ -566,13 +413,13 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
 
         new tTimerLogBL().insertData(dtTimerLogComplete);
 
-        List<tTimerLogData> ltTimerLogData = new ArrayList<>();
+        List<tTimerLogData> ltTimerLogData;
         ltTimerLogData = new tTimerLogBL().getAllData();
 
         JSONObject resJson = new JSONObject();
         tTimerLogData _tTimerLogData = new tTimerLogData();
         Collection<JSONObject> itemsListJquey = new ArrayList<>();
-        for (tTimerLogData data : ltTimerLogData){
+        for (tTimerLogData data : ltTimerLogData) {
             JSONObject item1 = new JSONObject();
             try {
                 item1.put(_tTimerLogData.Property_txtTimerLogId, String.valueOf(data.getTxtTimerLogId()));
@@ -592,9 +439,9 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
             e.printStackTrace();
         }
 
-        status = new WMSMobileService().confirmSPMHeader(_intSPMId, versionName, dataLogin.getIntUserId(),resJson.toString());
+        status = new WMSMobileService().confirmSPMHeader(_intSPMId, versionName, dataLogin.getIntUserId(), resJson.toString());
         if (status) {
-            boolean report = new SignalRBL().buildingConnection();
+            new SignalRBL().buildingConnection();
             new clsMainActivity().showCustomToast(getApplicationContext(), "Success", true);
 
             new mSPMHeaderBL().updateDataValueByIdOffline(_intSPMId);
@@ -632,40 +479,33 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onReceiveMessageHub(final JSONObject jsonObject) {
-        OutstandingTask.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                JSONArray jsonArray = null;
-                String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated;
+        OutstandingTask.this.runOnUiThread(() -> {
+            String strMethodName;
 
-                try {
-                    boolValid = jsonObject.get("boolValid").toString();
-                    strMessage = jsonObject.get("strMessage").toString();
-                    strMethodName = jsonObject.get("strMethodName").toString();
+            try {
+                strMethodName = jsonObject.get("strMethodName").toString();
 
-                    if (strMethodName.equalsIgnoreCase("ConfirmSPMHeader")) {
-                        initMethodConfirmSPMHeader(jsonObject);
-//                    } else if (strMethodName.equalsIgnoreCase("pushDataOffline")) {
-//                        updateFromPushDataOffline(jsonObject);
-                    } else if (strMethodName.equalsIgnoreCase("RefreshDataSTAR")) {
-                        initMethodSPM(jsonObject);
-                    } else if(strMethodName.equalsIgnoreCase("pushDataOffline") || strMethodName.equalsIgnoreCase("ConfirmSPMDetail") || strMethodName.equalsIgnoreCase("cancelSPMDetail") || strMethodName.equalsIgnoreCase("revertCancelSPMDetail")){
-                        recreate();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (strMethodName.equalsIgnoreCase("ConfirmSPMHeader")) {
+                    initMethodConfirmSPMHeader(jsonObject);
+                } else if (strMethodName.equalsIgnoreCase("RefreshDataSTAR")) {
+                    initMethodSPM(jsonObject);
+                } else if (strMethodName.equalsIgnoreCase("pushDataOffline") || strMethodName.equalsIgnoreCase("ConfirmSPMDetail") || strMethodName.equalsIgnoreCase("cancelSPMDetail") || strMethodName.equalsIgnoreCase("revertCancelSPMDetail")) {
+                    setCircleReport();
+                } else if (strMethodName.equalsIgnoreCase("getLatestSTAR")){
+                    setCircleReport();
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         });
     }
 
     private void initMethodSPM(JSONObject jsonObject) {
-        String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated;
+        String strMessage, boolValid;
 
         try {
             boolValid = jsonObject.get("boolValid").toString();
             strMessage = jsonObject.get("strMessage").toString();
-            strMethodName = jsonObject.get("strMethodName").toString();
 
             if (boolValid.equalsIgnoreCase("true")) {
                 JSONObject jsonObjectHeader = jsonObject.getJSONObject("listOfmSPMHeader");
@@ -677,8 +517,6 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
                     new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, true);
 
                     JSONArray jsonArrayInner = jsonObject.getJSONArray("listOfmSPMDetail");
-
-                    List<mSPMDetailData> _mSPMDetailData = new ArrayList<>();
 
                     SQLiteDatabase db = new clsMainBL().getDb();
                     new mSPMDetailDA(db).DeleteAllDataMConfig(db);
@@ -709,135 +547,21 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
                 } else if (status.equals("1") && sync.equals("1")) {
                     new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, false);
                 }
-                if(progressDialog!=null){
+                if (progressDialog != null) {
                     progressDialog.dismiss();
                 }
             } else {
-                if(progressDialog!=null){
+                if (progressDialog != null) {
                     progressDialog.dismiss();
                 }
                 new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, false);
             }
-            progressDialog.dismiss();
-        } catch (JSONException e) {
-            e.printStackTrace();
-            progressDialog.dismiss();
-        }
-    }
-
-    private void updateFromPushDataOffline(JSONObject jsonObject) {
-        String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated;
-
-        try {
-            boolValid = jsonObject.get("boolValid").toString();
-            strMessage = jsonObject.get("strMessage").toString();
-            strMethodName = jsonObject.get("strMethodName").toString();
-
-            if (boolValid.equalsIgnoreCase("true")) {
-
-                if (!jsonObject.isNull("listOfmSPMHeader")) {
-                    JSONObject jsonObjectSPMHeader = jsonObject.getJSONObject("listOfmSPMHeader");
-
-                    String status = jsonObjectSPMHeader.get("STATUS").toString();
-                    String sync = jsonObjectSPMHeader.get("SYNC").toString();
-
-                    mSPMHeaderData _mSPMHeaderData = new mSPMHeaderData();
-
-                    if (status.equals("1") && sync.equals("1")) {
-                        _mSPMHeaderData.setIntSPMId(jsonObjectSPMHeader.get("SPM_HEADER_ID").toString());
-                        _mSPMHeaderData.setTxtNoSPM(jsonObjectSPMHeader.get("SPM_NO").toString());
-                        _mSPMHeaderData.setTxtBranchCode(jsonObjectSPMHeader.get("BRANCH_CODE").toString());
-                        _mSPMHeaderData.setTxtSalesOrder(jsonObjectSPMHeader.get("SALES_ORDER").toString());
-                        _mSPMHeaderData.setIntUserId(jsonObjectSPMHeader.get("USER_ID").toString());
-                        _mSPMHeaderData.setBitStatus(jsonObjectSPMHeader.get("STATUS").toString());
-                        _mSPMHeaderData.setBitSync(jsonObjectSPMHeader.get("SYNC").toString());
-
-                        new mSPMHeaderBL().saveDataPush(_mSPMHeaderData.getIntSPMId());
-                    }
-                }
-
-                if (!jsonObject.isNull("listOfmSPMDetail")) {
-                    JSONArray jsonArraySPMDetail = jsonObject.getJSONArray("listOfmSPMDetail");
-
-                    List<mSPMDetailData> _mSPMDetailData = new ArrayList<>();
-
-                    for (int i = 0; i < jsonArraySPMDetail.length(); i++) {
-                        String jsonInner = jsonArraySPMDetail.get(i).toString();
-                        jsonObject = new JSONObject(jsonInner);
-                        String statusDetail = jsonObject.get("STATUS").toString();
-                        String syncDetail = jsonObject.get("SYNC").toString();
-                        String id = jsonObject.get("SPM_DETAIL_ID").toString();
-
-//                        mSPMDetailData data = new mSPMDetailData();
-
-//                            data.setIntSPMDetailId(jsonObject.get("SPM_DETAIL_ID").toString());
-//                            data.setTxtNoSPM(jsonObject.get("SPM_NO").toString());
-//                            data.setTxtLocator(jsonObject.get("LOCATOR").toString());
-//                            data.setTxtItemCode(jsonObject.get("ITEM_CODE").toString());
-//                            data.setTxtItemName(jsonObject.get("ITEM_NAME").toString());
-//                            data.setIntQty(jsonObject.get("QUANTITY").toString());
-//                            data.setBitStatus(jsonObject.get("STATUS").toString());
-//                            data.setBitSync(jsonObject.get("SYNC").toString());
-//                            data.setBitSync(jsonObject.get("REASON").toString());
-
-                        new mSPMDetailBL().saveFromPushData(id, statusDetail, syncDetail);
-                    }
-                }
-                if(progressDialog!=null){
-                    progressDialog.dismiss();
-                }
-                new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, true);
-                initMethodMappingButton();
-            } else {
-                if(progressDialog!=null){
-                    progressDialog.dismiss();
-                }
-                new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, false);
+            if (progressDialog != null) {
+                progressDialog.dismiss();
             }
         } catch (JSONException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void initMethodCancelSPMHeader(JSONObject jsonObject) {
-        try {
-            String boolValid = jsonObject.get("boolValid").toString();
-            String strMessage = jsonObject.get("strMessage").toString();
-            String strMethodName = jsonObject.get("strMethodName").toString();
-
-            if (boolValid.equalsIgnoreCase("true")) {
-                JSONObject jsonObjectHeader = jsonObject.getJSONObject("listOfmSPMHeader");
-
-                String status = jsonObjectHeader.get("STATUS").toString();
-                String sync = jsonObjectHeader.get("SYNC").toString();
-                String _intSPMHeaderId = jsonObjectHeader.get("SPM_HEADER_ID").toString();
-
-                new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, true);
-
-                new mSPMHeaderBL().updateDataValueById(_intSPMHeaderId);
-//                    adapterSuccess.notifyDataSetChanged();
-//                    adapterProgress.notifyDataSetChanged();
-//                    new TaskOnProgressFragment().fetchData(OutstandingTask.this);
-//                    new TaskSuccessFragment().fetchData(OutstandingTask.this);
-                btnRefresh.setEnabled(false);
-                btnTaskView.setEnabled(false);
-                btnComplete.setEnabled(false);
-                btnTaskView.setBackgroundResource(R.drawable.btn_innermenu_gray);
-                btnComplete.setBackgroundResource(R.drawable.btn_innermenu_gray);
-                btnRefresh.setBackgroundResource(R.drawable.btn_innermenu_gray);
-//                    SQLiteDatabase db = new clsMainBL().getDb();
-//                    new mSPMHeaderDA(db).DropTable(db);
-//                    new mSPMDetailDA(db).DropTable(db);
-                finish();
-                onBackPressed();
-//                    Intent myIntent = new Intent(OutstandingTask.this, Home.class);
-//                    startActivity(myIntent);
-            } else {
-                Toast.makeText(OutstandingTask.this, String.valueOf(strMessage), Toast.LENGTH_SHORT).show();
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-//                    Toast.makeText(OutstandingTask.this, String.valueOf(datapassed), Toast.LENGTH_SHORT).show();
+            progressDialog.dismiss();
         }
     }
 
@@ -846,17 +570,16 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
         try {
             String boolValid = jsonObject.get("boolValid").toString();
             String strMessage = jsonObject.get("strMessage").toString();
-            String strMethodName = jsonObject.get("strMethodName").toString();
 
             if (boolValid.equalsIgnoreCase("true")) {
 
-                    JSONObject jsonObjectHeader = jsonObject.getJSONObject("listOfmSPMHeader");
+                JSONObject jsonObjectHeader = jsonObject.getJSONObject("listOfmSPMHeader");
 
-                    String status = jsonObjectHeader.get("STATUS").toString();
-                    String sync = jsonObjectHeader.get("SYNC").toString();
-                    String _intSPMHeaderId = jsonObjectHeader.get("SPM_HEADER_ID").toString();
+                String status = jsonObjectHeader.get("STATUS").toString();
+                String sync = jsonObjectHeader.get("SYNC").toString();
+                String _intSPMHeaderId = jsonObjectHeader.get("SPM_HEADER_ID").toString();
 
-                    if (status.equals("1") && sync.equals("1")) {
+                if (status.equals("1") && sync.equals("1")) {
                     new clsMainActivity().showCustomToast(getApplicationContext(), strMessage, true);
 
                     new mSPMHeaderBL().updateDataValueById(_intSPMHeaderId);
@@ -876,11 +599,11 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
 //                    Intent myIntent = new Intent(OutstandingTask.this, Home.class);
 //                    startActivity(myIntent);
                 }
-                if(progressDialog!=null){
+                if (progressDialog != null) {
                     progressDialog.dismiss();
                 }
             } else {
-                if(progressDialog!=null){
+                if (progressDialog != null) {
                     progressDialog.dismiss();
                 }
 //                Toast.makeText(OutstandingTask.this, String.valueOf(strMessage), Toast.LENGTH_SHORT).show();
@@ -929,8 +652,10 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
 //                        data.setIntUserId(dataLogin.getIntUserId());
 //                        new mSPMDetailBL().insert(data);
 //                    }
-                }
-            progressDialog.dismiss();
+            }
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             progressDialog.dismiss();
@@ -942,7 +667,4 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
         WMSMobileService.mHubConnectionSevice = hubConnection;
     }
 
-//    public void unSetHubConnection(WMSMobileService.mHubConnectionSevice hubConnection) {
-//        WMSMobileService.mHubConnectionSevice = null;
-//    }
 }

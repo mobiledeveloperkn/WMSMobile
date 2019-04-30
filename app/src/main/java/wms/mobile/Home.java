@@ -111,16 +111,16 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
 
         setContentView(R.layout.activity_home);
 
-        btnOutstandingTask = (Button) findViewById(R.id.btn_outstanding);
-        btnScan = (Button) findViewById(R.id.btn_scan);
-        btnLogout = (Button) findViewById(R.id.btn_logout);
-        tv_userName = (TextView) findViewById(R.id.tvUsername);
-        tv_Branch = (TextView) findViewById(R.id.tvBranch);
-        tv_Email = (TextView) findViewById(R.id.tvEmail);
-        CircleImageView ivProfile = (CircleImageView) findViewById(R.id.profile_image);
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayoutHome);
+        btnOutstandingTask = findViewById(R.id.btn_outstanding);
+        btnScan = findViewById(R.id.btn_scan);
+        btnLogout = findViewById(R.id.btn_logout);
+        tv_userName = findViewById(R.id.tvUsername);
+        tv_Branch = findViewById(R.id.tvBranch);
+        tv_Email = findViewById(R.id.tvEmail);
+        CircleImageView ivProfile = findViewById(R.id.profile_image);
+        coordinatorLayout = findViewById(R.id.coordinatorLayoutHome);
 
-        TextView txtInfo = (TextView) findViewById(R.id.txtVersionLogin);
+        TextView txtInfo = findViewById(R.id.txtVersionLogin);
 
         SQLiteDatabase db = new clsMainBL().getDb();
         mconfigDA _mconfigDA = new mconfigDA(db);
@@ -164,9 +164,9 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
         } else {
             ivProfile.setImageBitmap(BitmapFactory.decodeResource(getApplicationContext().getResources(),
                     R.drawable.profile));
-        } 
+        }
         ivProfile.setOnClickListener(this);
-        new clsMainActivity().checkConnection(coordinatorLayout, conMan);
+//        new clsMainActivity().checkConnection(coordinatorLayout, conMan);
 
         //bikin progres dialognya
         progressDialog = new ProgressDialog(Home.this);
@@ -672,9 +672,11 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
     public void setHubConnection(WMSMobileService.mHubConnectionSevice hubConnection) {
         WMSMobileService.mHubConnectionSevice = hubConnection;
     }
+
     public void unSetHubConnection(WMSMobileService.mHubConnectionSevice hubConnection) {
         WMSMobileService.mHubConnectionSevice = null;
     }
+
     interface updateSnackbar {
         void onUpdateSnackBar(boolean info);
     }
