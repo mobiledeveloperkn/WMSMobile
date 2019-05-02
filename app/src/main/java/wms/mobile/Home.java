@@ -2,6 +2,7 @@ package wms.mobile;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,6 +24,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -48,6 +50,7 @@ import bl.tDisplayPictureBL;
 import bl.tTimerLogBL;
 import bl.tUserLoginBL;
 import de.hdodenhof.circleimageview.CircleImageView;
+import fragment.TaskOnProgressFragment;
 import jim.h.common.android.lib.zxing.config.ZXingLibConfig;
 import jim.h.common.android.lib.zxing.integrator.IntentIntegrator;
 import jim.h.common.android.lib.zxing.integrator.IntentResult;
@@ -72,6 +75,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
     private CoordinatorLayout coordinatorLayout;
     ConnectivityManager conMan;
     private tUserLoginData dataLogin;
+    boolean valid;
 
     private String versionName = "";
 
@@ -175,17 +179,29 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
         progressDialog.setCancelable(false);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            registerReceiver(new ConnectivityReceiver(),
-                    new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+            filter.addCategory("register");
+            registerReceiver(new ConnectivityReceiver(), filter);
+            valid = false;
         }
     }
+
+//    public boolean isReceiverRegistered(BroadcastReceiver receiver){
+//        boolean registered = receivers.contains(receiver);
+//        Log.i(getClass().getSimpleName(), "is receiver "+receiver+" registered? "+registered);
+//        return registered;
+//    }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_outstanding:
 //                finish();
-                startActivity(new Intent(Home.this, OutstandingTask.class));
+                Intent intent = new Intent(Home.this, OutstandingTask.class);
+                intent.putExtra("IsValidSetValue", valid);
+                intent.putExtra("IsFromHome", true);
+                startActivity(intent);
 
                 break;
             case R.id.btn_scan:
@@ -438,12 +454,12 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
             public void run() {
 //                JSONArray jsonArray = null;
                 String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated;
-
                 try {
                     boolValid = jsonObject.get("boolValid").toString();
                     strMessage = jsonObject.get("strMessage").toString();
                     strMethodName = jsonObject.get("strMethodName").toString();
 
+//                    Toast.makeText(getApplicationContext(), strMethodName, Toast.LENGTH_SHORT).show();
                     if (strMethodName.equalsIgnoreCase("GetDataSPM")) {
                         initMethodSPM(jsonObject);
                     } else if (strMethodName.equalsIgnoreCase("Logout")){
@@ -456,6 +472,8 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
                             WMSMobileService.updateSnackbar.onUpdateSnackBar(true);
                         }
                         updateFromPushDataOffline(jsonObject);
+                    }else if (strMethodName.equalsIgnoreCase("getLatestSTAR")){
+                        valid = true;
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -46,6 +46,8 @@ import microsoft.aspnet.signalr.client.hubs.HubConnection;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
 import microsoft.aspnet.signalr.client.transport.ClientTransport;
 import microsoft.aspnet.signalr.client.transport.ServerSentEventsTransport;
+import wms.mobile.OutstandingTask;
+import wms.mobile.TabsTaskHeader;
 
 //import microsoft.aspnet.signalr.client.MessageReceivedHandler;
 //import microsoft.aspnet.signalr.client.Platform;
@@ -434,10 +436,6 @@ public class WMSMobileService extends Service {
                 JSONObject jsonObjectFinal = new JSONObject(jsonArrayString);
                 String strMethodName = jsonObjectFinal.get("strMethodName").toString();
 
-                if (mHubConnectionSevice != null) {
-                    WMSMobileService.mHubConnectionSevice.onReceiveMessageHub(jsonObjectFinal);
-                }
-
                 if (strMethodName.equalsIgnoreCase("ConfirmSPMDetail")) {
                     initMethodConfirmSPMDetail(jsonObjectFinal);
                 } else if (strMethodName.equalsIgnoreCase("cancelSPMDetail")) {
@@ -499,7 +497,19 @@ public class WMSMobileService extends Service {
                             data.setIntUserId(dataLogin.getIntUserId());
                             new mSPMDetailBL().insert(data);
                         }
+
+//                        try{
+//                            new TabsTaskHeader().updateListView();
+//                            new OutstandingTask().setCircleReport();
+//                        }
+//                        catch (Exception ignored){
+//
+//                        }
                     }
+                }
+
+                if (mHubConnectionSevice != null) {
+                    WMSMobileService.mHubConnectionSevice.onReceiveMessageHub(jsonObjectFinal);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

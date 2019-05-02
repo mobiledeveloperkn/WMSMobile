@@ -21,6 +21,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.owater.library.CircleTextView;
 
@@ -76,6 +77,8 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
     private tUserLoginData dataLogin;
 
     private ProgressDialog progressDialog;
+    boolean valid;
+    boolean isFromHome;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -102,16 +105,18 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
         }
         dataLogin = new tUserLoginData();
         dataLogin = new tUserLoginBL().getUserActive();
+        valid = getIntent().getBooleanExtra("IsValidSetValue", false);
+        isFromHome = getIntent().getBooleanExtra("IsFromHome", false);
         //bikin progres dialognya
         progressDialog = new ProgressDialog(OutstandingTask.this);
         progressDialog.setMessage("Loading... Please Wait");
         progressDialog.setIndeterminate(false); //ukur berapa persen, false maka not do
         progressDialog.setCancelable(false);
         new mSystemConfigBL().UpdateFilterPicking("");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            registerReceiver(new ConnectivityReceiver(),
-                    new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            registerReceiver(new ConnectivityReceiver(),
+//                    new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+//        }
     }
 
     @Override
@@ -133,6 +138,19 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
         btnRefresh.setOnClickListener(this);
         btnBreak.setOnClickListener(this);
 
+        if (isFromHome){
+            if (valid){
+                setCircleReport();
+            }else {
+                tvTotalPending.setText("0");
+                tvTotalConfirm.setText("0");
+                tvTotalCancel.setText("0");
+                progressDialog.show();
+            }
+        }else {
+            setCircleReport();
+        }
+
         if (_mSPMHeaderData != null) {
             if (_mSPMHeaderData.getBitStart().equals("0")) {
                 initMethodMappingButton();
@@ -140,8 +158,6 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
                 showPopupStartButton();
             }
         }
-
-        setCircleReport();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -151,7 +167,7 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
         super.onResume();
     }
 
-    private void setCircleReport() {
+    public void setCircleReport() {
         mSPMDetailDataListPending = new ArrayList<>();
         mSPMDetailDataListPending = new mSPMDetailBL().getAllDataTaskPending(_mSPMHeaderData.getTxtNoSPM());
         mSPMDetailDataListSuccess = new ArrayList<>();
@@ -482,7 +498,6 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
     public void onReceiveMessageHub(final JSONObject jsonObject) {
         OutstandingTask.this.runOnUiThread(() -> {
             String strMethodName;
-
             try {
                 strMethodName = jsonObject.get("strMethodName").toString();
 
@@ -494,6 +509,10 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
                     setCircleReport();
                 } else if (strMethodName.equalsIgnoreCase("getLatestSTAR")){
                     setCircleReport();
+                    if (isFromHome){
+                        isFromHome = false;
+                    }
+                    progressDialog.dismiss();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -542,6 +561,7 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
 
                         new mSPMDetailBL().insert(data);
                     }
+                    Toast.makeText(getApplicationContext(), "initMethodSPM", Toast.LENGTH_SHORT).show();
 
                     setCircleReport();
 
