@@ -10,6 +10,13 @@
     <color name="white">#FFFFFF</color>
     <color name="gray_">#e7dfdf</color>
     <color name="primary_color_theme">#4CAF50</color>
+    <color name="grey_10">#e6e6e6</color>
+    <color name="green_300">#81C784</color>
+    <color name="blue_grey_300">#90A4AE</color>
+    <color name="grey_40">#999999</color>
+    <color name="green_500">#4CAF50</color>
+    <color name="grey_60">#666666</color>
+    <color name="green_400">#66BB6A</color>
 
     <color name="PrimaryColor">#4CAF50</color>
     <color name="title_background">#007F92</color>

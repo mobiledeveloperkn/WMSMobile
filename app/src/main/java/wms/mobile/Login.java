@@ -22,7 +22,10 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.text.InputFilter;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +38,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,6 +59,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import addon.ConnectivityReceiver;
+import addon.DrawableClickListener;
 import addon.InputFilters;
 import addon.MyApplication;
 import bl.SignalRBL;
@@ -98,6 +103,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
     private LinearLayout llContentWarning;
     private LinearLayout llContent;
     private Button btnCheckVersion;
+    MyAdapter dataAdapter;
+    private int intSet = 1;
 //    private long time = 15000;
 
     @Override
@@ -107,7 +114,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_loginv2);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         conMan = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -131,9 +138,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         etTxtEmail.setFocusableInTouchMode(true);
         etTxtPass.setFocusableInTouchMode(true);
 
-        ImageView imgBanner = findViewById(R.id.header);
-        imgBanner.setAdjustViewBounds(true);
-        imgBanner.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//        ImageView imgBanner = findViewById(R.id.header);
+//        imgBanner.setAdjustViewBounds(true);
+//        imgBanner.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         char[] chars = {'.', '\''};
         new InputFilters().etCapsTextWatcherNoSpace(etTxtEmail, null, chars);
@@ -197,14 +204,50 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         coordinatorLayout = findViewById(R.id.coordinatorLayoutLogin);
 
         arrNodata = new ArrayList<>();
-        arrNodata.add("-");
+        arrNodata.add("Select One");
 
-        btn_ping.setOnClickListener(this);
+//        btn_ping.setOnClickListener(this);
         btn_login.setOnClickListener(this);
         btn_exit.setOnClickListener(this);
         etTxtEmail.setOnKeyListener(this);
         etTxtPass.setOnKeyListener(this);
 
+        arrrole = new ArrayList<>();
+        arrrole = arrNodata;
+        spnRole.setEnabled(false);
+        dataAdapter = new MyAdapter(getApplicationContext(), R.layout.custom_spinner, arrrole){
+            @Override
+            public boolean isEnabled(int position){
+                if(position == 0)
+                {
+                    // Disable the first item from Spinner
+                    // First item will be use for hint
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                LinearLayout ln = (LinearLayout) view;
+                TextView tv = (TextView) ln.getChildAt(0);
+
+                if(position == 0){
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                }
+                else {
+                    tv.setTextColor(getResources().getColor(R.color.green_300));
+                }
+                return view;
+            }
+        };
+
+        spnRole.setAdapter(dataAdapter);
         spnRole.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -214,6 +257,22 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
+            }
+        });
+
+        etTxtPass.setOnTouchListener(new DrawableClickListener.RightDrawableClickListener(etTxtPass) {
+            public boolean onDrawableClick() {
+                if (intSet == 1) {
+                    etTxtPass.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    etTxtPass.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_lock_open,0);
+                    intSet = 0;
+                } else {
+                    etTxtPass.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    etTxtPass.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_lock_outline,0);
+                    intSet = 1;
+                }
+
+                return true;
             }
         });
 
@@ -292,9 +351,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                         etTxtPass.clearFocus();
                         etTxtEmail.requestFocus();
                         tilEmail.setError("Username cannot empty");
-                        arrrole = new ArrayList<>();
+//                        arrrole = new ArrayList<>();
+                        arrrole.clear();
+                        arrNodata.add("Select One");
                         arrrole = arrNodata;
-                        spnRole.setAdapter(new MyAdapter(getApplicationContext(), R.layout.custom_spinner, arrrole));
+                        dataAdapter.notifyDataSetChanged();
+//                        spnRole.setAdapter(new MyAdapter(getApplicationContext(), R.layout.custom_spinner, arrrole));
                     }
                     return true;
                 }else if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DEL){
@@ -385,7 +447,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
             @Override
             public void run() {
                 String strMethodName;
-                arrrole = new ArrayList<>();
+//                arrrole = new ArrayList<>();
+                arrrole.clear();
+                arrNodata.add("Select One");
                 arrrole = arrNodata;
 
                 try {
@@ -410,8 +474,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
 
     private void initMethodCheckinVersion(JSONObject jsonObject) {
         String strMethodName, boolValid, txtLink, strMessage, txtInstance = "";
-        arrrole = new ArrayList<>();
-        arrrole = arrNodata;
+//        arrrole = new ArrayList<>();
+//        arrrole.clear();
+//        arrrole = arrNodata;
 
         try {
             boolValid = jsonObject.get("boolValid").toString();
@@ -457,8 +522,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
 
     private void initMethodBroadcastMessage(JSONObject jsonObject) {
         String strMessage;
-        arrrole = new ArrayList<>();
-        arrrole = arrNodata;
+//        arrrole = new ArrayList<>();
+//        arrrole.clear();
+//        arrrole = arrNodata;
 
         try {
             strMessage = jsonObject.get("strMessage").toString();
@@ -487,8 +553,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
     private void initSpinnerRole(JSONObject jsonObject) {
 
         String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, intUserId;
-        arrrole = new ArrayList<>();
-        arrrole = arrNodata;
+//        arrrole.clear();
+//        arrrole = arrNodata;
 
         try {
             boolValid = jsonObject.get("boolValid").toString();
@@ -500,7 +566,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                 if (boolValid.equalsIgnoreCase("true")) {
                     JSONArray jsonArrayInner = jsonObject.getJSONArray("listOfmUserRole");
 
-                    arrrole = new ArrayList<>();
+                    arrrole.clear();
+                    arrrole.add("Select One");
 
                     for (int i = 0; i < jsonArrayInner.length(); i++) {
                         String jsonInner = jsonArrayInner.get(i).toString();
@@ -524,13 +591,19 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                         progressDialog.dismiss();
                     }
                     tilEmail.setError(strMessage);
-                    spnRole.setAdapter(new MyAdapter(getApplicationContext(), R.layout.custom_spinner, arrrole));
+                    dataAdapter.notifyDataSetChanged();
+                    spnRole.setAdapter(dataAdapter);
+//                    spnRole.setAdapter(new MyAdapter(getApplicationContext(), R.layout.custom_spinner, arrrole));
                     etTxtEmail.requestFocus();
                 }
-                spnRole.setAdapter(new MyAdapter(getApplicationContext(), R.layout.custom_spinner, arrrole));
+                dataAdapter.notifyDataSetChanged();
+                spnRole.setAdapter(dataAdapter);
+//                spnRole.setAdapter(new MyAdapter(getApplicationContext(), R.layout.custom_spinner, arrrole));
                 spnRole.setEnabled(true);
             } else {
-                spnRole.setAdapter(new MyAdapter(getApplicationContext(), R.layout.custom_spinner, arrrole));
+                dataAdapter.notifyDataSetChanged();
+                spnRole.setAdapter(dataAdapter);
+//                spnRole.setAdapter(new MyAdapter(getApplicationContext(), R.layout.custom_spinner, arrrole));
                 spnRole.setEnabled(false);
                 etTxtEmail.requestFocus();
             }
@@ -641,6 +714,22 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
             arrObject = new ArrayList<>();
             arrObject = objects;
             this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            return arrObject.size();
+        }
+
+        @Nullable
+        @Override
+        public String getItem(int position) {
+            return arrObject.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
         }
 
         @Override
