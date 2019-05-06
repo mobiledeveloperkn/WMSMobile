@@ -184,6 +184,8 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
             filter.addCategory("register");
             registerReceiver(new ConnectivityReceiver(), filter);
             valid = false;
+        }else {
+            valid = true;
         }
     }
 

@@ -138,26 +138,39 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
         btnRefresh.setOnClickListener(this);
         btnBreak.setOnClickListener(this);
 
+        boolean validShow = false;
         if (isFromHome){
             if (valid){
+                validShow = true;
                 setCircleReport();
             }else {
+                validShow = false;
                 tvTotalPending.setText("0");
                 tvTotalConfirm.setText("0");
                 tvTotalCancel.setText("0");
                 progressDialog.show();
             }
         }else {
+            validShow = true;
             setCircleReport();
         }
 
-        if (_mSPMHeaderData != null) {
-            if (_mSPMHeaderData.getBitStart().equals("0")) {
-                initMethodMappingButton();
-            } else {
-                showPopupStartButton();
+        if (validShow){
+            if (_mSPMHeaderData != null) {
+                if (_mSPMHeaderData.getBitStart().equals("0")) {
+                    initMethodMappingButton();
+                } else {
+                    showPopupStartButton();
+                }
             }
         }
+//        if (_mSPMHeaderData != null) {
+//            if (_mSPMHeaderData.getBitStart().equals("0")) {
+//                initMethodMappingButton();
+//            } else {
+//                showPopupStartButton();
+//            }
+//        }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -511,6 +524,13 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
                     setCircleReport();
                     if (isFromHome){
                         isFromHome = false;
+                    }
+                    if (_mSPMHeaderData != null) {
+                        if (_mSPMHeaderData.getBitStart().equals("0")) {
+                            initMethodMappingButton();
+                        } else {
+                            showPopupStartButton();
+                        }
                     }
                     progressDialog.dismiss();
                 }
