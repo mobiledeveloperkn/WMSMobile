@@ -525,6 +525,8 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
                     if (isFromHome){
                         isFromHome = false;
                     }
+                    _mSPMHeaderData = new mSPMHeaderData();
+                    _mSPMHeaderData = new mSPMHeaderBL().GetDataByStatus();
                     if (_mSPMHeaderData != null) {
                         if (_mSPMHeaderData.getBitStart().equals("0")) {
                             initMethodMappingButton();
