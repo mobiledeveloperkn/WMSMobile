@@ -4,7 +4,9 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -21,6 +23,7 @@ import java.text.ParseException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import addon.ConnectivityReceiver;
 import bl.clsMainBL;
 import library.common.clsHelper;
 import library.common.clsStatusMenuStart;
@@ -50,6 +53,17 @@ public class Splash extends AppCompatActivity {
             e.printStackTrace();
             version.setText(e.toString());
         }
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            IntentFilter filter = new IntentFilter();
+//            filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+//            filter.addCategory("register");
+//            registerReceiver(new ConnectivityReceiver(), filter);
+////            valid = false;
+//        }
+//        else {
+//            valid = true;
+//        }
     }
 
     @Override
@@ -86,6 +100,14 @@ public class Splash extends AppCompatActivity {
             StartAnimations();
             taskIntent();
         }
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            IntentFilter filter = new IntentFilter();
+//            filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+//            filter.addCategory("register");
+//            registerReceiver(new ConnectivityReceiver(), filter);
+////            valid = false;
+//        }
     }
 
     private boolean checkPermission() {

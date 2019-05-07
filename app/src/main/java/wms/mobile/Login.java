@@ -20,6 +20,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -869,12 +870,43 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
             if (result != null)
                 new clsMainActivity().showToast(context, "Download error: " + result);
             else {
-                new clsMainActivity().showToast(context, "File downloaded");
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                String txtPath = new clsHardCode().txtPathUserData + "Android_WMS Mobile_AND.2017.002.apk";
-                intent.setDataAndType(Uri.fromFile(new File(txtPath)), "application/vnd.android.package-archive");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    new clsMainActivity().showToast(context, "File downloaded");
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+                        String txtPath = new clsHardCode().txtPathUserData + "Android_WMS Mobile_AND.2017.002.apk";
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        File file = new File(txtPath);
+                        Uri uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file);
+                        intent.setData(uri);
+                        startActivity(intent);
+                        finish();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    new clsMainActivity().showToast(context, "File downloaded");
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    String txtPath = new clsHardCode().txtPathUserData + "Android_WMS Mobile_AND.2017.002.apk";
+                    intent.setDataAndType(Uri.fromFile(new File(txtPath)), "application/vnd.android.package-archive");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    if (Build.VERSION.SDK_INT >= 24) {
+                        intent.setDataAndType(FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", new File(txtPath)), "application/vnd.android.package-archive");
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    } else {
+                        intent.setDataAndType(Uri.fromFile(new File(txtPath)), "application/vnd.android.package-archive");
+                    }
+
+                    startActivity(intent);
+                    finish();
+                }
+//                new clsMainActivity().showToast(context, "File downloaded");
+//                Intent intent = new Intent(Intent.ACTION_VIEW);
+//                String txtPath = new clsHardCode().txtPathUserData + "Android_WMS Mobile_AND.2017.002.apk";
+//                intent.setDataAndType(Uri.fromFile(new File(txtPath)), "application/vnd.android.package-archive");
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(intent);
             }
         }
     }
