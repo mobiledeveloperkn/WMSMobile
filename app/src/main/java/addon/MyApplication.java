@@ -11,7 +11,7 @@ import android.support.multidex.MultiDex;
 public class MyApplication extends Application {
 
     private static MyApplication mInstance;
-
+    private boolean isFinishInsert;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -26,6 +26,14 @@ public class MyApplication extends Application {
     }
     public static synchronized MyApplication getInstance() {
         return mInstance;
+    }
+
+    public boolean isFinishInsert() {
+        return isFinishInsert;
+    }
+
+    public void setFinishInsert(boolean finishInsert) {
+        isFinishInsert = finishInsert;
     }
 
     public void setConnectivityListener(ConnectivityReceiver.ConnectivityReceiverListener listener) {

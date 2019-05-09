@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.ResultReceiver;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import addon.MyApplication;
 import bl.clsMainBL;
 import bl.mSPMDetailBL;
 import bl.mSPMHeaderBL;
@@ -428,9 +430,14 @@ public class WMSMobileService extends Service {
             JSONObject json;
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             String jsonString = jsonObject.toString();
-
+            Log.i("Buat Dewi", "masuk di onreceived");
+            boolean valid = false;
             try {
                 json = new JSONObject(jsonString);
+//                JSONObject jsonArray2 = json.getJSONObject("H");
+                if (json.getString("H").equals("HubAPI")){
+                    valid = true;
+                }
                 JSONArray jsonArray = json.getJSONArray("A");
                 String jsonArrayString = jsonArray.get(0).toString();
                 JSONObject jsonObjectFinal = new JSONObject(jsonArrayString);
@@ -456,7 +463,7 @@ public class WMSMobileService extends Service {
 
                     tUserLoginData dataLogin;
                     dataLogin = new tUserLoginBL().getUserActive();
-
+                    MyApplication.getInstance().setFinishInsert(false);
                     if (status1.equals("1") && sync.equals("0")) {
 
                         SQLiteDatabase db1 = new clsMainBL().getDb();
@@ -497,7 +504,10 @@ public class WMSMobileService extends Service {
                             data.setIntUserId(dataLogin.getIntUserId());
                             new mSPMDetailBL().insert(data);
                         }
-
+                        MyApplication.getInstance().setFinishInsert(true);
+//                        if (mHubConnectionSevice != null) {
+//                            WMSMobileService.mHubConnectionSevice.onReceiveMessageHub(jsonObjectFinal, false);
+//                        }
 //                        try{
 //                            new TabsTaskHeader().updateListView();
 //                            new OutstandingTask().setCircleReport();
@@ -509,10 +519,15 @@ public class WMSMobileService extends Service {
                 }
 
                 if (mHubConnectionSevice != null) {
-                    WMSMobileService.mHubConnectionSevice.onReceiveMessageHub(jsonObjectFinal);
+                    WMSMobileService.mHubConnectionSevice.onReceiveMessageHub(jsonObjectFinal, false);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+                if (mHubConnectionSevice != null && valid) {
+                    JSONObject jsonObjectFinal = new JSONObject();
+                    WMSMobileService.mHubConnectionSevice.onReceiveMessageHub(jsonObjectFinal, true);
+                }
+                Log.i("Buat Dewi", e.getMessage());
             }
         });
 
@@ -670,7 +685,7 @@ public class WMSMobileService extends Service {
     }
 
     public interface mHubConnectionSevice {
-        void onReceiveMessageHub(JSONObject jsonObject);
+        void onReceiveMessageHub(JSONObject jsonObject, boolean isCatch);
     }
 
     public interface updateSnackbar {

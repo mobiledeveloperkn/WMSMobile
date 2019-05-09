@@ -3,6 +3,7 @@ package wms.mobile;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
@@ -19,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -138,23 +140,27 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
         btnRefresh.setOnClickListener(this);
         btnBreak.setOnClickListener(this);
 
+//        if (MyApplication.getInstance().isFinishInsert()){
+//            Toast.makeText(getApplicationContext(), "udah selesai insert", Toast.LENGTH_SHORT).show();
+//        }
         boolean validShow = false;
-        if (isFromHome){
-            if (valid){
-                validShow = true;
-                setCircleReport();
-            }else {
-                validShow = false;
-                tvTotalPending.setText("0");
-                tvTotalConfirm.setText("0");
-                tvTotalCancel.setText("0");
-                progressDialog.show();
-            }
-        }else {
+//        if (isFromHome){
+//
+//        }else {
+//            validShow = true;
+//            setCircleReport();
+//        }
+        if (MyApplication.getInstance().isFinishInsert()){
             validShow = true;
             setCircleReport();
+        }else {
+            validShow = false;
+            tvTotalPending.setText("0");
+            tvTotalConfirm.setText("0");
+            tvTotalCancel.setText("0");
+            tvNoSPM.setText(String.format("NO. STAR : %s", ""));
+            progressDialog.show();
         }
-
         if (validShow){
             if (_mSPMHeaderData != null) {
                 if (_mSPMHeaderData.getBitStart().equals("0")) {
@@ -164,6 +170,7 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
                 }
             }
         }
+
 //        if (_mSPMHeaderData != null) {
 //            if (_mSPMHeaderData.getBitStart().equals("0")) {
 //                initMethodMappingButton();
@@ -507,40 +514,10 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
         new clsMainActivity().checkConnection(coordinatorLayout, conMan);
     }
 
-    @Override
-    public void onReceiveMessageHub(final JSONObject jsonObject) {
-        OutstandingTask.this.runOnUiThread(() -> {
-            String strMethodName;
-            try {
-                strMethodName = jsonObject.get("strMethodName").toString();
-
-                if (strMethodName.equalsIgnoreCase("ConfirmSPMHeader")) {
-                    initMethodConfirmSPMHeader(jsonObject);
-                } else if (strMethodName.equalsIgnoreCase("RefreshDataSTAR")) {
-                    initMethodSPM(jsonObject);
-                } else if (strMethodName.equalsIgnoreCase("pushDataOffline") || strMethodName.equalsIgnoreCase("ConfirmSPMDetail") || strMethodName.equalsIgnoreCase("cancelSPMDetail") || strMethodName.equalsIgnoreCase("revertCancelSPMDetail")) {
-                    setCircleReport();
-                } else if (strMethodName.equalsIgnoreCase("getLatestSTAR")){
-                    setCircleReport();
-                    if (isFromHome){
-                        isFromHome = false;
-                    }
-                    _mSPMHeaderData = new mSPMHeaderData();
-                    _mSPMHeaderData = new mSPMHeaderBL().GetDataByStatus();
-                    if (_mSPMHeaderData != null) {
-                        if (_mSPMHeaderData.getBitStart().equals("0")) {
-                            initMethodMappingButton();
-                        } else {
-                            showPopupStartButton();
-                        }
-                    }
-                    progressDialog.dismiss();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        });
-    }
+//    @Override
+//    public void onReceiveMessageHub(final JSONObject jsonObject) {
+//
+//    }
 
     private void initMethodSPM(JSONObject jsonObject) {
         String strMessage, boolValid;
@@ -583,7 +560,7 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
 
                         new mSPMDetailBL().insert(data);
                     }
-                    Toast.makeText(getApplicationContext(), "initMethodSPM", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), "initMethodSPM", Toast.LENGTH_SHORT).show();
 
                     setCircleReport();
 
@@ -710,4 +687,64 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
         WMSMobileService.mHubConnectionSevice = hubConnection;
     }
 
+    @Override
+    public void onReceiveMessageHub(JSONObject jsonObject, boolean isCatch) {
+        OutstandingTask.this.runOnUiThread(() -> {
+            if (isCatch){
+                progressDialog.dismiss();
+                new AlertDialog.Builder(OutstandingTask.this)
+                        .setTitle("Alert")
+                        .setCancelable(false)
+                        .setMessage("Failed getting data, please refresh...")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                             refreshSPMHeader();
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+            }else {
+                String strMethodName;
+                boolean isFromgetLatestSTAR = false;
+                try {
+                    strMethodName = jsonObject.get("strMethodName").toString();
+
+                    if (strMethodName.equalsIgnoreCase("ConfirmSPMHeader")) {
+                        initMethodConfirmSPMHeader(jsonObject);
+                    } else if (strMethodName.equalsIgnoreCase("RefreshDataSTAR")) {
+                        initMethodSPM(jsonObject);
+                    } else if (strMethodName.equalsIgnoreCase("pushDataOffline") || strMethodName.equalsIgnoreCase("ConfirmSPMDetail") || strMethodName.equalsIgnoreCase("cancelSPMDetail") || strMethodName.equalsIgnoreCase("revertCancelSPMDetail")) {
+                        setCircleReport();
+                    } else if (strMethodName.equalsIgnoreCase("getLatestSTAR")){
+                        isFromgetLatestSTAR = true;
+                        if (isFromHome){
+                            isFromHome = false;
+                        }
+                        _mSPMHeaderData = new mSPMHeaderData();
+                        _mSPMHeaderData = new mSPMHeaderBL().GetDataByStatus();
+                        tvNoSPM.setText(String.format("NO. STAR : %s", _mSPMHeaderData.getTxtNoSPM()));
+                        if (_mSPMHeaderData != null) {
+                            if (_mSPMHeaderData.getBitStart().equals("0")) {
+                                initMethodMappingButton();
+                            } else {
+                                showPopupStartButton();
+                            }
+                            setCircleReport();
+                        }
+                        progressDialog.dismiss();
+                    }
+//                    if (MyApplication.getInstance().isFinishInsert()){
+//                        progressDialog.dismiss();
+//                    }
+                    if (MyApplication.getInstance().isFinishInsert()){
+                        progressDialog.dismiss();
+//                        Toast.makeText(getApplicationContext(), "udah selesai insert", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 }

@@ -449,40 +449,10 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
         new clsMainActivity().checkConnection(coordinatorLayout, conMan);
     }
 
-    @Override
-    public void onReceiveMessageHub(final JSONObject jsonObject) {
-        Home.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-//                JSONArray jsonArray = null;
-                String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated;
-                try {
-                    boolValid = jsonObject.get("boolValid").toString();
-                    strMessage = jsonObject.get("strMessage").toString();
-                    strMethodName = jsonObject.get("strMethodName").toString();
-
-//                    Toast.makeText(getApplicationContext(), strMethodName, Toast.LENGTH_SHORT).show();
-                    if (strMethodName.equalsIgnoreCase("GetDataSPM")) {
-                        initMethodSPM(jsonObject);
-                    } else if (strMethodName.equalsIgnoreCase("Logout")){
-                        initMethodLogout(jsonObject);
-                    } else if(strMethodName.equalsIgnoreCase("checkWaitingDataSTAR")){
-                        initMethodCheckDataSTAR(jsonObject);
-                    } else if (strMethodName.equalsIgnoreCase("pushDataOffline")) {
-//                        updateListView();
-                        if(updateSnackbar != null){
-                            WMSMobileService.updateSnackbar.onUpdateSnackBar(true);
-                        }
-                        updateFromPushDataOffline(jsonObject);
-                    }else if (strMethodName.equalsIgnoreCase("getLatestSTAR")){
-                        valid = true;
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
+//    @Override
+//    public void onReceiveMessageHub(final JSONObject jsonObject) {
+//
+//    }
 
     private void initMethodCheckDataSTAR(JSONObject jsonObject) {
         String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated;
@@ -695,6 +665,42 @@ public class Home extends AppCompatActivity implements View.OnClickListener, Con
 
     public void unSetHubConnection(WMSMobileService.mHubConnectionSevice hubConnection) {
         WMSMobileService.mHubConnectionSevice = null;
+    }
+
+    @Override
+    public void onReceiveMessageHub(JSONObject jsonObject, boolean isCatch) {
+        Home.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+//                JSONArray jsonArray = null;
+//                Toast.makeText(getApplicationContext(), "ini home", Toast.LENGTH_SHORT).show();
+                String strMethodName, strMessage, boolValid, intRoleId, txtRoleName, dtInsert, dtUpdated;
+                try {
+                    boolValid = jsonObject.get("boolValid").toString();
+                    strMessage = jsonObject.get("strMessage").toString();
+                    strMethodName = jsonObject.get("strMethodName").toString();
+
+//                    Toast.makeText(getApplicationContext(), strMethodName, Toast.LENGTH_SHORT).show();
+                    if (strMethodName.equalsIgnoreCase("GetDataSPM")) {
+                        initMethodSPM(jsonObject);
+                    } else if (strMethodName.equalsIgnoreCase("Logout")){
+                        initMethodLogout(jsonObject);
+                    } else if(strMethodName.equalsIgnoreCase("checkWaitingDataSTAR")){
+                        initMethodCheckDataSTAR(jsonObject);
+                    } else if (strMethodName.equalsIgnoreCase("pushDataOffline")) {
+//                        updateListView();
+                        if(updateSnackbar != null){
+                            WMSMobileService.updateSnackbar.onUpdateSnackBar(true);
+                        }
+                        updateFromPushDataOffline(jsonObject);
+                    }else if (strMethodName.equalsIgnoreCase("getLatestSTAR")){
+                        valid = true;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     interface updateSnackbar {

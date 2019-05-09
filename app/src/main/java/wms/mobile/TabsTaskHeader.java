@@ -304,43 +304,10 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
         return true;
     }
 
-    @Override
-    public void onReceiveMessageHub(final JSONObject jsonObject) {
-        TabsTaskHeader.this.runOnUiThread(() -> {
-            String strMethodName;
-
-            try {
-                Log.i("Anjas-ReceiveHub", String.valueOf(refresher));
-
-                strMethodName = jsonObject.get("strMethodName").toString();
-                Log.i("HIT", strMethodName);
-
-                if (strMethodName.equalsIgnoreCase("ConfirmSPMDetail")) {
-                    initMethodConfirmSPMDetail(jsonObject);
-                } else if (strMethodName.equalsIgnoreCase("cancelSPMDetail")) {
-                    initMethodCancelSPMDetail(jsonObject);
-                } else if(strMethodName.equalsIgnoreCase("revertCancelSPMDetail")){
-                    initMethodRevertSPMDetail(jsonObject);
-                } else if (strMethodName.equalsIgnoreCase("pushDataOffline")) {
-                    updateFromPushDataOffline(jsonObject);
-                }
-                else if(strMethodName.equalsIgnoreCase("getLatestSTAR")){
-                    try{
-                        finish();
-
-                        Intent intent = new Intent(TabsTaskHeader.this, TabsTaskHeader.class);
-                        intent.putExtra("txtNoSPM", _mSPMHeaderData.getTxtNoSPM());
-                        startActivity(intent);
-                    }
-                    catch (Exception ex){
-                        Log.i("HIT-Exception", ex.toString());
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        });
-    }
+//    @Override
+//    public void onReceiveMessageHub(final JSONObject jsonObject) {
+//
+//    }
 
     private void initMethodRevertSPMDetail(JSONObject jsonObject) {
         String strMessage, boolValid;
@@ -692,6 +659,44 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
             progressDialog.show();
 //            new clsMainActivity().timerDelayRemoveDialog(time, progressDialog);
         }
+    }
+
+    @Override
+    public void onReceiveMessageHub(JSONObject jsonObject, boolean isCatch) {
+        TabsTaskHeader.this.runOnUiThread(() -> {
+            String strMethodName;
+
+            try {
+                Log.i("Anjas-ReceiveHub", String.valueOf(refresher));
+
+                strMethodName = jsonObject.get("strMethodName").toString();
+                Log.i("HIT", strMethodName);
+
+                if (strMethodName.equalsIgnoreCase("ConfirmSPMDetail")) {
+                    initMethodConfirmSPMDetail(jsonObject);
+                } else if (strMethodName.equalsIgnoreCase("cancelSPMDetail")) {
+                    initMethodCancelSPMDetail(jsonObject);
+                } else if(strMethodName.equalsIgnoreCase("revertCancelSPMDetail")){
+                    initMethodRevertSPMDetail(jsonObject);
+                } else if (strMethodName.equalsIgnoreCase("pushDataOffline")) {
+                    updateFromPushDataOffline(jsonObject);
+                }
+                else if(strMethodName.equalsIgnoreCase("getLatestSTAR")){
+                    try{
+                        finish();
+
+                        Intent intent = new Intent(TabsTaskHeader.this, TabsTaskHeader.class);
+                        intent.putExtra("txtNoSPM", _mSPMHeaderData.getTxtNoSPM());
+                        startActivity(intent);
+                    }
+                    catch (Exception ex){
+                        Log.i("HIT-Exception", ex.toString());
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public class PagerAdapter extends FragmentPagerAdapter {

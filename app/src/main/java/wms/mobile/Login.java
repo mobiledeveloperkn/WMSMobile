@@ -442,36 +442,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         new clsMainActivity().checkConnection(coordinatorLayout, conMan);
     }
 
-    @Override
-    public void onReceiveMessageHub(final JSONObject jsonObject) {
-        Login.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                String strMethodName;
-//                arrrole = new ArrayList<>();
-                arrrole.clear();
-                arrNodata.add("Select One");
-                arrrole = arrNodata;
-
-                try {
-                    strMethodName = jsonObject.get("strMethodName").toString();
-
-                    if (strMethodName.equalsIgnoreCase("GetRoleByUsername")) {
-                        initSpinnerRole(jsonObject);
-                    } else if (strMethodName.equalsIgnoreCase("Login")) {
-                        executeLogin(jsonObject);
-                    } else if (strMethodName.equalsIgnoreCase("getDataLastVersion")) {
-                        initMethodCheckinVersion(jsonObject);
-                    } else if (strMethodName.equalsIgnoreCase("BroadcastMessage")) {
-                        initMethodBroadcastMessage(jsonObject);
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
+//    @Override
+//    public void onReceiveMessageHub(final JSONObject jsonObject) {
+//
+//    }
 
     private void initMethodCheckinVersion(JSONObject jsonObject) {
         String strMethodName, boolValid, txtLink, strMessage, txtInstance = "";
@@ -703,6 +677,38 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
     @Override
     public void onConnectionSlow(boolean info) {
 
+    }
+
+    @Override
+    public void onReceiveMessageHub(JSONObject jsonObject, boolean isCatch) {
+        Login.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String strMethodName;
+//                arrrole = new ArrayList<>();
+
+
+                try {
+                    strMethodName = jsonObject.get("strMethodName").toString();
+
+                    if (strMethodName.equalsIgnoreCase("GetRoleByUsername")) {
+                        arrrole.clear();
+                        arrNodata.add("Select One");
+                        arrrole = arrNodata;
+                        initSpinnerRole(jsonObject);
+                    } else if (strMethodName.equalsIgnoreCase("Login")) {
+                        executeLogin(jsonObject);
+                    } else if (strMethodName.equalsIgnoreCase("getDataLastVersion")) {
+                        initMethodCheckinVersion(jsonObject);
+                    } else if (strMethodName.equalsIgnoreCase("BroadcastMessage")) {
+                        initMethodBroadcastMessage(jsonObject);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private class MyAdapter extends ArrayAdapter<String> {
