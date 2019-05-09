@@ -12,6 +12,7 @@ public class MyApplication extends Application {
 
     private static MyApplication mInstance;
     private boolean isFinishInsert;
+    private boolean isStatusValid;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -34,6 +35,14 @@ public class MyApplication extends Application {
 
     public void setFinishInsert(boolean finishInsert) {
         isFinishInsert = finishInsert;
+    }
+
+    public boolean isStatusValid() {
+        return isStatusValid;
+    }
+
+    public void setStatusValid(boolean statusValid) {
+        isStatusValid = statusValid;
     }
 
     public void setConnectivityListener(ConnectivityReceiver.ConnectivityReceiverListener listener) {

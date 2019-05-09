@@ -426,6 +426,11 @@ public class WMSMobileService extends Service {
             status = false;
         }
 
+        if (status==true){
+            MyApplication.getInstance().setStatusValid(true);
+        }else {
+            MyApplication.getInstance().setStatusValid(false);
+        }
         mHubConnection.received(jsonElement -> {
             JSONObject json;
             JsonObject jsonObject = jsonElement.getAsJsonObject();
@@ -525,6 +530,7 @@ public class WMSMobileService extends Service {
                 e.printStackTrace();
                 if (mHubConnectionSevice != null && valid) {
                     JSONObject jsonObjectFinal = new JSONObject();
+                    MyApplication.getInstance().setFinishInsert(true);
                     WMSMobileService.mHubConnectionSevice.onReceiveMessageHub(jsonObjectFinal, true);
                 }
                 Log.i("Buat Dewi", e.getMessage());

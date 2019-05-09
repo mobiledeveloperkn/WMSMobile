@@ -171,6 +171,21 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
             }
         }
 
+        if (!MyApplication.getInstance().isStatusValid()){
+            progressDialog.dismiss();
+            new AlertDialog.Builder(OutstandingTask.this)
+                    .setTitle("Alert")
+                    .setCancelable(false)
+                    .setMessage("Failed getting data, please refresh...")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            refreshSPMHeader();
+                            dialog.dismiss();
+                        }
+                    })
+                    .show();
+        }
 //        if (_mSPMHeaderData != null) {
 //            if (_mSPMHeaderData.getBitStart().equals("0")) {
 //                initMethodMappingButton();
