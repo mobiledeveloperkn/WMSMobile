@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AlertDialog;
@@ -119,7 +120,19 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
 //            registerReceiver(new ConnectivityReceiver(),
 //                    new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 //        }
+
+
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (MyApplication.getInstance().isFinishInsert()){
+//                    Toast.makeText(getApplicationContext(), "haiiii", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        }, 2000);
     }
+
+//    private void
 
     @Override
     protected void onStart() {
@@ -140,9 +153,7 @@ public class OutstandingTask extends AppCompatActivity implements View.OnClickLi
         btnRefresh.setOnClickListener(this);
         btnBreak.setOnClickListener(this);
 
-//        if (MyApplication.getInstance().isFinishInsert()){
-//            Toast.makeText(getApplicationContext(), "udah selesai insert", Toast.LENGTH_SHORT).show();
-//        }
+
         boolean validShow = false;
 //        if (isFromHome){
 //

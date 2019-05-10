@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -38,6 +39,7 @@ import java.util.Objects;
 import addon.ConnectivityReceiver;
 import addon.MyApplication;
 import addon.SwipeListAdapter;
+import bl.SignalRBL;
 import bl.mSPMDetailBL;
 import bl.mSPMHeaderBL;
 import bl.mSystemConfigBL;
@@ -75,6 +77,7 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
     private static ConnectivityManager conMan;
 
     private String txtNoSPM;
+    private String versionName = "";
     private String tab;
 
     private static ProgressDialog progressDialog;
@@ -90,7 +93,10 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
         setContentView(R.layout.activity_tabs_task_header);
         coordinatorLayout = findViewById(R.id.coordinatorLayoutTabsRaskHeader);
         conMan = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
+        PackageInfo pInfo = new clsMainActivity().getPinfo(this);
+        if (pInfo != null) {
+            versionName = pInfo.versionName;
+        }
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
 
@@ -661,40 +667,74 @@ public class TabsTaskHeader extends AppCompatActivity implements ConnectivityRec
         }
     }
 
+    private void refreshSPMHeader() {
+        final String result = new mSPMHeaderBL().GetAllData().getTxtNoSPM();
+        boolean status;
+
+        if (result != null) {
+            progressDialog.show();
+            tUserLoginData _tUserLoginData = new tUserLoginBL().getUserActive();
+            status = new WMSMobileService().refreshDataSTAR(result, _tUserLoginData.getIntUserId(), versionName);
+            if (!status) {
+                progressDialog.dismiss();
+                new SignalRBL().buildingConnection();
+                new clsMainActivity().showCustomToast(getApplicationContext(), "Please Check Your Connection...", false);
+            }
+        }
+    }
+
     @Override
     public void onReceiveMessageHub(JSONObject jsonObject, boolean isCatch) {
         TabsTaskHeader.this.runOnUiThread(() -> {
-            String strMethodName;
+            if (isCatch){
+                progressDialog.dismiss();
+                new AlertDialog.Builder(TabsTaskHeader.this)
+                        .setTitle("Alert")
+                        .setCancelable(false)
+                        .setMessage("Failed getting data, please refresh...")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                refreshSPMHeader();
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+            }else {
+                String strMethodName;
 
-            try {
-                Log.i("Anjas-ReceiveHub", String.valueOf(refresher));
+                try {
+                    Log.i("Anjas-ReceiveHub", String.valueOf(refresher));
 
-                strMethodName = jsonObject.get("strMethodName").toString();
-                Log.i("HIT", strMethodName);
+                    strMethodName = jsonObject.get("strMethodName").toString();
+                    Log.i("HIT", strMethodName);
 
-                if (strMethodName.equalsIgnoreCase("ConfirmSPMDetail")) {
-                    initMethodConfirmSPMDetail(jsonObject);
-                } else if (strMethodName.equalsIgnoreCase("cancelSPMDetail")) {
-                    initMethodCancelSPMDetail(jsonObject);
-                } else if(strMethodName.equalsIgnoreCase("revertCancelSPMDetail")){
-                    initMethodRevertSPMDetail(jsonObject);
-                } else if (strMethodName.equalsIgnoreCase("pushDataOffline")) {
-                    updateFromPushDataOffline(jsonObject);
-                }
-                else if(strMethodName.equalsIgnoreCase("getLatestSTAR")){
-                    try{
-                        finish();
-
-                        Intent intent = new Intent(TabsTaskHeader.this, TabsTaskHeader.class);
-                        intent.putExtra("txtNoSPM", _mSPMHeaderData.getTxtNoSPM());
-                        startActivity(intent);
+                    if (strMethodName.equalsIgnoreCase("ConfirmSPMDetail")) {
+                        initMethodConfirmSPMDetail(jsonObject);
+                    } else if (strMethodName.equalsIgnoreCase("cancelSPMDetail")) {
+                        initMethodCancelSPMDetail(jsonObject);
+                    } else if(strMethodName.equalsIgnoreCase("revertCancelSPMDetail")){
+                        initMethodRevertSPMDetail(jsonObject);
+                    } else if (strMethodName.equalsIgnoreCase("pushDataOffline")) {
+                        updateFromPushDataOffline(jsonObject);
                     }
-                    catch (Exception ex){
-                        Log.i("HIT-Exception", ex.toString());
+                    else if(strMethodName.equalsIgnoreCase("getLatestSTAR")){
+                        try{
+                            progressDialog.dismiss();
+                            finish();
+
+                            Intent intent = new Intent(TabsTaskHeader.this, TabsTaskHeader.class);
+                            intent.putExtra("txtNoSPM", _mSPMHeaderData.getTxtNoSPM());
+                            startActivity(intent);
+                        }
+                        catch (Exception ex){
+                            Log.i("HIT-Exception", ex.toString());
+                        }
                     }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    progressDialog.dismiss();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
         });
     }
